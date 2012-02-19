@@ -1,0 +1,3 @@
+[submodule "textmodes/adoc-mode"]
+	path = textmodes/adoc-mode
+	url = git@github.com:sensorflo/adoc-mode.git

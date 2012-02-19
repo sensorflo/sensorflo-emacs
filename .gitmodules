@@ -4,3 +4,15 @@
 [submodule "textmodes/bbcode-mode"]
 	path = textmodes/bbcode-mode
 	url = https://sensorflo@code.google.com/p/bbcode-mode/
+[submodule "textmodes/markup-faces"]
+	path = textmodes/markup-faces
+	url = git@github.com:sensorflo/markup-faces.git
+[submodule "textmodes/doxym-mode"]
+	path = textmodes/doxym-mode
+	url = git@gitorious.org:doxym-mode/doxym-mode.git
+[submodule "misc/mks"]
+	path = misc/mks
+	url = https://sensorflo@code.google.com/p/mks/
+[submodule "misc/tempo-ext"]
+	path = misc/tempo-ext
+	url = git@gitorious.org:tempo-ext/tempo-ext.git

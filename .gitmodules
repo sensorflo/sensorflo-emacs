@@ -1,3 +1,6 @@
 [submodule "textmodes/adoc-mode"]
 	path = textmodes/adoc-mode
 	url = git@github.com:sensorflo/adoc-mode.git
+[submodule "textmodes/bbcode-mode"]
+	path = textmodes/bbcode-mode
+	url = https://sensorflo@code.google.com/p/bbcode-mode/

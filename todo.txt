@@ -1,0 +1,159 @@
+= Emacs customization TODO
+Florian Kaufmann, <sensorflo@bigfoot.com>
+
+
+// The chapters here correspond to the chapters in the emacs manual (or at least
+// emacs wiki)
+
+== markup modes like doxym/adoc
+- make overlays work, i.e. remove only mine in font-lock `cleanup'. 
+- enhance outline mode
+  - indent to give better visual feedback about the levels
+	- maybe other font-flock, since now indentation gives feedback about the level
+	- easy handling with the mouse: open/close/...
+
+== vss / sources
+- Automatically `remove' i Labels by adding a new label with the same text, just without the i.
+- Make VssConnector know/remember the label of my last checkin
+- Auto make a \~base~ folder after vss connector checkout for diffs of my changes. Simple solution: just copy/backup dir after checkout
+- Make VssConnector know/remember the label I checked out (aka working revision)
+- Folders automatisch synchron halten
+- Revert Funktionalität
+- Blame funktionalität (auch annotate/praise genannt). FLKA hat den Kern als Perl Script.
+- Cherry picking: apply a checkin to another branch
+
+- file handling: wenn files zum studio projekt hinzugefügt/gelöscht wurden soll das richtige passieren. 
+
+- robin zeigt mir neue Features ... 
+- robin hat nun nach .NET konvertiert und die Projekte VssConnector & General gemerget.
+- task: löst General/CsvDbs.cls auf weil redundant zur Liste auf dem GUI. 
+
+	- Make backup (without the big files). probably with rsync
+
+== Regexps
+=== sregex
+- Make it shorter, i.e. use shorter symbols. Use the same symbols as in regexes
+  so its not confusing. However g for group, because ( is already taken by lisp.
+  use the symbols * ? (shit, is also already taken by lisp!!!!) as postfix
+  operators; except when they are the first symbol of a list, then its like
+  sregexs (0+ ...). Use vectors (or (c ...)) as analog to sregex char classes.
+  Additionaly one char latin letter symbols represent the character of their name.
+- symbols taken by lisp (C)
+  * (...)->(g ...)
+	* ... -> not really needed, since we dont need to quote anything. However
+	   when we want to insert a literal regex, use q ... or rx ... ?
+	* ...? -> o or (o...) which really stands for (?:...)?. ??->oo, *?-> *?
+  * . -> a (any)
+
+
+== Custom
+- Customize buffer should be smaller by default, I only want to see name and
+  value of an variable. Doc, State Button etc shall only be displayed upon request.
+
+== Dictionary / Thesaurus
+- x-dict shall use tab and a single tabstop so buffer-faced-mode can be used
+
+== Registers / Bookmarks
+- Global, directory local sets. Havent checked yet if emacs/emacs-wiki has something
+- Optionally only jumpt to file, not point, i.e. leave point where it currently is.
+
+
+== Editing Programs
+- In an extra buffer show always the definition & docu of the itendifier point is on.
+- Highlight line (maybe makes only sense for locals) definition (and method doxy comment) of identifier point is on.
+- Highlight prantheses: all n levels up AND surrounding
+- select (mark) blocks by movining point horizontaly to respective column
+
+
+== Compiling and Testing Programs
+=== Compilation mode
+- As QTCreator: Have a nice buffer only showing the error text. I dont want to
+  see filenames, also not the `garbage' output of the build.
+- Allow to define multiple regexs to find errors. That way the individual
+  regexes get much simpler. 
+
+== kill ring
+- yank-pop/yank-pop-more-recent (M-y/C-M-y) shall show kill-ring like ido does it 
+
+== minibuffer / ido / icicles
+- icices shall also, like ido, distinguish between C-j & RET
+
+== Comments
+- kill yank comments without having to care about comment delimiters in the
+  killed text, and without having to care about comment delimiters that are
+  overwritten when pasting, or which are not even there. Even from/to buffers in
+  different major modes. 
+- highlight brief part of comment
+- better support multiple comment types (e.g. in C++: "//", "/*", "/**", "//<",
+  or in vbnet "'", "'''"). comment inserting functions choose the right one
+  depending on the context. There are additional functions to cycle.
+  * better support different comment places (before/after identifier). 
+
+== Auto insert (and more) stuff
+keywords: tempo, skeletton, autopair, balanced, electric, 
+
+- autopair does not delete both pairs, i.e. only if empty
+- autopair: `...' in lisp doc string does not yet work
+- shoudn't autopair and tempo be combined?
+- tempo-geil has point at a different place if region starts/ends in the middle of the line
+- recursive list and `functions' (thats is non-functions :-) ) like quote dont work together
+
+== ediff/diff/patch
+- ediff shows only differences + context, the other lines are hidden
+- vertical vc annotade / mix of annotade und ediff: per klick geht der versionen vergleich 1 weiter (file a und b jeweils 1 in dieselbe richtung). Ev auch per klick nur a oder b in + oder - richtung.
+- highlight-changes compared to savedfile/backup/revisionversion (use diff output). Take a look at the manued package.
+- ediff session group shall have its pwd = largest common path. Now the filenames in the session group buffer are too long to have an overview.
+  - Or even better: alternatively put the two files side by side instead on 2 separate lines.
+- more ideas from araxis merge / meld
+- hold both buffers sync when scrolling either one
+- 
+
+== kill ring
+- browse kill ring: add context menu and window menu
+
+== dired
+- shell-command/dired-do-shell-command [search with icy/apropos on 'shell-command']  does not have filename completion
+- dired-jump-ext: when dired buffer with this file already exists, use that buffer and don't change anything.
+- move to trash instead really delete; do not ask for confirmation; delete cassociated buffer without confirmation
+- `browse' mode to quickly moveto/select items. Similar to windows explorer.
+
+== dragon
+- etrace macros containing current class::method should be tested if the string is correct. Maybe also silently in the background and annotate culprits.
+
+== Misc
+- grep/perl eol normalization so on each system newline is really always \n
+- create backup of a file explicitely (also in dired).
+- cp/mv commands (in dired/ibuffer/...): default shall include source file name
+- how to 'undo' [remap ...]? E.g. yank instead yank-ext in minibuffer-setup-hook?
+- delete-selection-mode stops working with my yank-ext (and apparently icicles/org/... and others who temper with yank)
+- make tramp work for sudo
+- make sudo work in ++shell-command++ etc
+- c-recenter-defun uses window-body-height, instead something (window-buffer-height?) that measures the BUFFERs height.
+- shell mode: filename completion does not quote chars of filenames that should be quoted, e.g. space
+- to to (temporarly) toggle/set case fold search in different searches (dired mark / dired querry replace / incremental search / highlight regexp / ....)
+- dwim query replace.  It knows in what files / in which parts of the files to replace. It knows the search pattern, and the replacement pattern.
+- compilation-error-alist oder so dynamisch erstellen aufgrund von compilation buffer. Oft ist im header ja information ueber den benutzten compiler. Dasselbe Prinzip fuer grep-mode
+- hi-lock mode for all buffers
+- font-lock:
+    fontify numeric literals.
+    dont't treat namespaces as constants.
+    fontify method calls (create a new font-lock face?)
+    treat builtin types not as keyword but as type
+    new type: guidelines warning: eg use of int , incorrect prefix, ...
+    new type: medium attention catching: methods not returning EHRESULT, ...
+    method declarations are not recognized properly (at least not always, update problem?) if argument list spreads more than one line.
+- shell script for esec svn handling.
+- get to learn align, align-regexp, align-string etc. Is there the possibility to store regexp info for alignment in properties? So when I edit the text, the whole block's alignment is always updated.
+- insert output of a command into buffer / into kill ring
+- add --color to tcgrep
+- flymake for vss(i.e. incredibuild)  
+- how does drew extend functionality without having binding conflicts/problems?
+- exurbitant ctags
+- mybindings: search all xxxx-mode-map symbols and apply my basic settings. Maybee an explicit exclude list.
+- project-minor mode: sets a set of local variables ( compile-command, grep-command, compile-alist, abbrevs, auto insert text for new files), jeweils for a set of modes (cpp-mode,idl-mode) depending on current project,
+which will be derived from .dsp/.dsw/path/...
+- abbrev not in comments: maybe parse-partial-sexp      
+- directory-abbrev-alist
+- my mark defun/paragraph should be as the standart one, mark blank lines
+  before, not after
+

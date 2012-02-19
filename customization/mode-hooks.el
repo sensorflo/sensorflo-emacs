@@ -1,0 +1,1203 @@
+;;; mode-hooks.el --- sensorflo's mode hooks
+;;
+;;; Commentary
+;;
+;; precedence 
+;; ------------
+;; 1. PROJECT-MODE-hook
+;; 2. MODE-hook
+;; 3. PROJECT-common-'hook'
+;; 4. common-mode-'hook'
+;; 5. settings in _emacs.el
+;; ??? mybindings.el !!!!!!!!!!!
+;; ??? custom.el !!!!!!!!!!!
+;;
+;;
+;; autoload support
+;; ----------------
+;;
+;; - Since add-hook creates hook if the passed hook is void, the passed hook
+;;   symbol must not yet exist, i.e. be loaded.
+;; - Maybe chop mode-hooks.el into multiple files, one per hook. Then autload
+;;   those small files at the time they are really needed.
+;;
+;;; Code
+
+(require 'sregex)
+
+;;; programming modes 
+;;; ===================================================================
+
+;;; shell
+;; ----------------------------------------------
+(add-hook 'sh-mode-hook 'my-sh-mode-hook)
+(defun my-sh-mode-hook ()
+  (ansi-color-for-comint-mode-on)
+  (my-sh-mode-bindings))
+  
+;; todo: think about moving all bindings in this buffer to mybindings.el
+(defun my-sh-mode-bindings()
+  (require 'tempos-bash)
+
+  ;; control flow
+  (local-set-key [(control ?\,)(c)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
+
+  (local-set-key [(control ?\,)(c)(i)] 'tempo-template-bash-if)
+  (local-set-key [(control ?\,)(c)(e)] 'tempo-template-bash-elif)
+  (local-set-key [(control ?\,)(c)(f)] 'tempo-template-bash-for)
+  (local-set-key [(control ?\,)(c)(w)] 'tempo-template-bash-while)
+  (local-set-key [(control ?\,)(c)(s)] 'tempo-template-bash-case) ; s for switch
+  (local-set-key [(control ?\,)(c)(c)] 'tempo-template-bash-case-clause) 
+  
+  ;; definitions
+  (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(d)(s)] 'tempo-template-bash-def-sub) ;s for subroutin
+  (local-set-key [(control ?\,)(d)(f)] 'tempo-template-bash-def-sub) ;f for function
+  (local-set-key [(control ?\,)(d)(m)] 'tempo-template-bash-def-sub) ;m for method
+  )
+
+;;; php
+;; ----------------------------------------------
+(add-hook 'php-mode-hook 'my-php-mode-hook)
+
+(defun my-php-mode-hook ()
+  )
+
+;;; perl
+;; ----------------------------------------------
+(add-hook 'cperl-mode-hook 'my-cperl-mode-hook)
+(defun my-cperl-mode-hook ()
+  (my-cperl-mode-bindings))
+  
+(defun my-cperl-mode-bindings()
+  (require 'tempos-perl)
+
+  (local-set-key [(f5)] 'perldb)
+  (local-set-key [(f7)] 'cperl-check-syntax)
+  (local-set-key [(f8)] 'cperl-check-syntax)
+  
+  (local-set-key [(control ?\,)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
+
+  ;; control flow
+  ;; todo: else
+  (local-set-key [(control ?\,)(c)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(c)(i)] 'tempo-template-perl-if)
+  (local-set-key [(control ?\,)(c)(e)] 'tempo-template-perl-elsif)
+  (local-set-key [(control ?\,)(c)(f)] 'tempo-template-perl-for)
+  (local-set-key [(control ?\,)(c)(w)] 'tempo-template-perl-while)
+  (local-set-key [(control ?\,)(c)(c)] 'tempo-template-perl-continue)
+  
+  ;; definitions
+  (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(d)(s)] 'tempo-template-perl-def-sub) ;s for subroutin
+  (local-set-key [(control ?\,)(d)(f)] 'tempo-template-perl-def-sub) ;f for function
+  (local-set-key [(control ?\,)(d)(m)] 'tempo-template-perl-def-sub) ;m for method
+  )
+
+;;; python
+;; ----------------------------------------------
+(add-hook 'python-mode-hook 'my-python-mode-hook)
+(defun my-python-mode-hook ()
+  (hs-minor-mode t)
+  (my-python-mode-bindings))
+  
+(defun my-python-mode-bindings ()
+  (require 'tempos-python)
+
+  ;; (local-set-key [(f5)] 'python-debug)
+  (local-set-key [(f7)] 'python-check)
+  (local-set-key [(f8)] 'python-check)
+  
+  (local-set-key [(control ?\,)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
+
+  ;; control flow
+  ;; todo: else
+  (local-set-key [(control ?\,)(c)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(c)(i)] 'tempo-template-py-if)
+  (local-set-key [(control ?\,)(c)(e)] 'tempo-template-py-elsif)
+  (local-set-key [(control ?\,)(c)(f)] 'tempo-template-py-for)
+  (local-set-key [(control ?\,)(c)(w)] 'tempo-template-py-while)
+  (local-set-key [(control ?\,)(c)(c)] 'tempo-template-py-continue)
+  
+  ;; definitions
+  (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(d)(c)] 'tempo-template-py-def-class)
+  (local-set-key [(control ?\,)(d)(s)] 'tempo-template-py-def-func) ;s for subroutin
+  (local-set-key [(control ?\,)(d)(f)] 'tempo-template-py-def-func) ;f for function
+  (local-set-key [(control ?\,)(d)(m)] 'tempo-template-py-def-func) ;m for method
+  )
+
+
+;;; c common mode
+;; ----------------------------------------------
+
+;; the first items in the list overwrite the settings made in the later items of
+;; the list
+(add-hook 'c-mode-common-hook 'coma-c-mode-common-hook)
+(add-hook 'c-mode-common-hook 'nova-c-mode-common-hook)
+(add-hook 'c-mode-common-hook 'dragon-c-mode-common-hook)
+(add-hook 'c-mode-common-hook 'indel-c-mode-common-hook)
+(add-hook 'c-mode-common-hook 'default-c-mode-common-hook)
+
+;; defaults for all projects
+(defun default-c-mode-common-hook ()
+  (auto-fill-mode t)
+  (c-setup-filladapt)
+  (hs-minor-mode t)
+  (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet)))) 
+  (setq comment-start-skip "\\(//[/!]*\\|/\\*[*!]*\\)\\s-*") ;should be part of doxymacs?
+  (when (null comment-end-skip)
+    (setq comment-end-skip "\\s-*\\*+/"))
+  (abbrev-mode 0)
+  (doxymacs-mode 1)
+
+  ;; TODO subword-mode shall be turned on globally 
+  (eval-when-compile
+    (if (< (+ (* 100 emacs-major-version) emacs-minor-version) 2302)
+	(c-subword-mode t)
+      (subword-mode t)))
+
+  (setq c-basic-offset 2)
+  ;; (set (make-local-variable 'compilation-error-regexp-alist)
+  ;; '(gnu-sensorflo gcc-include))
+  (setq compilation-error-regexp-alist '(gnu-sensorflo gcc-include doxygen))
+  (outline-c-mode-common)
+  (my-c-mode-common-bindings))
+
+(defun outline-c-mode-common()
+  (if (c-src-buffer-p)
+      (progn
+        (setq outline-regexp
+              (concat
+               "\\(" c++-cpp-outline-level1-regex "\\)\\|"
+               "\\(" c++-cpp-outline-level2-regex "\\)\\|"
+               "\\(" c++-cpp-outline-level3-regex "\\)\\|"
+               "\\(" c++-cpp-outline-level4-regex "\\)"))
+        (set (make-local-variable 'outline-level) 'c++-cpp-outline-level))
+
+    (setq outline-regexp
+          (concat
+           "\\(" c++-h-outline-level1-regex "\\)\\|"
+           "\\(" c++-h-outline-level2-regex "\\)\\|"
+           "\\(" c++-h-outline-level3-regex "\\)\\|"
+           "\\(" c++-h-outline-level4-regex "\\)"))
+    (set (make-local-variable 'outline-level) 'c++-h-outline-level)))
+
+(setq c++-cpp-outline-level1-regex "^\\S-.*\\w+\\s-*::\\s-*\\w+.*(" ) 
+(setq c++-cpp-outline-level2-regex "xxxblabliblabluxxx2" ) 
+(setq c++-cpp-outline-level3-regex "xxxblabliblabluxxx3" ) 
+(setq c++-cpp-outline-level4-regex "xxxblabliblabluxxx4" ) 
+
+;; TODO: separate into C++ / doxy / dragon regexes
+(setq c++-h-outline-level1-regex "\\(struct\\|class\\)\\s-*\\sw+\\s-*[^;]*$" ) 
+(setq c++-h-outline-level2-regex "\\s-*\\(private\\|public\\|protected\\)\\s-*:" )
+(setq c++-h-outline-level31-regex "\\s-*\\(//+\\|/\\**!?\\)\\s-*\\([\\\\@]name\\|misc\\)" ) ; groups
+(setq c++-h-outline-level32-regex "\\s-*//[^/]\\|\\s-*/\\*[^*]" ) ; pseudo-sub groups
+(setq c++-h-outline-level3-regex (concat "\\(" c++-h-outline-level31-regex "\\)\\|\\(" c++-h-outline-level32-regex "\\)"))
+(setq c++-h-outline-level41-regex "\\s-*\\(\\s-\\|\\sw\\|[~*&_:<>]\\)+\\(;\\|(\\(\\s-*)\\s-*\\(const\\s-*\\)?;\\)?\\|{\\)\\s-*\\(//.*\\|/\\*.*\\)?$")
+(setq c++-h-outline-level42-regex "\\s-*\\sw+\\s-*(.*)\\s-*;\\s-*$" ) ; like FOO( arg1, arg2 );
+(setq c++-h-outline-level43-regex "\\s-*\\sw+\\s-*(\\s-*\\sw+\\s-*)\\s-*" ) ; like FOO( name ) ( ... 
+(setq c++-h-outline-level4-regex (concat "\\(" c++-h-outline-level41-regex "\\)\\|\\(" c++-h-outline-level42-regex "\\)\\|\\(" c++-h-outline-level43-regex "\\)"))
+
+(defun c++-cpp-outline-level ()
+  (cond
+   ((looking-at c++-cpp-outline-level1-regex) 1)
+   ((looking-at c++-cpp-outline-level2-regex) 2)
+   ((looking-at c++-cpp-outline-level3-regex) 3)
+   ((looking-at c++-cpp-outline-level4-regex) 4)
+   (t 5)))
+
+(defun c++-h-outline-level ()
+  (cond
+   ((looking-at c++-h-outline-level1-regex) 1)
+   ((looking-at c++-h-outline-level2-regex) 2)
+   ((looking-at c++-h-outline-level3-regex) 3)
+   ((looking-at c++-h-outline-level4-regex) 4)
+   (t 5)))
+
+(defun my-c-mode-common-bindings ()
+  (require 'tempos-c++)
+
+  ;; similar functionality
+  (define-key c-mode-base-map [(tab)] 'c-indent-line-or-region)
+  (define-key c-mode-base-map [(return)] 'c-context-line-break)
+  (substitute-key-definition 'narrow-to-defun 'c-narrow-to-function-incl-comment c-mode-base-map)
+  (substitute-key-definition 'yank 'yank-and-indent c-mode-base-map)
+  (define-key c-mode-base-map [(control meta h)] 'c-mark-function-incl-comment)
+  (substitute-key-definition 'mark-page 'c-mark-block c-mode-base-map)
+  (define-key c-mode-base-map [f5] 'c-copy-param-list)
+  (define-key c-mode-base-map [f6] 'c-move-comment-dec-to-def-buffer)
+  (define-key c-mode-base-map [f5] 'c-copy-param-list)
+  (define-key c-mode-base-map [f6] 'c-move-comment-dec-to-def-buffer)
+
+  ;; jump
+  (substitute-key-definition 'c-beginning-of-defun 'c-beginning-of-defun-ext c-mode-base-map) 
+  (substitute-key-definition 'c-end-of-defun 'c-end-of-defun-ext c-mode-base-map)
+  (local-set-key [(control ?\.)(o)] 'c-goto-other-defun)
+  (local-set-key [(control ?\.)(d)] 'c-goto-declaration)
+  (local-set-key [(control ?\.)(D)] 'c-goto-specific-defun-name) 
+  (local-set-key [(control ?\.)(n)] 'c-forward-defun-name) 
+  (local-set-key [(control ?\.)(p)] 'c-beginning-of-defun-param-list)
+  (local-set-key [(control ?\.)(b)] 'c-beginning-of-defun-body) 
+  (local-set-key [(control ?\.)(r)] 'c-recenter-defun-or-region) 
+  
+  ;; misc
+  (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
+  (local-set-key [(control f)(p)] 'remove-parantheses)
+  (local-set-key [(f10)] 'c-copy-signature)
+  (local-set-key [(control x)(n)(b)] 'c-narrow-to-block)
+
+  (my-c-mode-common-bindings-tempo)
+  )
+
+;; remember that dragon.el, nova.el etc will add further bindings
+(defun my-c-mode-common-bindings-tempo ()
+
+  ;; flow control
+  (let ((map (make-sparse-keymap)))
+    (local-set-key [(control ?\,)(c)] map)
+    (local-set-key [(control ?\,)(f)] map))
+  (local-set-key [(control ?\,)(c)(i)] 'tempo-template-c-if)
+  (local-set-key [(control ?\,)(c)(e)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(c)(e)(e)] 'tempo-template-c-else)
+  (local-set-key [(control ?\,)(c)(e)(i)] 'tempo-template-c-else-if)
+  (local-set-key [(control ?\,)(c)(f)] (make-sparse-keymap)) 
+  (local-set-key [(control ?\,)(c)(f)(f)] 'tempo-template-c-for-std-2) 
+  (local-set-key [(control ?\,)(c)(f)(a)] 'tempo-template-c-for-std) 
+  (local-set-key [(control ?\,)(c)(w)] 'tempo-template-c-while)
+  (local-set-key [(control ?\,)(c)(d)] 'tempo-template-c-do)
+  (local-set-key [(control ?\,)(c)(s)] 'tempo-template-c-switch)
+  (local-set-key [(control ?\,)(c)(c)] 'tempo-template-c-case)
+  (local-set-key [(control ?\,)(c)(d)] 'tempo-template-c-default) 
+  (local-set-key [(control ?\,)(c)(t)] 'tempo-template-c-try) 
+  (local-set-key [(control ?\,)(c)(k)] 'tempo-template-c-catch) 
+  (local-set-key [(control ?\,)(c)(b)] 'tempo-template-c-block)
+
+  ;; comments
+  (local-set-key [(control ?\,)(k)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(k)(k)] 'tempo-template-c-comment-block) 
+  (local-set-key [(control ?\,)(k)(b)] 'tempo-template-c-comment-block) 
+  (local-set-key [(control ?\,)(k)(g)] 'tempo-template-c-member-group-named)
+  (local-set-key [(control ?\,)(k)(G)] 'tempo-template-c-member-group)
+  (local-set-key [(control ?\,)(k)(u)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(k)(u)(b)] 'tempo-template-c-utf-block)
+  (local-set-key [(control ?\,)(k)(u)(f)] 'tempo-template-c-utf-forwards)
+  (local-set-key [(control ?\,)(k)(u)(i)] 'tempo-template-c-utf-includes)
+
+  ;; preprocessor
+  (local-set-key [(control ?\,)(p)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(p)(i)] 'tempo-template-c-include) 
+  (local-set-key [(control ?\,)(p)(I)] 'tempo-template-c-include-system) 
+  (local-set-key [(control ?\,)(p)(m)] '(lambda () (interactive) (tempo-template-c-pragma-message)))
+  
+  ;; names / ids
+  (local-set-key [(control ?\,)(n)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(n)(n)] 'insert-class-name-dwim)
+
+  ;; text
+  (local-set-key [(control ?\,)(t)] (make-sparse-keymap))
+  
+  ;; log / messages
+  (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
+  
+  ;; error
+  (local-set-key [(control ?\,)(e)] (make-sparse-keymap))
+  
+  ;; definitions / declarations
+  (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
+
+  ;; statements
+  (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(s)(?\;)] 'tempo-template-c-statement-common-ehr)
+
+  ;; expressions
+  (local-set-key [(control ?\,)(e)] (make-sparse-keymap))
+
+  ;; misc / whole-fragments
+  (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
+
+
+  ;; (local-set-key [(control ?\,)(N)] 'tempo-template-c-delete)
+  )
+
+;; idl mode
+;; ------------------------------------------------------------------
+(setq idl-outline-level1-regex "[i]nterface\\|[l]ibrary" ) 
+(setq idl-outline-level2-regex "\\s-*\\(/\\*+!?\\|//+\\)\\s-*\\(@name\\b\\|misc\\)" )  
+(setq idl-outline-level3-regex "\\(\\s-+\\sw+\\)\\{,4\\}\\s-*[({]\\s-*\\()\\s-*;\\s-*\\)?$" )
+
+(defun my-idl-mode-hook ()
+  (interactive)
+  (outline-minor-mode t)
+  (set (make-local-variable 'outline-regexp)
+       (concat
+        "\\(" idl-outline-level1-regex "\\)\\|"
+        "\\(" idl-outline-level2-regex "\\)\\|"
+        "\\(" idl-outline-level3-regex "\\)" ))
+  (set (make-local-variable 'outline-level) 'idl-outline-level))
+
+(defun idl-outline-level ()
+  (cond
+   ((looking-at idl-outline-level1-regex) 1)
+   ((looking-at idl-outline-level2-regex) 2)
+   ((looking-at idl-outline-level3-regex) 3)
+   (t 4)))
+
+(add-hook 'idl-mode-hook 'my-idl-mode-hook)
+
+;;; emacs lisp / lisp / lisp interacton major mode
+; ------------------------------------------------------------------
+(let ((hook-list      
+       (list
+        'lisp-mode-hook
+        'lisp-interaction-mode
+        'emacs-lisp-mode-hook))
+      hook)
+  (while hook-list
+    (setq hook (car hook-list))
+    (add-hook hook 'my-gen-lisp-hook)
+    (setq hook-list (cdr hook-list))))
+
+(defun my-gen-lisp-hook ()
+  (hs-minor-mode t)
+  (setq tab-width 8)
+  
+  (local-set-key [(meta m)(meta m)] 'kmacro-start-stop-macro-ext)
+  
+  (local-set-key [(control ?\,)] (make-sparse-keymap))
+
+  (setq paragraph-start "\f\\|[ \t]*$\\|^[ \t]*\"")
+  
+  (font-lock-add-keywords nil (list
+     (list (concat "^\\s-*(\\s-*def\\w*\\s-*[^ \t(]+\\s-*([^)]*)\\s-*"
+		   "\\(?:\n\\s-*\\)?\"\\(\\)")
+	   '(1 hi-unimportant t)) 
+     ))
+
+  ;; (require 'autopair)
+  ;; (push '(?` . ?') (getf autopair-extra-pairs :code))
+
+  (when (eq major-mode 'emacs-lisp-mode)
+    (require 'tempos-elisp))
+
+  ;; control flow
+  (local-set-key [(control ?\,)(c)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(c)(i)] 'tempo-template-elisp-if)
+  (local-set-key [(control ?\,)(c)(w)] 'tempo-template-elisp-while)
+
+  ;; definitions
+  (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(d)(f)] 'tempo-template-elisp-defun) ;f for function
+  (local-set-key [(control ?\,)(d)(d)] 'tempo-template-elisp-defun) ;f for function
+  
+  ;; misc
+  (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(m)(l)] 'tempo-template-elisp-let))
+
+;;; stream / dt2
+;; ----------------------------------------------
+(add-hook 'stream-mode-hook 'my-stream-mode-hook)
+(defun my-stream-mode-hook ()
+  (require 'tempos-stream)
+  (filladapt-mode t)
+  (doxymacs-mode t)
+  (doxymacs-font-lock))
+
+(add-hook 'dt2-mode-hook 'my-dt2-mode-hook)
+(defun my-dt2-mode-hook ()
+  (outline-minor-mode t)
+  (filladapt-mode t))
+
+
+;;; conf mode 
+;; ----------------------------------------------
+(defun my-conf-mode-hook()
+  (setq indent-tabs-mode nil))
+
+(add-hook 'conf-mode-hook 'my-conf-mode-hook)
+
+;;; visual basic .NET
+;; ----------------------------------------------
+(add-hook 'vbnet-mode-hook 'my-vbnet-mode-hook)
+(defun my-vbnet-mode-hook ()
+  (setq indent-tabs-mode nil)
+
+  (require 'tempos-vbnet)
+  (require 'tempos-xml-doc)
+
+  (font-lock-add-keywords nil (list
+     (list "<[^>]+?>" '(0 hi-semi-unimportant prepend)) 
+     ))
+
+  (local-set-key [(return)] 'indent-new-comment-line)
+
+  ;; control flow
+  (local-set-key [(control ?\,)(c)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(c)(i)] 'tempo-template-vbnet-if)
+  (local-set-key [(control ?\,)(c)(e)] 'tempo-template-vbnet-elsif)
+  (local-set-key [(control ?\,)(c)(f)] 'tempo-template-vbnet-for)
+  (local-set-key [(control ?\,)(c)(a)] 'tempo-template-vbnet-for-each)
+  (local-set-key [(control ?\,)(c)(w)] 'tempo-template-vbnet-while)
+
+  ;; comment
+  (local-set-key [(control ?\,)(k)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(k)(s)] 'tempo-template-xml-doc-summary) 
+  (local-set-key [(control ?\,)(k)(p)] 'tempo-template-xml-doc-param))
+  
+
+;;; text modes 
+;;; ===================================================================
+
+;;; html helper minor mode
+;; -------------------------------------------------------------------
+(add-hook 'html-helper-mode-hook '(lambda () (font-lock-mode 1)))
+
+;;; (la)tex
+;; --------------------------------------------------------------------------------
+(add-hook 'tex-mode-hook 'my-latex-hook)
+
+(defun my-latex-hook ()
+  (auto-fill-mode t)
+  (outline-minor-mode t)
+  (my-latex-bindings))
+
+(defun my-latex-bindings ()
+  (require 'tempos-latex)
+
+  (local-set-key [(control j)] 'backward-char)
+  
+  (local-set-key [(control c)(control o)(d)] 'latex-ext-dec-level)
+  (local-set-key [(control c)(control o)(i)] 'latex-ext-inc-level)
+  (local-set-key [(control c)(u)] 'latex-ext-up)
+  
+  (local-set-key [(meta ?\,)] (make-sparse-keymap))
+  (local-set-key [(meta ?\,)(p)] 'latex-ext-remove-surrounding)
+  (local-set-key [(meta ?\,)(s)] 'latex-ext-remove-surrounding)
+
+  (local-set-key [(control ?\,)] (make-sparse-keymap))
+  
+  ;; (greek) symbols
+  ;; xi is on o, and omicron itself can be written using regular o and O
+  (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(s)(a)] '(lambda () (interactive) (insert "\\alpha")))
+  (local-set-key [(control ?\,)(s)(b)] '(lambda () (interactive) (insert "\\beta")))
+  (local-set-key [(control ?\,)(s)(c)] '(lambda () (interactive) (insert "\\gamma"))) ;!
+  (local-set-key [(control ?\,)(s)(d)] '(lambda () (interactive) (insert "\\delta")))
+  (local-set-key [(control ?\,)(s)(e)] '(lambda () (interactive) (insert "\\epsilon")))
+  (local-set-key [(control ?\,)(s)(f)] '(lambda () (interactive) (insert "\\zeta"))) ;!
+  (local-set-key [(control ?\,)(s)(g)] '(lambda () (interactive) (insert "\\eta")))  ;!
+  (local-set-key [(control ?\,)(s)(h)] '(lambda () (interactive) (insert "\\theta"))) ;!
+  (local-set-key [(control ?\,)(s)(i)] '(lambda () (interactive) (insert "\\iota")))
+  (local-set-key [(control ?\,)(s)(k)] '(lambda () (interactive) (insert "\\kappa")))
+  (local-set-key [(control ?\,)(s)(l)] '(lambda () (interactive) (insert "\\lambda")))
+  (local-set-key [(control ?\,)(s)(m)] '(lambda () (interactive) (insert "\\mu")))
+  (local-set-key [(control ?\,)(s)(n)] '(lambda () (interactive) (insert "\\nu")))
+  (local-set-key [(control ?\,)(s)(o)] '(lambda () (interactive) (insert "\\xi"))) ;!
+  (local-set-key [(control ?\,)(s)(p)] '(lambda () (interactive) (insert "\\pi")))
+  (local-set-key [(control ?\,)(s)(r)] '(lambda () (interactive) (insert "\\rho"))) ; ! (upercase)
+  (local-set-key [(control ?\,)(s)(s)] '(lambda () (interactive) (insert "\\sigma")))
+  (local-set-key [(control ?\,)(s)(t)] '(lambda () (interactive) (insert "\\tau")))
+  (local-set-key [(control ?\,)(s)(u)] '(lambda () (interactive) (insert "\\upsilon")))
+  (local-set-key [(control ?\,)(s)(v)] '(lambda () (interactive) (insert "\\phi"))) ;!
+  (local-set-key [(control ?\,)(s)(x)] '(lambda () (interactive) (insert "\\chi"))) ;!
+  (local-set-key [(control ?\,)(s)(y)] '(lambda () (interactive) (insert "\\psi"))) ;!
+  (local-set-key [(control ?\,)(s)(z)] '(lambda () (interactive) (insert "\\omega"))) ;!
+  
+  (local-set-key [(control ?\,)(s)(A)] '(lambda () (interactive) (insert "A")))
+  (local-set-key [(control ?\,)(s)(B)] '(lambda () (interactive) (insert "B")))
+  (local-set-key [(control ?\,)(s)(C)] '(lambda () (interactive) (insert "\\Gamma")))
+  (local-set-key [(control ?\,)(s)(D)] '(lambda () (interactive) (insert "\\Delta")))
+  (local-set-key [(control ?\,)(s)(E)] '(lambda () (interactive) (insert "E")))
+  (local-set-key [(control ?\,)(s)(F)] '(lambda () (interactive) (insert "Z"))) ;! 
+  (local-set-key [(control ?\,)(s)(G)] '(lambda () (interactive) (insert "H")))  ;! 
+  (local-set-key [(control ?\,)(s)(H)] '(lambda () (interactive) (insert "\\Theta"))) ;!
+  (local-set-key [(control ?\,)(s)(I)] '(lambda () (interactive) (insert "I")))
+  (local-set-key [(control ?\,)(s)(K)] '(lambda () (interactive) (insert "K")))
+  (local-set-key [(control ?\,)(s)(L)] '(lambda () (interactive) (insert "\\Lambda")))
+  (local-set-key [(control ?\,)(s)(M)] '(lambda () (interactive) (insert "M")))
+  (local-set-key [(control ?\,)(s)(N)] '(lambda () (interactive) (insert "N")))
+  (local-set-key [(control ?\,)(s)(O)] '(lambda () (interactive) (insert "\\Xi"))) ;!
+  (local-set-key [(control ?\,)(s)(P)] '(lambda () (interactive) (insert "\\Pi")))
+  (local-set-key [(control ?\,)(s)(R)] '(lambda () (interactive) (insert "P"))) ;!
+  (local-set-key [(control ?\,)(s)(S)] '(lambda () (interactive) (insert "\\Sigma")))
+  (local-set-key [(control ?\,)(s)(T)] '(lambda () (interactive) (insert "T")))
+  (local-set-key [(control ?\,)(s)(U)] '(lambda () (interactive) (insert "\\Upsilon")))
+  (local-set-key [(control ?\,)(s)(V)] '(lambda () (interactive) (insert "\\Phi"))) ;!
+  (local-set-key [(control ?\,)(s)(X)] '(lambda () (interactive) (insert "X"))) ;!
+  (local-set-key [(control ?\,)(s)(Y)] '(lambda () (interactive) (insert "\\Psi"))) ;!
+  (local-set-key [(control ?\,)(s)(Z)] '(lambda () (interactive) (insert "\\Omega"))) ;!
+  
+  (local-set-key [(control ?\,)(control s)(e)] '(lambda () (interactive) (insert "\\varepsilon")))
+  (local-set-key [(control ?\,)(control s)(h)] '(lambda () (interactive) (insert "\\vartheta")))
+  (local-set-key [(control ?\,)(control s)(p)] '(lambda () (interactive) (insert "\\varpi")))
+  (local-set-key [(control ?\,)(control s)(r)] '(lambda () (interactive) (insert "\\varrho")))
+  (local-set-key [(control ?\,)(control s)(s)] '(lambda () (interactive) (insert "\\varsigma")))
+  (local-set-key [(control ?\,)(control s)(v)] '(lambda () (interactive) (insert "\\varphi")))
+  
+  (local-set-key [(control ?\,)(s)(control c)] '(lambda () (interactive) (insert "\\chi")))
+  (local-set-key [(control ?\,)(s)(control e)] '(lambda () (interactive) (insert "\\eta")))
+  (local-set-key [(control ?\,)(s)(control g)] '(lambda () (interactive) (insert "\\gamma")))
+  (local-set-key [(control ?\,)(s)(control t)] '(lambda () (interactive) (insert "\\theta")))
+  (local-set-key [(control ?\,)(s)(control o)] '(lambda () (interactive) (insert "\\omega")))
+  (local-set-key [(control ?\,)(s)(control r)] '(lambda () (interactive) (insert "\\rho")))
+  (local-set-key [(control ?\,)(s)(control x)] '(lambda () (interactive) (insert "\\xi")))
+  (local-set-key [(control ?\,)(s)(control z)] '(lambda () (interactive) (insert "\\zeta")))
+                                 
+  (local-set-key [(control ?\,)(s)(control C)] '(lambda () (interactive) (insert "X"))) ; chi
+  (local-set-key [(control ?\,)(s)(control E)] '(lambda () (interactive) (insert "H")))  ;  eta 
+  (local-set-key [(control ?\,)(s)(control G)] '(lambda () (interactive) (insert "\\Gamma"))) 
+  (local-set-key [(control ?\,)(s)(control T)] '(lambda () (interactive) (insert "\\Theta"))) 
+  (local-set-key [(control ?\,)(s)(control O)] '(lambda () (interactive) (insert "\\Omega"))) 
+  (local-set-key [(control ?\,)(s)(control R)] '(lambda () (interactive) (insert "P"))) ; rho
+  (local-set-key [(control ?\,)(s)(control X)] '(lambda () (interactive) (insert "\\Xi"))) ;
+  (local-set-key [(control ?\,)(s)(control Z)] '(lambda () (interactive) (insert "Z"))) ;zeta
+  
+  (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(f)(v)] 'tempo-template-latex-verbatim)
+  (local-set-key [(control ?\,)(f)(b)] 'tempo-template-latex-bold)
+  (local-set-key [(control ?\,)(f)(e)] 'tempo-template-latex-emph)
+  (local-set-key [(control ?\,)(f)(m)] 'tempo-template-latex-math)
+  (local-set-key [(control ?\,)(f)(t)] 'tempo-template-latex-text-in-math)
+  
+  (local-set-key [(control ?\,)(b)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(b)(v)] 'tempo-template-latex-verbatim-block)
+  (local-set-key [(control ?\,)(b)(m)] 'tempo-template-latex-math-block)
+  (local-set-key [(control ?\,)(b)(e)] 'tempo-template-latex-equation)
+  
+  (local-set-key [(control ?\,)(i)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(i)(i)] 'tempo-template-latex-item)
+  (local-set-key [(control ?\,)(i)(b)] 'tempo-template-latex-item)
+  (local-set-key [(control ?\,)(i)(d)] 'tempo-template-latex-def-item)
+  (local-set-key [(control ?\,)(i)(e)] 'tempo-template-latex-item)
+  
+  (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(l)(b)] 'tempo-template-latex-itemize) ; bulleted list
+  (local-set-key [(control ?\,)(l)(i)] 'tempo-template-latex-itemize) ; bulleted list
+  (local-set-key [(control ?\,)(l)(d)] 'tempo-template-latex-description)
+  (local-set-key [(control ?\,)(l)(e)] 'tempo-template-latex-enumeration)
+  
+  (local-set-key [(control ?\,)(h)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(h)(?0)] 'tempo-template-latex-h0)
+  (local-set-key [(control ?\,)(h)(?t)] 'tempo-template-latex-h0)
+  (local-set-key [(control ?\,)(h)(?1)] 'tempo-template-latex-h1)
+  (local-set-key [(control ?\,)(h)(?2)] 'tempo-template-latex-h2)
+  (local-set-key [(control ?\,)(h)(?3)] 'tempo-template-latex-h3)
+  (local-set-key [(control ?\,)(h)(?4)] 'tempo-template-latex-h4)
+  (local-set-key [(control ?\,)(h)(?5)] 'tempo-template-latex-h5)
+  
+  ;; misc
+  (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(m)(e)] 'tempo-template-latex-env)
+  (local-set-key [(control ?\,)(m)(c)] 'tempo-template-latex-command)
+  )
+
+;;; adoc
+;; --------------------------------------------------------------------------------
+(add-hook 'adoc-mode-hook 'my-adoc-mode-hook)
+
+(defun my-adoc-mode-hook ()
+;  (auto-fill-mode t)
+  (outline-minor-mode t)
+  (buffer-face-mode t)
+  ;; (if (< (buffer-size) 200000)
+  ;;     (flyspell-buffer)
+  ;;   (message "NOT flyspelling buffer automatically because it is too large"))
+  ;; (flyspell-prog-mode)
+
+  (set (make-local-variable 'word-wrap) t)
+  (toggle-truncate-lines -1)
+  (require 'screen-lines) ; or is screenline.el better?
+  (screen-lines-mode 1)
+
+  (local-set-key [f8] 'adoc-browse-url-output)
+  (local-set-key "\C-c\C-p" 'adoc-promote-title)
+  (local-set-key "\C-c\C-t" 'adoc-toggle-title-type)
+
+  (set (make-local-variable 'compile-command)
+       (concat "asciidoc "
+               (if (buffer-file-name)
+                   (file-name-nondirectory (buffer-file-name))
+                 (buffer-name)))))
+
+;;; doxym
+;; --------------------------------------------------------------------------------
+(add-hook 'doxym-mode-hook 'my-doxym-mode-hook)
+
+(defun my-doxym-mode-hook ()
+  (auto-fill-mode t)
+  (outline-minor-mode t)
+  (my-doxym-bindings)
+  (buffer-face-mode t)
+  (column-marker-1 -1)
+  (set (make-local-variable 'comment-multi-line) t))
+
+(defun my-doxym-bindings()
+  (require 'tempos-html)
+  (require 'tempos-doxy)
+
+  (local-set-key [(control ?\,)] (make-sparse-keymap))
+
+  ;; structure
+  ;; title, section, subsection, ... paragraph
+  (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(s)(a)] 'tempo-template-doxy-title)
+  (local-set-key [(control ?\,)(s)(0)] 'tempo-template-doxy-title)
+  (local-set-key [(control ?\,)(s)(b)] 'tempo-template-doxy-section)
+  (local-set-key [(control ?\,)(s)(1)] 'tempo-template-doxy-section)
+  (local-set-key [(control ?\,)(s)(c)] 'tempo-template-doxy-subsection)
+  (local-set-key [(control ?\,)(s)(2)] 'tempo-template-doxy-subsection)
+  (local-set-key [(control ?\,)(s)(d)] 'tempo-template-doxy-subsubsection)
+  (local-set-key [(control ?\,)(s)(3)] 'tempo-template-doxy-subsubsection)
+  (local-set-key [(control ?\,)(s)(p)] 'tempo-template-html-paragraph)
+
+  ;; referencing: references, anchors, index, biblio, ...
+  (local-set-key [(control ?\,)(r)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(r)(a)] 'tempo-template-html-anchor) ; generic anchor
+  (local-set-key [(control ?\,)(r)(r)] 'tempo-template-html-ref)    ; generic reference
+
+  ;; table
+  (local-set-key [(control ?\,)(t)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(t)(t)] 'tempo-template-html-table+)
+  (local-set-key [(control ?\,)(t)(r)] 'tempo-template-html-tr+)
+  (local-set-key [(control ?\,)(t)(d)] 'tempo-template-html-td)
+  (local-set-key [(control ?\,)(t)(h)] 'tempo-template-html-th)
+  
+  ;; list
+  (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(l)(u)] 'tempo-template-html-ul+)
+  (local-set-key [(control ?\,)(l)(o)] 'tempo-template-html-ol+)
+  (local-set-key [(control ?\,)(l)(d)] 'tempo-template-html-dl+)
+  (local-set-key [(control ?\,)(l)(i)] 'tempo-template-html-li)
+  (local-set-key [(control ?\,)(l)(t)] 'tempo-template-html-dt+)
+
+  ;; (inline) formatting
+  (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(f)(e)] 'tempo-template-html-em)
+  (local-set-key [(control ?\,)(f)(s)] 'tempo-template-html-strong)
+  (local-set-key [(control ?\,)(f)(c)] 'tempo-template-html-code)
+  (local-set-key [(control ?\,)(f)(v)] 'tempo-template-html-var)
+  (local-set-key [(control ?\,)(f)(p)] 'tempo-template-html-pre)
+
+  ;; block formatting
+  (local-set-key [(control ?\,)(b)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(b)(v)] 'tempo-template-doxy-verbatim)
+  (local-set-key [(control ?\,)(b)(c)] 'tempo-template-doxy-code)
+
+  ;; generic
+  (local-set-key [(control ?\,)(g)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(g)(e)] 'tempo-template-html-element)
+  (local-set-key [(control ?\,)(g)(t)] 'tempo-template-html-tag))
+
+;;; pod
+;; -----------------------------------------------------------------------------
+(add-hook 'pod-mode-hook 'my-pod-hook)
+
+(defun my-pod-hook ()
+  (outline-minor-mode t)
+  (buffer-face-mode t))
+
+;;; text
+;; -----------------------------------------------------------------------------
+(add-hook 'text-mode-hook 'my-text-hook)
+
+(defun my-text-hook ()
+  (if (and (null buffer-file-name))  
+      (setq buffer-offer-save t)))
+
+;;; bbcode
+;; -----------------------------------------------------------------------------
+(add-hook 'bbcode-mode-hook 'my-bbcode-hook)
+
+(defun my-bbcode-hook ()
+  (buffer-face-mode t)
+  (my-bbcode-bindings))
+
+(defun my-bbcode-bindings ()
+  (require 'tempos-bbcode)
+
+  ;; referencing: references, anchors, index, biblio, ...
+  (local-set-key [(control ?\,)(r)] (make-sparse-keymap))
+
+  ;; ;; table
+  ;; (local-set-key [(control ?\,)(t)] (make-sparse-keymap))
+  ;; (local-set-key [(control ?\,)(t)(t)] 'tempo-template-html-table+)
+  ;; (local-set-key [(control ?\,)(t)(r)] 'tempo-template-html-tr+)
+  ;; (local-set-key [(control ?\,)(t)(d)] 'tempo-template-html-td)
+  ;; (local-set-key [(control ?\,)(t)(h)] 'tempo-template-html-th)
+  
+  ;; list
+  (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(l)(u)] 'tempo-template-bbcode-ulist)
+  (local-set-key [(control ?\,)(l)(o)] 'tempo-template-bbcode-olist)
+  (local-set-key [(control ?\,)(l)(i)] 'tempo-template-bbcode-list-item)
+
+  ;; (inline) formatting
+  (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(f)(b)] 'tempo-template-bbcode-bold)
+  (local-set-key [(control ?\,)(f)(i)] 'tempo-template-bbcode-italic)
+  (local-set-key [(control ?\,)(f)(u)] 'tempo-template-bbcode-underline)
+
+  ;; block formatting
+  (local-set-key [(control ?\,)(b)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(b)(c)] 'tempo-template-bbcode-code)
+  (local-set-key [(control ?\,)(b)(q)] 'tempo-template-bbcode-quote)
+  )
+
+;;; mediawiki
+;; -----------------------------------------------------------------------------
+(add-hook 'mediawiki-mode-hook 'my-mediawiki-hook)
+
+(defun my-mediawiki-hook ()
+  (buffer-face-mode t)
+  (visual-line-mode 1)
+  (outline-minor-mode t)
+  (set (make-local-variable 'word-wrap) t)
+  (toggle-truncate-lines -1)
+  (my-mediawiki-bindings))
+
+(defun my-mediawiki-bindings ()
+;  (require 'tempos-mediawiki)
+
+  ;; referencing: references, anchors, index, biblio, ...
+  (local-set-key [(control ?\,)(r)] (make-sparse-keymap))
+
+  ;; structure
+  ;; title, section, subsection, ... paragraph
+  (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(s)(a)] 'tempo-template-mediawiki-title-0)
+  (local-set-key [(control ?\,)(s)(0)] 'tempo-template-mediawiki-title-0)
+  (local-set-key [(control ?\,)(s)(b)] 'tempo-template-mediawiki-title-1)
+  (local-set-key [(control ?\,)(s)(1)] 'tempo-template-mediawiki-title-1)
+  (local-set-key [(control ?\,)(s)(c)] 'tempo-template-mediawiki-title-2)
+  (local-set-key [(control ?\,)(s)(2)] 'tempo-template-mediawiki-title-2)
+  (local-set-key [(control ?\,)(s)(d)] 'tempo-template-mediawiki-title-3)
+  (local-set-key [(control ?\,)(s)(3)] 'tempo-template-mediawiki-title-3)
+  (local-set-key [(control ?\,)(s)(e)] 'tempo-template-mediawiki-title-4)
+  (local-set-key [(control ?\,)(s)(4)] 'tempo-template-mediawiki-title-4)
+
+  ;; table
+  (local-set-key [(control ?\,)(t)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(t)(t)] 'tempo-template-html-table+)
+  (local-set-key [(control ?\,)(t)(r)] 'tempo-template-html-tr+)
+  (local-set-key [(control ?\,)(t)(d)] 'tempo-template-html-td)
+  (local-set-key [(control ?\,)(t)(h)] 'tempo-template-html-th)
+  
+  ;; ;; list
+  ;; (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
+  ;; (local-set-key [(control ?\,)(l)(u)] 'tempo-template-mediawiki-ulist)
+  ;; (local-set-key [(control ?\,)(l)(o)] 'tempo-template-mediawiki-olist)
+  ;; (local-set-key [(control ?\,)(l)(i)] 'tempo-template-mediawiki-list-item)
+
+  ;; (inline) formatting
+  (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(f)(b)] 'tempo-template-mediawiki-bold)
+  (local-set-key [(control ?\,)(f)(i)] 'tempo-template-mediawiki-italic)
+  (local-set-key [(control ?\,)(f)(e)] 'tempo-template-html-em)
+  (local-set-key [(control ?\,)(f)(s)] 'tempo-template-html-strong)
+  (local-set-key [(control ?\,)(f)(c)] 'tempo-template-html-code)
+  (local-set-key [(control ?\,)(f)(v)] 'tempo-template-html-var)
+  (local-set-key [(control ?\,)(f)(p)] 'tempo-template-html-pre)
+
+  ;; ;; block formatting
+  ;; (local-set-key [(control ?\,)(b)] (make-sparse-keymap))
+  ;; (local-set-key [(control ?\,)(b)(c)] 'tempo-template-mediawiki-code)
+  ;; (local-set-key [(control ?\,)(b)(q)] 'tempo-template-mediawiki-quote)
+  )
+
+;;; enriched
+;; -----------------------------------------------------------------------------
+(defun my-enriched-mode-hook()
+  (buffer-face-mode))
+
+(add-hook 'enriched-mode-hook 'my-enriched-mode-hook)
+
+
+;;; misc modes
+;;; ============================================================================
+
+;;; gdb
+;; -----------------------------------------------------------------------------
+(defun my-perldb-mode-hook ()
+  (gud-def gud-print   "x %e" "\C-p" "Evaluate perl expression at point.")
+  (gud-def gud-refresh "." nil "refresh")
+  (gud-def gud-quit "q" nil "quit"))
+(add-hook 'perldb-mode-hook 'my-perldb-mode-hook)
+
+
+
+;;; vc
+;; -----------------------------------------------------------------------------
+(substitute-key-definition 'vc-diff 'vc-ediff vc-prefix-map)
+
+;;; view mode
+;; -------------------------------------------------------------------
+(defun my-view-mode-hook()
+  (define-key view-mode-map [(s)] 'isearch-forward-regexp)
+  (define-key view-mode-map [(r)] 'isearch-backward-regexp))
+(add-hook 'view-mode-hook 'my-view-mode-hook)
+
+;;; help mode
+;; -------------------------------------------------------------------
+(defun my-help-mode-hook()
+  (unless (member (buffer-name) '("*Colors*" "*Faces*" "*Character Set List*" "*Character List*"))
+    (buffer-face-mode t))
+  (local-set-key [(S)] 'help-mode-goto-src)
+  (local-set-key [(l)] 'help-go-back)   ; like Info-history-back
+  (local-set-key [(control tab)] 'backward-button)
+
+  ;; Funktioniert nicht insofern dass dann die anderen highlightnings
+  ;; verschwinden. Auch highlighht-regexp funktioniert in diesem Sinne nicht.
+  ;;
+  ;;(font-lock-add-keywords nil (list
+  ;;    (list "\\`\\_<.+?\\_>" '(0 markup-title-2-face t))))
+  )
+
+(add-hook 'help-mode-hook 'my-help-mode-hook)
+
+(defun help-mode-goto-src()
+  (interactive)
+  (goto-char (point-min))
+  (forward-button 1)
+  (push-button))
+
+;;; finder mode
+;; -------------------------------------------------------------------
+(defun my-finder-mode-hook()
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "(@\\*\\s-*\".*?\"\\s-*)" nil t)
+      (linkd-mode)))
+  (buffer-face-mode t))
+
+(add-hook 'finder-mode-hook 'my-finder-mode-hook)
+
+
+;;; info mode
+;; -------------------------------------------------------------------
+(defun my-info-mode-hook()
+  (define-key Info-mode-map [(control tab)] 'Info-prev-reference)
+  (buffer-face-mode t)
+  (font-lock-add-keywords nil (list
+    (list "^[ \t]*--[ \t]*\\(\\w*\\)[ \t]*:[ \t]*\\([^ \t\n]+\\)" '(1 markup-emphasis-face t) '(2 markup-strong-face t)))))
+(add-hook 'Info-mode-hook 'my-info-mode-hook)
+
+;;; isearch minor mode
+;; ----------------------------------------------------------------
+(define-key isearch-mode-map [(meta w)]    'isearch-yank-sexp)
+(define-key isearch-mode-map [(control e)] 'isearch-edit-string)
+
+;;; font lock
+;; --------------------------------------------------------------------
+;; that's the way doxymacs suggests to call doxymacs-font-lock
+(defun my-doxymacs-font-lock-hook ()
+  (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode) (eq major-mode 'idl-mode))
+      (doxymacs-font-lock)))
+(add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
+
+;;; dired mode
+;; --------------------------------------------------------------------
+(add-hook 'dired-mode-hook 'my-dired-mode-hook)
+
+(defun my-dired-mode-hook ()
+  (load "dired-x")
+  (require 'dired-isearch)
+
+  (setq case-fold-search t)
+  (setq dired-deletion-confirmer (lambda(x)t))
+
+  (local-set-key "E" 'dired-ediff-marked-files)
+  (local-set-key [remap isearch-forward]  'dired-isearch-forward-regexp)
+  (local-set-key [remap isearch-backward] 'dired-isearch-backward-regexp)
+  (local-set-key "r" 'wdired-change-to-wdired-mode) ; suggested by wdired
+  (local-set-key "*."               'dired-mark-extension-dwim) 
+  (local-set-key [(control return)] 'project-dired-find-main-file)
+  (local-set-key "*i"               'project-dired-mark-files))
+
+;;; flyspell / flyspell timer (needs aspell)
+;; --------------------------------------------------------------------
+;; (add-hook 'flyspell-mode-hook 'flyspell-timer-ensure-idle-timer)
+;; (put 'c++-mode 'flyspell-mode-predicate 'c-mode-common-flyspell-verify)
+;; (put 'idl-mode 'flyspell-mode-predicate 'c-mode-common-flyspell-verify)
+;; (put 'emacs-lisp-mode 'flyspell-mode-predicate 'c-mode-common-flyspell-verify)
+;; (defun c-mode-common-flyspell-verify ()
+;;   "Function used for `flyspell-generic-check-word-predicate' in
+;;   C++-mode. Returns t to continue checking."
+;;   (save-excursion
+;;     (let ((case-fold-search nil)
+;;           (f (get-text-property (point) 'face)))
+;;       (forward-word -1)
+;;       ; only spell check current word if all of the following is true:
+;;       ; better to check too few words. Too many is annoying and takes longer.
+;;       (and (memq f '(font-lock-string-face font-lock-comment-face font-lock-doc-face)) ; within a comment
+;;            (looking-at "[A-Za-z][a-z]*\\>") ; The only upercase letter, if any, is the first. Only letters (no digits, no _)
+;;            (looking-back "\\(^\\|\\s-\\)" (- (point) 1)) ; A whitespace char precedes the word, or word is first one on line
+;;            ))))
+
+;; (add-hook 'c++-mode-hook '(lambda () (setq flyspell-generic-check-word-predicate 'c-mode-common-flyspell-verify)))
+;; (add-hook 'idl-mode-hook '(lambda () (setq flyspell-generic-check-word-predicate 'c-mode-common-flyspell-verify)))
+;; (add-hook 'emacs-lisp-mode-hook '(lambda () (setq flyspell-generic-check-word-predicate 'c-mode-common-flyspell-verify)))
+
+;;; (wo)?man 
+;; ----------------------------------------------------------------------------
+(defvar Man-heading2-regexp "\\s-+-")
+  
+(defun Man-outline-level ()
+  (cond
+   ((looking-at Man-heading-regexp) 1)
+   ((looking-at Man-heading2-regexp) 2)
+   (t 3)))
+
+(defun my-man-mode-hook ()
+  (setq outline-regexp
+        (concat "\\(?:" Man-heading-regexp "\\|" Man-heading2-regexp "\\)"))
+  (setq outline-level 'Man-outline-level))
+
+(add-hook 'Man-mode-hook 'my-man-mode-hook)
+
+;;; ibuffer
+;; ----------------------------------------------------------------------------
+(defun my-ibuffer-mode-hook ()
+  (ibuffer-auto-mode 1)
+  (define-key ibuffer-mode-map "a" 'ibuffer-goto-first))
+(add-hook 'ibuffer-mode-hook 'my-ibuffer-mode-hook)
+
+(defun my-ibuffer-hook ()
+  (ibuffer-goto-first))
+
+(defun ibuffer-goto-first ()
+  (interactive)
+  (goto-char (point-min))
+  (forward-line 3)
+  (forward-char 4))
+(add-hook 'ibuffer-hook 'my-ibuffer-hook)
+ 
+(defun my-iswitchb-minibuffer-setup-hook ()
+  (define-key iswitchb-mode-map [(control return)] 'iswitchb-select-buffer-text))
+(add-hook 'iswitchb-minibuffer-setup-hook 'my-iswitchb-minibuffer-setup-hook)
+
+;;; minibuffer
+;; ----------------------------------------------------------------------------
+;; (define-key minibuffer-local-filename-must-match-map [(backtab)] 'file-alias-minibuffer-complete)
+(define-key minibuffer-local-completion-map [(backtab)] 'filealias-minibuffer-complete)
+
+;; remember that minibuffer modes are not part of common-hook
+(defun my-minibuffer-setup-hook ()
+  (local-set-key "\C-y" 'yank)
+  (local-set-key "\M-y" 'yank-pop)
+  (local-set-key "\C-\M-y" 'yank-push)
+  (setq truncate-lines nil) 		; for resize-mini-windows to work
+  (delete-selection-mode t))
+
+(add-hook 'minibuffer-setup-hook 'my-minibuffer-setup-hook)
+
+;;; shell
+;; ----------------------------------------------------------------------------
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+;;; pm
+;; ----------------------------------------------------------------------------
+(defun my-pm-hook ()
+  (setq tab-width 4)
+  (outline-minor-mode t)
+  (local-set-key "\t" 'indent-line-or-region))
+(add-hook 'pm-mode-hook 'my-pm-hook)
+
+;;; inferior shell 
+;; ----------------------------------------------------------------------------
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(add-hook 'comint-mode-hook 'my-comint-mode-hook)
+
+(defun my-comint-mode-hook ()
+  (local-set-key [(control d)] 'delete-char)) ;comint-mode redefines C-d with comint-delchar-or-maybe-eof, which doesn't respect delete-selection-mode
+ 
+;;; mks
+;; ----------------------------------------------------------------------------
+
+(defun my-mks-bindings ()
+  (local-set-key [f9] (make-sparse-keymap))
+  (local-set-key [(f9)(f9)] 'mks-universal)
+  (local-set-key [(f9)(b)] 'mks-blame)
+  (local-set-key [(f9)(c)] 'mks-cat)
+  (local-set-key [(f9)(d)] 'mks-diff)
+  (local-set-key [(f9)(e)] 'mks-ediff)
+  (local-set-key [(f9)(i)] 'mks-ci)
+  (local-set-key [(f9)(f)] 'mks-find-working-file)
+  (local-set-key [(f9)(l)] 'mks-log)
+  (local-set-key [(f9)(L)] 'mks-log-single)
+  (local-set-key [(f9)(o)] 'mks-co)
+  (local-set-key [(f9)(r)] 'mks-revert)
+  (local-set-key [(f9)(s)] 'mks-status)
+  (local-set-key [(f9)(u)] 'mks-update))
+
+(defun my-mks-common-mode-hook ()
+  (my-mks-bindings)
+  (local-set-key [(q)] 'kill-buffer)
+  (local-set-key [(b)] 'mks-blame)
+  (local-set-key [(c)] 'mks-cat)
+  (local-set-key [(d)] 'mks-diff)
+  (local-set-key [(e)] 'mks-ediff)
+  (local-set-key [(f)] 'mks-find-working-file)
+  (local-set-key [(l)] 'mks-log)
+  (local-set-key [(L)] 'mks-log-single))
+
+(defun my-mks-cat-mode-hook ()
+  ;; (local-set-key [(control n)] 'mks-cat-next)
+  ;; (local-set-key [(control p)] 'mks-cat-prev)
+  )
+
+;; there is no mks major-mode, so my-mks-bindings is not called within a
+;; 'mks-mode-hook'. In contrast, my-mks-common-mode-hook is for mks's minor modes, which
+;; *do* have a hook.
+(add-hook 'mks-common-mode-hook 'my-mks-common-mode-hook)
+(add-hook 'mks-cat-mode-hook 'my-mks-cat-mode-hook)
+
+;;; logfile 
+(defun my-logfile-mode-hook()
+  (outline-minor-mode t)
+  (view-mode 1)
+  (local-set-key [f10] 'logfile-filter))
+(add-hook 'logfile-mode-hook 'my-logfile-mode-hook)
+
+;;; svn-status
+(defun my-svn-status-hook ()
+  ;; (unless (local-variable-p 'svn-status-hide-unmodified)
+  ;;   (set (make-local-variable 'svn-status-hide-unmodified) t))
+  ;; (unless (local-variable-p 'svn-status-hide-unknown)
+  ;;   (set (make-local-variable 'svn-status-hide-unknown) t))
+  )
+
+(add-hook 'svn-status-mode-hook 'my-svn-status-hook)
+
+;;; apt-sources
+;; ----------------------------------------------------------------------------
+(defun my-apt-sources-after-save-hook ()
+  (when (and (eq major-mode 'apt-sources-mode) (y-or-n-p "update?"))
+    (shell-command "gksudo -- apt-get -q update &")))
+
+(add-hook 'after-save-hook 'my-apt-sources-after-save-hook)
+
+;;; x-dict
+;; ----------------------------------------------------------------------------
+(defconst xdict-font-lock-keywords
+  (list
+     (cons "\\[.*?\\]" hi-semi-unimportant)
+     (cons "|.*?|" hi-semi-unimportant)
+     (cons "\\b\\(etw\\|sth\\|adj\\)\\." hi-semi-unimportant)
+     (cons "\\<\\(to\\|the\\|der\\|die\\|das\\)\\>" hi-semi-unimportant)
+     ))
+
+(defun my-xdict-hook ()
+  (set (make-local-variable 'font-lock-defaults)
+       '(xdict-font-lock-keywords)))
+
+(add-hook 'xdict-hook 'my-xdict-hook)
+
+;;; hi-lock
+;; ----------------------------------------------------------------------------
+(defun my-hi-lock-mode-hook ()
+  ;; or is it better to use eval-after-load?
+  (define-key hi-lock-map "\C-xws" 'highlight-toggle-sexp-or-region)
+  (define-key hi-lock-map "\C-xwu" 'unhighlight-all)
+  (define-key hi-lock-map "\C-xwa" 'highlight-arguments)
+  (define-key hi-lock-map "\C-xwA" 'highlight-arguments-uni)
+  (define-key hi-lock-map "\C-xwm" 'highlight-members))
+
+(add-hook 'hi-lock-mode-hook 'my-hi-lock-mode-hook)
+
+;;; custom
+;; ----------------------------------------------------------------------------
+(defun my-Custom-mode-hook ()
+  (buffer-face-mode))
+
+(add-hook 'Custom-mode-hook 'my-Custom-mode-hook)
+
+
+;;; common (all, text, programming, ...)
+;;; ===================================================================
+
+;;; all - remember that there are also global settings defined throuh custom and in init.el
+
+(defun my-common-mode-hook ()
+  (my-common-mode-bindings)
+
+  (dragon-common-mode-hook) 
+  (nova-common-mode-hook)
+  (indel-common-mode-hook)
+  (bib-common-mode-hook)
+  (coma-common-mode-hook))
+
+(defvar mode-hooks-common-called nil
+  "When buffer local, then `my-common-mode-hook' has been called for this buffer.
+It's value is irelevant.")
+
+;; Since some modes are devired from others, my-common-mode-hook might be
+;; called multiple times, once for each level of the hierarchy.
+(defun my-common-mode-hook-outer ()
+  (unless (local-variable-p 'mode-hooks-common-called)
+    (make-local-variable 'mode-hooks-common-called)
+    (my-common-mode-hook)))
+
+;; deliberatly without minibuffer modes
+(dolist (x '(c-mode-common-hook
+             shell-mode-hook 
+             sh-mode-hook
+             idl-mode-hook
+             conf-mode-hook
+             html-helper-mode-hook
+             cperl-mode-hook
+             php-mode-hook
+             ruby-mode-hook
+             python-mode-hook
+             vbnet-mode-hook
+             tex-mode-hook
+             lisp-mode-hook
+             lisp-interaction-mode
+             emacs-lisp-mode-hook
+             logfile-mode-hook
+             html-helper-mode-hook
+             text-mode-hook
+             Buffer-menu-mode-hook
+             bs-mode-hook
+             mks-cat-mode-hook
+             custom-mode-hook
+             makefile-mode-hook
+             makefile-gmake-mode-hook
+             stream-mode-hook
+             dt2-mode-hook
+             adoc-mode-hook
+             doxym-mode-hook
+             dired-mode-hook))
+  (add-hook x 'my-common-mode-hook-outer))
+
+;; For most cases the find file hook is good enough, because in most cases we're
+;; visiting files. But sometimes you e.g. want to have a c++-mode buffer without
+;; an underlying file, so find file hook is never called, and then you need
+;; that my-common-mode-hook is called by the mode's hook.
+(defun my-common-mode-hook-find-file ()
+  (unless (local-variable-p 'mode-hooks-common-called)
+    (make-local-variable 'mode-hooks-common-called)
+    (message "find-file-hook needed to call my-common-mode-hook.
+              Add %S to list in mode-hooks.el, if you wan't
+              my-common-mode-hook to be called for %S for buffers
+              without an underlying file." major-mode major-mode)
+    (my-common-mode-hook)))
+
+(add-hook 'find-file-hook 'my-common-mode-hook-find-file)  
+
+;;; programming 
+(defun my-programming-common-hook ()
+  ;; icicles has problems because 2C-command from two-column.el already uses f2
+  ;(local-set-key [f2] 'gud-ext-mode)
+  )
+
+(dolist (x '(c-mode-common-hook
+             java-mode-hook
+             cperl-mode-hook
+	     php-mode-hook))
+  (add-hook x 'my-programming-common-hook))
+
+;;; mode-hooks.el ends here

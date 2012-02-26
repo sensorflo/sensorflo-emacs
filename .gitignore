@@ -2,4 +2,6 @@
 */*/
 *.elc
 *~
+session.*
+auto-save-list/
 #*#

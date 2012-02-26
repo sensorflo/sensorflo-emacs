@@ -208,7 +208,6 @@
 (load-library "hi-lock-ext") 
 (load-library "project") 
 (load-library "kmacro-ext") 
-(load-library "filealias") 
 (load-library "find-file-ext") 
 ;(load-library "subr-patch") 
 

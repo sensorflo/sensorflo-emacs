@@ -16,3 +16,6 @@
 [submodule "misc/tempo-ext"]
 	path = misc/tempo-ext
 	url = git@gitorious.org:tempo-ext/tempo-ext.git
+[submodule "progmodes/doxymacs"]
+	path = progmodes/doxymacs
+	url = git://doxymacs.git.sourceforge.net/gitroot/doxymacs/doxymacs

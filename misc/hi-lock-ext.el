@@ -123,12 +123,14 @@
   "Face for hi-lock mode."
   :group 'hi-lock-faces)
 
+(define-obsolete-face-alias 'hi-unimportant 'font-lock-unimportant "23.1")
 (defface hi-unimportant
   '((((background dark)) (:foreground "gray80"))
     (t (:foreground "gray80")))
   "Face for hi-lock mode."
   :group 'hi-lock-faces)
 
+(define-obsolete-face-alias 'hi-semi-unimportant 'font-lock-semi-unimportant "23.1")
 (defface hi-semi-unimportant
   '((((background dark)) (:foreground "gray80"))
     (t (:foreground "gray80")))

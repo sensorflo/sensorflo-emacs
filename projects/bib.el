@@ -15,9 +15,13 @@
     (c-set-offset 'access-label '-)
     (c-set-offset 'inclass '+)))
 
+(add-hook 'c-mode-common-hook 'bib-c-mode-common-hook t)
+
 (defun bib-common-mode-hook ()
   (when (eq (project-root-type) 'project-bib)
     (setq tab-width 4)
     (shadow-keys 'compile 'compile-ext (current-local-map))))
+
+(add-hook 'common-mode-hook 'bib-common-mode-hook t)
 
 ;;; bib.el ends here

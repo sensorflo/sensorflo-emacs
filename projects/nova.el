@@ -10,7 +10,7 @@
 (require 'find-file-ext)
 (require 'tempo-snippets)
 (require 'markup-faces)
-(require 'hi-lock-ext)
+(require 'font-lock-ext)
 
 (defgroup nova-project nil ""
   :group 'project)
@@ -102,6 +102,8 @@
 	    ("bondhead" . "BondHeadLeDa")))
     (nova-c-mode-common-bindings)))
 
+(add-hook 'c-mode-common-hook 'nova-c-mode-common-hook t)
+
 (defun nova-c-mode-common-bindings()
   ;; definitions / declarations
   (local-set-key [(control ,)(d)(d)] 'tempo-template-c-nova-method)
@@ -145,6 +147,8 @@
     (set (make-local-variable 'find-dired-dir) "prog/nova")
     (local-set-key [remap compile] 'compile-ext)))
 
+(add-hook 'common-mode-hook 'nova-common-mode-hook t)
+
 (defun nova-before-save-hook ()
   (when (eq (project-root-type) 'project-nova)
     (when (member major-mode '(c++-mode dt2-mode stream-mode doxym-mode))
@@ -158,7 +162,7 @@
           (setq buffer-file-coding-system 'utf-8-unix)
         (if (yes-or-no-p "abort saving? ") (error "abort"))))))
 
-(add-hook 'before-save-hook 'nova-before-save-hook)
+(add-hook 'before-save-hook 'nova-before-save-hook t)
 
 (defun nova-conf-after-save-hook () 
   (when (and (memq major-mode '(conf-space-mode conf-unix-mode))
@@ -175,17 +179,17 @@
 				       (call-process "notify-send" nil nil nil "-t" "1000" "qtconfig finished with error"))
 				     (delete-process p)))))))
 
-(add-hook 'after-save-hook 'nova-conf-after-save-hook)
+(add-hook 'after-save-hook 'nova-conf-after-save-hook t)
 
 (defun nova-font-lock-add-c++-keywords ()
   (font-lock-add-keywords nil (list
      ;; --- unimportant comments parts ---
 
      ;; --- unimportant ---
-     (list "}\\s-*\\(//\\s-*end\\b.*\n\\)" '(1 hi-unimportant t))
-     (list "^\\s-*\\(//\\s-*end\\s-*\\w+::\\w+\\s-*\n\\)" '(1 hi-unimportant t))
-     (list "^\\s-*\\(/\\*+\\s-*virtual\\s-*\\*+/\\)" '(1 hi-unimportant t))
-     (cons "\\$Log\\s-*" 'hi-unimportant)
+     (list "}\\s-*\\(//\\s-*end\\b.*\n\\)" '(1 font-lock-unimportant t))
+     (list "^\\s-*\\(//\\s-*end\\s-*\\w+::\\w+\\s-*\n\\)" '(1 font-lock-unimportant t))
+     (list "^\\s-*\\(/\\*+\\s-*virtual\\s-*\\*+/\\)" '(1 font-lock-unimportant t))
+     (cons "\\$Log\\s-*" 'font-lock-unimportant)
 
      ;; --- semi-unimportant ---
 
@@ -199,49 +203,49 @@
             "[A-Z0-9_]\\(?:\\w\\|\\s_\\)*\\_>"                  
             ;; exclude identifier binding methods
             "[ \t]*[^( \t]")                          
-           '(1 hi-semi-unimportant nil t) 
-           '(2 hi-semi-unimportant nil t)
-           '(3 hi-semi-unimportant)
+           '(1 font-lock-semi-unimportant nil t) 
+           '(2 font-lock-semi-unimportant nil t)
+           '(3 font-lock-semi-unimportant)
            )
-     (cons "\\_<eCmd\\B" 'hi-semi-unimportant)
+     (cons "\\_<eCmd\\B" 'font-lock-semi-unimportant)
 
      ;; casts.
      ;; Mostly, but not always!, they don't really do anything, its
      ;; 'just' to satisfy compiler)
-     (list "\\_<\\(\\(?:static\\|const\\|dynamic\\|reinterpret\\)_cast\\s-*<[^>]*>\\s-*\\)" '(1 hi-semi-unimportant))
+     (list "\\_<\\(\\(?:static\\|const\\|dynamic\\|reinterpret\\)_cast\\s-*<[^>]*>\\s-*\\)" '(1 font-lock-semi-unimportant))
      (list (concat "\\("
 		     "\\(?:->\\|\\.\\)[ \t]*"
 		     (sregexq (or "getm" "getm_s" "getm_s2" "getm_s3" "gets" "getkg" "getN" "getPa" "getK" "getrad" "getdegree" "getPas" "getCentipoise" "getm2" "getm3" "getrad_s" "getrad_s2" "getrad_s3" "getdegree_s" "getdegree_s2" "getdegree_s3"))
 		     "[ \t]*"
 		     "([ \t]*)"
 		   "\\)")
-	   '(1 hi-semi-unimportant t))
+	   '(1 font-lock-semi-unimportant t))
      (list (concat "\\_<\\("
 		   (sregexq (or "meter" "sec" "kilogramm" "kelvin" "radian" "meter_sec" "meter_sec2" "newton" "pascal" "meter_sec3" "Pas" "meter2" "meter3" "radian_sec" "radian_sec2" "radian_sec3" "millimeter" "mikrometer" "millisec" "gramm" "centipoise" "degree" "degree_sec" "degree_sec2" "degree_sec3" "celsius" "sec"))
 		   "\\)[ \t]*\\(?:\\((\\)[ \t]*[^()\n]*[ \t]*\\()\\)\\|(\\)")
-	   '(1 hi-semi-unimportant t)
-	   '(2 hi-semi-unimportant t t)
-	   '(3 hi-semi-unimportant t t))
+	   '(1 font-lock-semi-unimportant t)
+	   '(2 font-lock-semi-unimportant t t)
+	   '(3 font-lock-semi-unimportant t t))
 
      ;; namespaces
-     (list "\\_<\\(\\(?:\\(?:\\w\\|\\s_\\)+\\s-*::\\s-*\\)+\\)\\(?:\\w\\|\\s_\\)+\\_>" '(1 hi-semi-unimportant))
+     (list "\\_<\\(\\(?:\\(?:\\w\\|\\s_\\)+\\s-*::\\s-*\\)+\\)\\(?:\\w\\|\\s_\\)+\\_>" '(1 font-lock-semi-unimportant))
 
      ;; trace/log/assert/result
-     (list "\\_<Result[ \t]+res[ \t]*\\(?:=[ \t]*Result::Ok[ \t]*\\)?;" '(0 hi-semi-unimportant t))
-     (cons "\\_<res[ \t]*[|&]?=" 'hi-semi-unimportant)
+     (list "\\_<Result[ \t]+res[ \t]*\\(?:=[ \t]*Result::Ok[ \t]*\\)?;" '(0 font-lock-semi-unimportant t))
+     (cons "\\_<res[ \t]*[|&]?=" 'font-lock-semi-unimportant)
      (list (sregexq (group              
                      (regex "\\_<")
                      (or "ASSERT" "ASSERT_ALWAYS" "TESTOMA_MESSAGE" (regex "\\(?:LOG\\|RETURN_\\)\\(?:\\w\\|_\\)*"))
                      (regex "\\s-*([^;]*)\\s-*;"))) 
-           '(0 hi-semi-unimportant t))
+           '(0 font-lock-semi-unimportant t))
      (list "\\bResult::failed[ \t]*\\((.*?\\(?:\n.*?\\)*?)\\)[ \t]*;" 
-           '(1 hi-semi-unimportant t))
+           '(1 font-lock-semi-unimportant t))
      
      ;; string stuff
-     (list "\\_<\\(oi18n\\)\\_>[ \t]*(" '(1 hi-semi-unimportant t))
-     (list "\\_<\\(ti18n\\)[ \t]*([ \t]*\\(\"sw\"[\t]*,\\)" '(1 hi-semi-unimportant t) '(2 hi-semi-unimportant t)))))
+     (list "\\_<\\(oi18n\\)\\_>[ \t]*(" '(1 font-lock-semi-unimportant t))
+     (list "\\_<\\(ti18n\\)[ \t]*([ \t]*\\(\"sw\"[\t]*,\\)" '(1 font-lock-semi-unimportant t) '(2 font-lock-semi-unimportant t)))))
 
-(add-hook 'find-file-hook 'nova-find-file-hook)
+(add-hook 'find-file-hook 'nova-find-file-hook t)
 
 (defun nova-find-file-hook()
   (let ((buffer-name (buffer-name)))
@@ -285,7 +289,7 @@
       (list "^MAKE_SAM\\s-*=\\s-*\\(?:YES[ \t]*$\\|\\(\\w+\\)\\)" '(1 font-lock-warning-face t t))
       (list "=.*?\\(\\s-+\\)\\(?:$\\|#\\)" '(1 font-lock-warning-face t t)))))))
 
-(add-hook 'conf-mode-hook 'nova-conf-mode-hook)
+(add-hook 'conf-mode-hook 'nova-conf-mode-hook t)
 
 ;; (when (require 'ede nil t)
 ;;   (ede-cpp-root-project "nova" :file "/home/emp8118035/prog/nova/ledb.env")
@@ -323,30 +327,30 @@
   (list
    ;; sections
    (list nova-comp-title-0
-	 '(1 hi-unimportant)
+	 '(1 font-lock-unimportant)
 	 '(2 markup-title-0-face)
-	 '(3 hi-unimportant))
+	 '(3 font-lock-unimportant))
    (list nova-comp-title-1
-	 '(1 hi-unimportant)
+	 '(1 font-lock-unimportant)
 	 '(2 markup-title-1-face)
-	 '(3 hi-unimportant))
+	 '(3 font-lock-unimportant))
    (list nova-comp-title-2
-	 '(1 hi-unimportant)
+	 '(1 font-lock-unimportant)
 	 '(2 markup-title-2-face)
-	 '(3 hi-unimportant))
+	 '(3 font-lock-unimportant))
    (list nova-comp-title-3
-	 '(1 hi-unimportant)
+	 '(1 font-lock-unimportant)
 	 '(2 markup-title-3-face)
-	 '(3 hi-unimportant)
+	 '(3 font-lock-unimportant)
 	 '(4 markup-title-3-face)
-	 '(5 hi-unimportant))
+	 '(5 font-lock-unimportant))
    (list nova-comp-title-4
-	 '(1 hi-unimportant)
+	 '(1 font-lock-unimportant)
 	 '(2 markup-title-4-face)
-	 '(3 hi-unimportant))
+	 '(3 font-lock-unimportant))
 
    ;; trash
-   (list "^echo\\b.*$" '(0 hi-unimportant)))
+   (list "^echo\\b.*$" '(0 font-lock-unimportant)))
   "Keywords for compilation-mode of a nova build")
 
 (defun nova-comp-outline-level ()

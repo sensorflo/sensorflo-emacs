@@ -28,7 +28,7 @@
 ;;; Code:
 ;(require 'markup-faces)
 
-(require 'hi-lock-ext)
+(require 'font-lock-ext)
 
 (defvar sed-mode-hook nil)
 
@@ -70,7 +70,7 @@
     
   (list
    ;; ordered after occurence probability for a small performance improvement
-   (list (concat fulladdr "\\([sy]\\)\\(/\\)\\(\\(?:[^\\/]\\|\\\\.\\)*\\)\\(/\\)\\(\\(?:[^\\/]\\|\\\\.\\)*\\)\\(/\\)\\(\\sw*\\)") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face) '(4 hi-unimportant) '(5 font-lock-constant-face) '(6 hi-unimportant) '(7 font-lock-constant-face) '(8 hi-unimportant))
+   (list (concat fulladdr "\\([sy]\\)\\(/\\)\\(\\(?:[^\\/]\\|\\\\.\\)*\\)\\(/\\)\\(\\(?:[^\\/]\\|\\\\.\\)*\\)\\(/\\)\\(\\sw*\\)") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face) '(4 font-lock-unimportant) '(5 font-lock-constant-face) '(6 font-lock-unimportant) '(7 font-lock-constant-face) '(8 font-lock-unimportant))
    (list (concat fulladdr "\\([=dDgGhhHnNpPxz]\\)") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face))
    (list (concat fulladdr "\\([btT]\\)[ \t]*\\([^;\n]*\\)") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face) '(4 font-lock-preprocessor-face))
    (list (concat fulladdr "\\([lqQ]\\)[ \t]*\\([0-9]+\\)") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face) '(4 font-lock-constant-face))

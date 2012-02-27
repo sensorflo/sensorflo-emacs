@@ -237,6 +237,9 @@
 ;; - global-hi-lock-mode
 ;; - global-font-lock-mode
 ;; - indent-tabs-mode, standard-indent
+;;
+;; 
+;; - require-final-newline, mode-require-final-newline, c-require-final-newline
 
 (put 'upcase-region 'disabled nil)   
 (put 'set-goal-column 'disabled nil) 
@@ -315,6 +318,9 @@
 (dolist (x '(".html" ".htm" ".x" ".s" ".str" ".map" ".pj" ".mpd" ".603" ".bmp" ".jpg" ".jpeg" "_"))
   (add-to-list 'completion-ignored-extensions x))
 
+(load-library "mybindings")
+(load-library "mode-hooks")
+
 ;; project stuff
 ;; I don't know yet how to avoid having that in the emacs init file
 (load-library "dragon") 
@@ -322,10 +328,6 @@
 (load-library "indel") 
 (load-library "bib") 
 (load-library "coma") 
-
-;; should come last since they reference things defined before
-(load-library "mybindings")
-(load-library "mode-hooks")
 
 
 ;;; autostart

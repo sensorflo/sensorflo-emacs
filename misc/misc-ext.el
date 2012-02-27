@@ -43,15 +43,30 @@
         (switch-to-buffer buffer)
         (message "Grep buffer popped from stack.")))) 
 
+(defvar grep-find-ext-regexp-function nil
+  "Function returning regexp for `grep-find-ext'.
+Called wit no arguments.")
+
+(defvar grep-find-ext-command-function 'grep-find-ext-command-std
+  "Function returning command for `grep-find-ext'.
+Called with one argument: the regexp to be searched for.")
+
+(defun grep-find-ext-command-std (regexp)
+  (replace-regexp-in-string "<R>" (replace-regexp-in-string "'" "'\"'\"'" (replace-regexp-in-string "\\\\" "\\\\\\\\" regexp)) grep-find-command))
+
 (defun grep-find-ext(arg)
   "As `grep-find', however dynamicly determines default.
-KLUDGE: Is currently fix using a dragon grep-find shell command"
+
+`grep-find-ext-regexp-function' is used to determine the regexp
+searched for. `grep-find-ext-command-function' is used to
+detremine the whole shell command used to search."
   (interactive "P")
   (let* ((regexp (cond ((equal arg '(16)) "")
 		       (mark-active (regexp-quote (buffer-substring-no-properties (point) (mark))))
-		       (t (or (dragon-find-command-regexp)
+		       (t (or (and grep-find-ext-regexp-function (funcall grep-find-ext-regexp-function))
 			      (concat "\\b" (regexp-quote (buffer-substring-sexp-no-properties)) "\\b")))))
-	 (gfc (dragon-find-command regexp)))
+	 (gfc (or (and grep-find-ext-command-function (funcall grep-find-ext-command-function regexp))
+		  grep-find-command))) ; grep-find-command
     (if (and (listp arg) (not (null arg)))
 	(progn
 	  (grep-apply-setting 'grep-find-command gfc)
@@ -282,6 +297,25 @@ and '.h' matches files ending in 'ch' where c is any character."
     (ediff3 (buffer-file-name (nth 0 marked-files))
             (buffer-file-name (nth 1 marked-files)) 
             (buffer-file-name (nth 2 marked-files)))))
+
+(defun dired-do-delete-ext (&optional arg)
+  ""
+  (interactive "P")
+  (let ((marked-files (dired-get-marked-files)))
+    (when (or (not (and (or (cdr marked-files) (not (string= (car marked-files) (dired-get-filename))))
+			(save-excursion (beginning-of-line) (not (looking-at dired-re-mark)))))
+	      (yes-or-no-p "Point is on an unmarked files. You want to delete the marked files?"))
+      (call-interactively 'dired-do-delete))))
+
+
+;;; fill
+;; ----------------------------------------------------------------------
+(defun fill-paragraph-dwim (arg)
+  "With nil ARG, `fill-paragraph', else `unfill-paragraph'."
+  (interactive "*P")
+  (if arg
+      (unfill-paragraph)
+    (fill-paragraph nil)))
 
 
 ;;; rectangular region
@@ -533,53 +567,6 @@ read only flag is automatically unset."
    (lambda ()
      (forward-sexp 1)
      (point))))
-
-;;; unimportant
-;; ----------------------------------------------------------------------
-(setq unimportance nil)
-(setq semi-unimportance nil)
-(setq unimportance-brightness 80)
-(setq unimportance-semi-brightness 80)
-
-(defun unimportant-darker(arg)
-  (interactive "P")
-  (or arg (setq arg 5))
-  (unimportant-brighter (- arg)))
-  
-(defun unimportant-brighter(arg)
-  (interactive "P")
-  (or arg (setq arg 5))
-  (unless unimportance
-    (string-match "[0-9]+" (face-attribute 'hi-unimportant :foreground))
-    (setq unimportance (string-to-number (match-string 0)))) 
-  (setq unimportance (+ unimportance arg))
-  (when (> unimportance 100)
-    (setq unimportance 100))
-  (when (< unimportance 0)
-    (setq unimportance 0))
-  (set-face-attribute
-   'hi-unimportant nil
-   :foreground (concat "gray" (number-to-string unimportance))))
- 
-(defun semi-unimportant-darker(arg)
-  (interactive "P")
-  (or arg (setq arg 5))
-  (semi-unimportant-brighter (- arg)))
-  
-(defun semi-unimportant-brighter(arg)
-  (interactive "P")
-  (or arg (setq arg 5))
-  (unless semi-unimportance
-    (string-match "[0-9]+" (face-attribute 'hi-semi-unimportant :foreground))
-    (setq semi-unimportance (string-to-number (match-string 0)))) 
-  (setq semi-unimportance (+ semi-unimportance arg))
-  (when (> semi-unimportance 100)
-    (setq semi-unimportance 100))
-  (when (< semi-unimportance 0)
-    (setq semi-unimportance 0))
-  (set-face-attribute
-   'hi-semi-unimportant nil
-   :foreground (concat "gray" (number-to-string semi-unimportance))))
 
 
 ;;; indent / tabify

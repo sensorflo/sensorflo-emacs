@@ -66,6 +66,7 @@
 (global-set-key [remap toggle-read-only]        'toggle-read-only-ext)
 (global-set-key [remap indent-for-tab-command]  'indent-for-tab-command-ext)
 (global-set-key [remap indent-rigidly]          'indent-rigidly-ext)
+(global-set-key [remap fill-paragraph]          'fill-paragraph-dwim)
 (global-set-key "\C-y"                          'yank-ext)
 (global-set-key "\M-y"                          'yank-pop-ext) ;see also yank-push below
 

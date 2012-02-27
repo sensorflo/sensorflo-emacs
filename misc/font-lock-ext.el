@@ -29,6 +29,26 @@
 ;;
 ;;; Code: 
 
+(require 'font-lock)
+
+(defface font-lock-unimportant
+  '((((background dark)) (:foreground "gray80"))
+    (t (:foreground "gray80")))
+  "Face for hi-lock mode."
+  :group 'font-lock-faces)
+
+(defface font-lock-semi-unimportant
+  '((((background dark)) (:foreground "gray80"))
+    (t (:foreground "gray80")))
+  "Face for hi-lock mode."
+  :group 'font-lock-faces)
+
+;; font-lock.el says (see definition of the variable font-lock-comment-face)
+;; that there is actually no need to create variables that specify face names.
+;; However it seems to be needed all the same.
+(defvar font-lock-semi-unimportant 'font-lock-semi-unimportant)
+(defvar font-lock-unimportant 'font-lock-unimportant)
 
 
+(provide 'font-lock-ext)
 ;;; font-lock-ext.el ends here

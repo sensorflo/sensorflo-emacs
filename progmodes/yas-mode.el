@@ -23,7 +23,7 @@
 ;;; Commentary:
 ;;
 ;;; Code:
-;(require 'markup-faces)
+(require 'font-lock-ext)
 
 (defvar yas-mode-hook nil)
 

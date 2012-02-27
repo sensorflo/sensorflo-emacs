@@ -6,6 +6,7 @@
 (defalias 'bkr 'browse-kill-ring) 
 (defalias 'ir 'indent-region) 		; also on C-M-\
 (defalias 'fr 'fill-region) 
+(defalias 'ufp 'unfill-paragraph) 
 (defalias 'gf 'grep-find) 
 (defalias 'fgd 'find-grep-dired) 
 (defalias 'fd 'find-dired) 
@@ -126,6 +127,10 @@
 (defalias 'vlm 'visual-line-mode)
 (defalias 'ldm 'linkd-mode)
 (defalias 'hlm 'hi-lock-mode)
+(defalias 'fspm 'flyspell-prog-mode)
+(defalias 'fpm 'flyspell-prog-mode)
+(defalias 'fsm 'flyspell-mode)
+(defalias 'fm 'flyspell-mode)
 
 ;;; marker pen: mp...
 (defalias 'mp0 'markerpen0) 

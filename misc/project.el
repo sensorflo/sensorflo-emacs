@@ -52,6 +52,8 @@ Returns nil if it is unknown."
      ((directory-files (file-name-directory actual-fn) nil ".*\\.el$") 'project-el)
      (t nil))))
 
+;; todo: specify which of the possible multiple 'project files'. Probably the
+;; one needed for building the project.
 (defun project-file (file-name)
   "Returns path of the associated the project file.
 Nil if there is none."

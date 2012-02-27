@@ -24,6 +24,7 @@
 ;;; Code
 
 (require 'sregex)
+(require 'font-lock-ext)
 
 ;;; programming modes 
 ;;; ===================================================================
@@ -136,14 +137,12 @@
 
 ;; the first items in the list overwrite the settings made in the later items of
 ;; the list
-(add-hook 'c-mode-common-hook 'coma-c-mode-common-hook)
-(add-hook 'c-mode-common-hook 'nova-c-mode-common-hook)
-(add-hook 'c-mode-common-hook 'dragon-c-mode-common-hook)
-(add-hook 'c-mode-common-hook 'indel-c-mode-common-hook)
+
 (add-hook 'c-mode-common-hook 'default-c-mode-common-hook)
 
 ;; defaults for all projects
 (defun default-c-mode-common-hook ()
+  (message "default-c-mode-common-hook")
   (auto-fill-mode t)
   (c-setup-filladapt)
   (hs-minor-mode t)
@@ -153,6 +152,7 @@
     (setq comment-end-skip "\\s-*\\*+/"))
   (abbrev-mode 0)
   (doxymacs-mode 1)
+  (doxymacs-font-lock)
 
   ;; TODO subword-mode shall be turned on globally 
   (eval-when-compile
@@ -374,7 +374,7 @@
   (font-lock-add-keywords nil (list
      (list (concat "^\\s-*(\\s-*def\\w*\\s-*[^ \t(]+\\s-*([^)]*)\\s-*"
 		   "\\(?:\n\\s-*\\)?\"\\(\\)")
-	   '(1 hi-unimportant t)) 
+	   '(1 font-lock-unimportant t)) 
      ))
 
   ;; (require 'autopair)
@@ -403,7 +403,7 @@
 (defun my-stream-mode-hook ()
   (require 'tempos-stream)
   (filladapt-mode t)
-  (doxymacs-mode t)
+  (doxymacs-mode 1)
   (doxymacs-font-lock))
 
 (add-hook 'dt2-mode-hook 'my-dt2-mode-hook)
@@ -429,7 +429,7 @@
   (require 'tempos-xml-doc)
 
   (font-lock-add-keywords nil (list
-     (list "<[^>]+?>" '(0 hi-semi-unimportant prepend)) 
+     (list "<[^>]+?>" '(0 font-lock-semi-unimportant prepend)) 
      ))
 
   (local-set-key [(return)] 'indent-new-comment-line)
@@ -911,6 +911,7 @@
   (local-set-key "E" 'dired-ediff-marked-files)
   (local-set-key [remap isearch-forward]  'dired-isearch-forward-regexp)
   (local-set-key [remap isearch-backward] 'dired-isearch-backward-regexp)
+  (local-set-key [remap dired-do-delete] 'dired-do-delete-ext)
   (local-set-key "r" 'wdired-change-to-wdired-mode) ; suggested by wdired
   (local-set-key "*."               'dired-mark-extension-dwim) 
   (local-set-key [(control return)] 'project-dired-find-main-file)
@@ -1084,10 +1085,10 @@
 ;; ----------------------------------------------------------------------------
 (defconst xdict-font-lock-keywords
   (list
-     (cons "\\[.*?\\]" hi-semi-unimportant)
-     (cons "|.*?|" hi-semi-unimportant)
-     (cons "\\b\\(etw\\|sth\\|adj\\)\\." hi-semi-unimportant)
-     (cons "\\<\\(to\\|the\\|der\\|die\\|das\\)\\>" hi-semi-unimportant)
+     (cons "\\[.*?\\]" font-lock-semi-unimportant)
+     (cons "|.*?|" font-lock-semi-unimportant)
+     (cons "\\b\\(etw\\|sth\\|adj\\)\\." font-lock-semi-unimportant)
+     (cons "\\<\\(to\\|the\\|der\\|die\\|das\\)\\>" font-lock-semi-unimportant)
      ))
 
 (defun my-xdict-hook ()
@@ -1121,25 +1122,19 @@
 
 ;;; all - remember that there are also global settings defined throuh custom and in init.el
 
-(defun my-common-mode-hook ()
-  (my-common-mode-bindings)
-
-  (dragon-common-mode-hook) 
-  (nova-common-mode-hook)
-  (indel-common-mode-hook)
-  (bib-common-mode-hook)
-  (coma-common-mode-hook))
+(defvar common-mode-hook nil
+  "Hook called when entering almost any mode.
+For all modes affected see mode-hooks.el")
 
 (defvar mode-hooks-common-called nil
   "When buffer local, then `my-common-mode-hook' has been called for this buffer.
 It's value is irelevant.")
 
-;; Since some modes are devired from others, my-common-mode-hook might be
-;; called multiple times, once for each level of the hierarchy.
-(defun my-common-mode-hook-outer ()
-  (unless (local-variable-p 'mode-hooks-common-called)
-    (make-local-variable 'mode-hooks-common-called)
-    (my-common-mode-hook)))
+(defun my-common-mode-hook ()
+  (message "my-common-mode-hook")
+  (my-common-mode-bindings))
+
+(add-hook 'common-mode-hook 'my-common-mode-hook) 
 
 ;; deliberatly without minibuffer modes
 (dolist (x '(c-mode-common-hook
@@ -1171,7 +1166,14 @@ It's value is irelevant.")
              adoc-mode-hook
              doxym-mode-hook
              dired-mode-hook))
-  (add-hook x 'my-common-mode-hook-outer))
+  (add-hook x 'common-mode-hook-helper))
+
+;; Since some modes are devired from others, my-common-mode-hook might be
+;; called multiple times, once for each level of the hierarchy.
+(defun common-mode-hook-helper ()
+  (unless (local-variable-p 'mode-hooks-common-called)
+    (make-local-variable 'mode-hooks-common-called)
+    (run-hooks 'common-mode-hook)))
 
 ;; For most cases the find file hook is good enough, because in most cases we're
 ;; visiting files. But sometimes you e.g. want to have a c++-mode buffer without

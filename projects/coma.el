@@ -18,6 +18,8 @@
   (when (eq (project-root-type) 'project-coma)
     (setq c-basic-offset 2)))
 
+(add-hook 'c-mode-common-hook 'coma-c-mode-common-hook t)
+
 (defun coma-common-mode-hook ()
   (when (eq (project-root-type) 'project-coma)
     (setq tab-width 2)
@@ -26,6 +28,8 @@
       (message "%s: encoding system is %S which is not coma's encoding system (utf-8-unix)"
                (buffer-name) buffer-file-coding-system))
     (shadow-keys 'compile 'compile-ext (current-local-map))))
+
+(add-hook 'common-mode-hook 'coma-common-mode-hook t)
 
 (defun coma-before-save-hook ()
   (when (eq (project-root-type) 'project-coma)

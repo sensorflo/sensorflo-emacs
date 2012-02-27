@@ -9,8 +9,12 @@
   (when (eq (project-root-type) 'project-indel)
     (setq c-basic-offset 4)))
 
+(add-hook 'c-mode-common-hook 'indel-c-mode-common-hook t)
+
 (defun indel-common-mode-hook ()
   (when (eq (project-root-type) 'project-indel)
     (setq tab-width 4)))
+
+(add-hook 'common-mode-hook 'indel-common-mode-hook t)
 
 ;;; indel.el ends here

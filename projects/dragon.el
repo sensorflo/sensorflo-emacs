@@ -6,39 +6,44 @@
 ;;
 ;;; Code:
 (require 'tempo-ext)
+(require 'font-lock-ext)
 
 ;;; misc settings
 (defun dragon-c-mode-common-hook()
-  (message "hello")
+  (message "dragon-c-mode-common-hook")
   (when (or (eq (project-root-type) 'project-diebonder-pc)
             (eq (project-root-type) 'project-diebonder-rtos))
-    (message "really hello")
     (make-local-variable 'grep-find-command)
-    (grep-apply-setting 'grep-find-command (dragon-find-command))
+    (grep-apply-setting 'grep-find-command (dragon-grep-find-command))
+    (set (make-local-variable 'grep-find-ext-command-function) 'dragon-grep-find-command)
+    (set (make-local-variable 'grep-find-ext-regexp-function) 'dragon-grep-find-regexp)
     (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|idl\\)")
+    (set (make-local-variable 'require-final-newline) nil)
     (setq tab-width 2)
     (setq indent-tabs-mode nil)
     (setq c-basic-offset 2)
     (c-set-offset 'access-label '-)
     (c-set-offset 'inclass '++)
     (dragon-font-lock-add-keywords)
-    (when (not (dragon-coding-system-p))
+    (when (and (dragon-file-p) (not (dragon-coding-system-p)))
       (message "%s: encoding system is %S which is not dragons's encoding system (windows-1252-dos undecided-dos)"
                (buffer-name) buffer-file-coding-system)
       (shell-command (concat "notify-send -t 1000 '" (buffer-name) " ist scheisse!!'")))
     (dragon-c-mode-common-bindings)))
 
+(add-hook 'c-mode-common-hook 'dragon-c-mode-common-hook t)
+
 (defun dragon-c-mode-common-bindings()
   ;; definitions
-  (local-set-key [(control ,)(d)] (make-sparse-keymap))
-  (local-set-key [(control ,)(d)(d)] '(lambda () (interactive) (open-line 1) (tempo-template-dragon-method-def-std)))
-  (local-set-key [(control ,)(d)(D)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-def)))
-  (local-set-key [(control ,)(d)(m)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-decl-std)))
-  (local-set-key [(control ,)(d)(M)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-decl)))
+  (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(d)(d)] '(lambda () (interactive) (open-line 1) (tempo-template-dragon-method-def-std)))
+  (local-set-key [(control ?\,)(d)(D)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-def)))
+  (local-set-key [(control ?\,)(d)(m)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-decl-std)))
+  (local-set-key [(control ?\,)(d)(M)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-decl)))
 
   ;; control flow
-  (local-set-key [(control ,)(c)(t)] 'tempo-template-dragon-try-catch-std) 
-  (local-set-key [(control ,)(c)(f)(e)] 'tempo-template-dragon-for-each) 
+  (local-set-key [(control ?\,)(c)(t)] 'tempo-template-dragon-try-catch-std) 
+  (local-set-key [(control ?\,)(c)(f)(e)] 'tempo-template-dragon-for-each) 
 
   ;; statements
   (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
@@ -47,7 +52,7 @@
   (local-set-key [(control ?\,)(s)(s)] 'tempo-template-dragon-statement-common-ehr)
 
   ;; misc
-  (local-set-key [(control ,)(m)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(m)(t)] 'tempo-template-dragon-todo) ; todo
 
   ;; traces & text/string literals
@@ -64,20 +69,25 @@
 (defun dragon-before-save-hook ()
   (when (or (eq (project-root-type) 'project-diebonder-pc)
             (eq (project-root-type) 'project-diebonder-rtos))
-    (when (not (dragon-coding-system-p))
+    (when (and (dragon-file-p) (not (dragon-coding-system-p)))
       (if (y-or-n-p (format "%s: change coding system from %S to windows-1252-dos? "
                                (buffer-name) buffer-file-coding-system))
           (setq buffer-file-coding-system 'windows-1252-dos)
-        (if (y-or-n-p "abort saving? ") (error "user aborted abort aving"))))))
+        (if (y-or-n-p "abort saving? ") (error "user aborted abort aving"))))
+    (when (member major-mode '(c++-mode idl-mode dt2-mode stream-mode doxym-mode))
+      (save-restriction
+	(widen)
+	(untabify (point-min) (point-max))
+	(delete-trailing-whitespace)))))
 
-(add-hook 'before-save-hook 'dragon-before-save-hook)
+(add-hook 'before-save-hook 'dragon-before-save-hook t)
 
 (defun dragon-find-file-hook()
   (when (and buffer-file-name (string-match "/drives/builds/" buffer-file-name))
     (toggle-read-only 1)
     (rename-buffer (concat (file-name-nondirectory buffer-file-name) "<" (dragon-build-name) ">" ) t)))
 
-(add-hook 'find-file-hook 'dragon-find-file-hook)
+(add-hook 'find-file-hook 'dragon-find-file-hook t)
 
 ;;   ;; files on buildpages should be read only
 ;;   (when (string-match "^//eseczgbuilds\\.esec\\.com/" (buffer-file-name))
@@ -94,50 +104,67 @@
       (forward-char 1))
     found))
 
-(defun dragon-font-lock-!!(end)
-  (and (re-search-forward "\\(!!+\\)" end t)
-       (not (looking-back "<!--[ \t]*!+"))))
-
-;; (defun dragon-font-lock-method(end)
-;;   (and (re-search-forward "\\([a-zA-Z0-9_]+\\)\\(.*\\)" end t)
-;;        (not (text-property-not-all (match-beginning 1) (match-end 1) 'face 'font-lock-function-name-face))))
+(defun dragon-method-spaces (end)
+  (let ((method-start t)
+	(method-end t)
+	warning-found)
+    (while (and method-start
+		method-end
+		(not warning-found)
+    		(< (point) (1- end)))
+      (setq method-start (text-property-any (point) end 'face 'font-lock-function-name-face))
+      (when method-start
+	(setq method-end (text-property-not-all method-start end 'face 'font-lock-function-name-face))
+	(when method-end
+	  (goto-char method-end)
+	  ;; methods declared via macros are excluded
+	  (setq warning-found (and (not (looking-back "^[A-Z0-9_]+"))
+				   (re-search-forward "\\=\\((\\|\\s-\\s-+(\\)" end t))))))
+    warning-found))
 
 (defun dragon-font-lock-add-keywords ()
-  (font-lock-add-keywords nil (list
-     (list '(lambda (end) (flf-helper 'dragon-font-lock-!! end)) '(1 font-lock-warning-face prepend))
-     
-     ;; empty comments 
-     (list "/\\*+\\s-*\\*+/\\|//+\\s-*$" '(0 hi-unimportant t)) 
+  (font-lock-add-keywords nil
+    (list
+      ;; 
+     (list 'dragon-method-spaces '(1 font-lock-warning-face))
+
+      ;; empty comments 
+      (list "/\\*+\\s-*\\*+/\\|//+\\s-*$" '(0 font-lock-unimportant t)) 
+       
+      ;; acess to well known objects/classes
+      (list "\\b\\(\\(CPPSeqMeth\\|CPPSeqRTOSBase\\|CPPSeqIfc\\|CPPSeqMatMgmtDieLocDef\\)::\\(Inst()\\.\\)?\\)" '(1 font-lock-semi-unimportant t))
+      (list "\\bCPPSeqIfc::\\w+()\\." '(0 font-lock-semi-unimportant t))
+      (list "\\bCPPSeqIfc::Inst().Get\\w+Wrp()\\." '(0 font-lock-semi-unimportant t))
+      (list "m_pMenuAccess->Get\\w*()\\." '(0 font-lock-semi-unimportant t))
       
-     ;; acess to well known objects/classes
-     (list "^\\s-+.*\\b\\(\\(CPPSeqMeth\\|CPPSeqRTOSBase\\|CPPSeqIfc\\|CPPSeqMatMgmtDieLocDef\\)::\\(Inst()\\.\\)?\\)" '(1 hi-semi-unimportant t))
-     (list "CPPSeqIfc::Inst()\\.Get\\w+COMWrp\\s-*(\\s-*)" '(0 hi-semi-unimportant t))
-     (list "m_pMenuAccess->Get\\w*()\\." '(0 hi-semi-unimportant t))
+      (list "^\\s-*EHRESULT\\s-+ehr\\s-*[;=]" '(0 font-lock-semi-unimportant t))
+      (list "^\\s-*ehr\\s-*\\+=" '(0 font-lock-semi-unimportant t))
+      (list "^\\s-*[a-zA-Z0-9_]*\\(STOP\\|RETURN\\|ASSERT\\|THROW\\)[a-zA-Z0-9_]*\\s-*(.*" '(0 font-lock-semi-unimportant t))
+      (list "\\(?:^\\|}\\)\\s-*\\([a-zA-Z0-9_]*CATCH[a-zA-Z0-9_]*\\s-*(.*\\)" '(1 font-lock-semi-unimportant t))
+      (list "^\\s-*\\(return\\s-*ehr\\s-*;\\)\\s-*\n}" '(1 font-lock-semi-unimportant t))
+      (list "^\\s-*E\\(END\\|BEGIN\\)_COM_METHOD.*" '(0 font-lock-semi-unimportant t))
 
-     (list "^\\s-*EHRESULT\\s-+ehr\\s-*[;=]" '(0 hi-semi-unimportant t))
-     (list "^\\s-*ehr\\s-*\\+=" '(0 hi-semi-unimportant t))
-     (list "^\\s-*[a-zA-Z0-9_]*\\(STOP\\|RETURN\\|ASSERT\\|THROW\\)[a-zA-Z0-9_]*\\s-*(.*" '(0 hi-semi-unimportant t))
-     (list "^\\s-*\\(return\\s-*ehr\\s-*;\\)\\s-*\n}" '(1 hi-semi-unimportant t))
-     (list "^\\s-*E\\(END\\|BEGIN\\)_COM_METHOD.*" '(0 hi-semi-unimportant t))
+      (list "\\be[PBDE]VIGraphicalObject" '(0 font-lock-semi-unimportant t))
+      (list "\\bscIID_\\(sSI\\|sMS\\)[a-zA-Z0-9]*_\\([a-zA-Z0-9]+_\\)?" '(0 font-lock-semi-unimportant t))
+      
+      (list "^\\s-*ETRACE[a-zA-Z0-9_]+.*" '(0 font-lock-semi-unimportant t))
+      (list "^\\s-*UNREFERENCED_PARAMETER.*" '(0 font-lock-semi-unimportant t))
+      
+      (list "\\w+_cast\\s-*<[^>\n]*>" '(0 font-lock-semi-unimportant t))
+      
+      ;; --- real garbage ---
+      (list "^\\s-*//\\.+\\s-*\\(begin\\|end\\)\\b.*\n" '(0 font-lock-unimportant t))
+      (list "^\\s-*\\(#define\\s-*\\)?_\\(START\\|STOP\\)_SKIP.*" '(0 font-lock-unimportant t))
+      ;; eol DCID info
+      (list "//\\(\\s-*DC\\w+\\s-*=\\)?\\s-*0[xX][0-9a-fA-F]\\{8\\};?\\s-*\n" '(0 font-lock-unimportant t)) 
+      ;; "} // end if"  bullshit
+      (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\)\\s-*\\(\n\\|\\*/\\)" '(0 font-lock-unimportant t)) 
+      ;; 
+      ;; (list 'dragon-font-lock-method '(2 font-lock-warning-face t))
+    )
+    t))
 
-     (list "^\\s-*ETRACE[a-zA-Z0-9_]+.*" '(0 hi-semi-unimportant t))
-     (list "^\\s-*UNREFERENCED_PARAMETER.*" '(0 hi-semi-unimportant t))
-
-     (list "\\w+_cast\\s-*<[^>\n]*>" '(0 hi-semi-unimportant t))
-     
-     ;; --- real garbage ---
-     (list "^\\s-*//\\.+\\s-*\\(begin\\|end\\)\\b.*\n" '(0 hi-unimportant t))
-     (list "^\\s-*\\(#define\\s-*\\)?_\\(START\\|STOP\\)_SKIP.*" '(0 hi-unimportant t))
-     ;; eol DCID info
-     (list "//\\(\\s-*DC\\w+\\s-*=\\)?\\s-*0[xX][0-9a-fA-F]\\{8\\};?\\s-*\n" '(0 hi-unimportant t)) 
-     ;; "} // end if"  bullshit
-     (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\)\\s-*\\(\n\\|\\*/\\)" '(0 hi-unimportant t)) 
-     ;; 
-     ;; (list 'dragon-font-lock-method '(2 font-lock-warning-face t))
-
-     ;; (list "arschii" '(0 font-lock-warning-face))
-
-     ) t))
+(add-to-list 'auto-mode-alist '("PPSeqDoxygen\\.h" . doxym-mode))
 
 ;;; functions
 
@@ -205,65 +232,21 @@
   (cd "W:/diebonder/")
   (grep-mode))
 
-(defun make-wrapper-decl ()
-  "Point being at a method declaration in a header files, creates
-  a corresponding method definition in the source file. "
-
-  (interactive)
-  ;; copy method prototype from header to src file
-  (c-mark-function-incl-comment)
-  (copy-region-as-kill (point) (mark))
-  (c-goto-other-defun)
-  (end-of-buffer)
-  (search-backward-regexp "}")
-  (move-end-of-line 1)
-  (insert "\n\n")
-  
-  (yank-and-indent)
-  (tempo-template-c-block)
-  (backward-up-list)
-  (search-backward-regexp ";")
-  (c-electric-delete-forward 1)
-  (backward-sexp 2)
-  (insert-class-name-with-scope)
-  (beginning-of-line-dwim)
-  (setq tmp (point))
-  (forward-sexp 2)
-  (backward-sexp)
-  (delete-region tmp (point))
-  
-  ;; 
-  (c-goto-other-defun)
-  (c-copy-param-list)
-  
-  ;; advance to next declaration in header file
-  (c-goto-other-defun)
-  (c-end-of-defun-incl-white)
-  (c-goto-other-defun)
-  
-  ;; insert (empty) method comment
-  (c-forward-defun-name)
-  (open-line-above 1)
-  (insert "/** */")
-  
-  ;; insert body
-  (next-line)
-  (c-beginning-of-defun-body)
-  (previous-line)
-  (insert "WRAPPER_BODY(  );")
-  (backward-char 3)
-  (insert-defun-name)
-  (insert "()")
-  (backward-char 1)
-  (c-indent-line-or-region))
-
 (defun dragon-common-mode-hook ()
+  (message "dragon-common-mode-hook")
   (when (or (eq (project-root-type) 'project-diebonder-pc)
             (eq (project-root-type) 'project-diebonder-rtos))
     (local-set-key [remap compile] 'compile-ext)))
 
+(add-hook 'common-mode-hook 'dragon-common-mode-hook t)
+
 (defun dragon-coding-system-p ()
-  (member buffer-file-coding-system '(windows-1252-dos undecided-dos utf-8-dos undecided)))
+  (member buffer-file-coding-system '(windows-1252-dos undecided-dos utf-8-dos))) ; undecided
+
+;; note that this should somehow belong to the
+(defun dragon-file-p ()
+  "Returns non-nil if the file visited by the current buffer belongs to the dragon project."
+  (not (string-match "\\(^\\|/\\)\\.\\(git\\|svn\\)" (or buffer-file-name (buffer-name)))))
 
 (defun dragon-create-tags-table()
   (interactive)
@@ -280,7 +263,7 @@
 	   ;; '.*\\.\\(c\\|cpp\\|h\\|tlh\\)'
 	   "\\( -iname '*.h' -o -iname '*.cpp' -o -iname '*.tlh' \\) -print0 | xargs -0 etags")))
 
-(defun dragon-find-command(&optional regexp)
+(defun dragon-grep-find-command(&optional regexp)
    (concat
    "find . UnitTest -maxdepth 1 -not \\( -type d -iname '*~*' -prune \\) \\\n"
    "-regextype posix-egrep \\\n"
@@ -303,23 +286,42 @@
    "\\)"))
 
 ;; static const tDiagCondId DC_PPSeq_PickFailed                                             = 0x0F0A0021; //PC / RTOS: Pick failed
-(defun dragon-find-command-regexp()
+(defun dragon-grep-find-regexp()
   (or
    (when (save-excursion
 	   (beginning-of-line)
-	   (or (looking-at "\\s-*static\\s-+const\\s-+\\(?:tDiagCondId\\|tItemId\\)\\s-+\\(.*?\\)\\_>")
+	   (or (looking-at "\\s-*\\(?:class\\|struct\\)\\s-+\\(.*?\\)\\_>")
+	       (looking-at "\\s-*static\\s-+const\\s-+\\(?:tDiagCondId\\|tItemId\\)\\s-+\\(.*?\\)\\_>")
 	       (looking-at "\\s-*SetBaseItemID\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>\\s-*)")
 	       (looking-at ".*PRS_INIT\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
 	       (looking-at "\\s-*REGISTER_KEY_COMMAND\\s-*([^,\n]*,[^,\n]*,\\s-*&\\w+::\\(.*?\\)\\_>")
 	       (looking-at "\\s-*DECLARE_\\(?:READ\\|WRITE\\)_METHOD\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
-	       (and (looking-at "\\s-*\\(?:virtual\\s-+\\)?\\(?:EHRESULT\\|int32\\|void\\|double\\)\\\(?:\\s-+\\|\\s-*&\\s-*\\)\\(\\(?:\\w\\|_\\)+\\)\\(.\\)")
-		    (not (string= ":" (match-string 2))))
+	       (and (looking-at "\\s-*\\(?:virtual\\s-+\\)?\\(?:EHRESULT\\|int32\\|void\\|double\\)\\(?:\\s-+\\|\\s-*&\\s-*\\)\\(\\(?:\\w\\|_\\)+\\)\\(.\\)")
+		    (not (string= ":" (match-string 2)))
+		    (not (string= "ehr" (match-string 1))))
 	       (looking-at (concat dragon-well-known-types "\\s-*\\(?:\\w\\|_\\)+::\\(\\(?:\\w\\|_\\)+\\)"))
-	       (looking-at (concat "\\s-*" dragon-well-known-types "\\s-*\\(\\(?:\\w\\|_\\)+\\)"))))
+	       (and (looking-at (concat "\\s-*" dragon-well-known-types "\\s-*\\(\\(?:\\w\\|_\\)+\\)"))
+		    (not (string= "ehr" (match-string 1))))))
      (concat "\\b" (match-string-no-properties 1) "\\b"))
    (when (and (save-excursion (beginning-of-line) (looking-at "\\s-*ehr\\s-*\\+?=\\s-\\(\\(?:\\w\\|_\\)+\\)"))
 	      (<= (point) (match-end 1)))
      (concat "\\b" (match-string-no-properties 1) "\\b"))))
+
+(defun dragon-dwim ()
+  (interactive)
+  (cond
+   ((save-excursion (beginning-of-line) (looking-at "\\s-*return\\s-+\\(S_OK\\|ehr\\)\\s-*;"))
+    (save-excursion
+      (let ((replacement (if (string= (match-string 1) "S_OK") "ehr" "S_OK"))) 
+	(goto-char (match-beginning 1))
+	(delete-region (point) (match-end 1))
+	(insert replacement))))
+   ((save-excursion (beginning-of-line) (looking-at "\\s-*\\(ERETURN_IF_FAILED\\|ETHROW_IF_FAILED\\)\\b"))
+    (save-excursion
+      (let ((replacement (if (string= (match-string 1) "ERETURN_IF_FAILED") "ETHROW_IF_FAILED" "ERETURN_IF_FAILED"))) 
+	(goto-char (match-beginning 1))
+	(delete-region (point) (match-end 1))
+	(insert replacement))))))
 
 ;;; file aliases / cache
 (setq filealias-default-root-dir "W:")
@@ -370,7 +372,7 @@
     ("rpr". "~~DieBonder/RTOS/PickPlace/PPModProxy/sources/")
     ("rtd". "~~DieBonder/RTOS/PickPlace/PPTeachDataMgr/sources/")))
 
-(mapcar 'file-cache-add-file 
+(mapc 'file-cache-add-file 
         '("~/office/dragon"
 	  "~/src/DieBonder"
 	  "~/src/DieBonder/RTOS"
@@ -564,12 +566,15 @@
       ("PPSeqAO" ("ao"))
       ("PPSeqATLBase" ("seq" "atlb" "atl"))
       ("StdAfx" ("afx") "h")
+      ("PPSeqDoxygen" ("doxy" "dox") "h")
       ("PPSeqMeth" ("m"))
       ("PPSeqRTOSModData" ("rmd"))
       ("PPSeqRTOSBase" ("rb"))
       ("PPSeqGlobalData" ("gd"))
-      ("PPSeqItemIDs" ("i" "ii") "h")
+      ("PPSeqItemIDs" ("ii" "i") "h")
+      ("PPSeqForeignItemIDs" ("fii" "fi") "h")
       ("PPSeqDiagCondition" ("dc" "di") "h")
+      ("PPSeqTypeDefinitions" ("td") "h")
       ("PPSeqIfc" ("ic" "ifc") "h")
       ("PPSequencer" ("idl") "idl")
       ("PPSeqDataMgrPC" ("dmp"))
@@ -582,9 +587,11 @@
       ("PPSeqDisplayDepData" ("ddd") )
       ("PPSeqSingleton" ("s") "h")
       ("PPSeqAutoPtr" ("ap") "h")
-      ("PPSeqCapability" ("c"))
-      ("PPSeqCapabilityMgr" ("cmgr" "cm"))
-      ("PPSeqCommandHandler" ("ch"))
+      ("PPSeqFeature" ("f"))
+      ("PPSeqFeatureCoordinator" ("fc"))
+      ("IPPSeqEnabler" ("er") "h")
+      ("IPPSeqEnablee" ("ee") "h")
+      ("PPSeqCommandHandler" ("ch") "h")
 
       ;; wrappers
       ("PPSeqWPPBAMod" ("wba"))
@@ -593,6 +600,7 @@
       ("PPSeqWPPCalibMod" ("wcm" "wc"))
       ("PPSeqWDCDEMod" ("wdem" "wde"))
       ("PPSeqWTeachSrv" ("wts"))
+      ("PPSeqWPPPPickerMod" ("wpm" "wp"))
       
       ;; teach base
       ("PPSeqPCProcessCalculations" ("pcpc"))
@@ -600,7 +608,7 @@
       ("PPSeqTeachMenuProcessBase" ("tmpb" "mpb"))
       ("PPSeqMenuCoordinator" ("mc"))
       ("PPSeqMenuHandlerBase" ("mhb"))
-      ("IPPSeqMenuHandler" ("imh") "h")
+      ("PPSeqMenuHandler" ("mh"))
       ("PPSeqDataHandlerBase" ("dhb"))
       ("PPSeqDataHandler" ("dh"))
       ("PPSeqProcessData" ("pd") "h")
@@ -664,6 +672,8 @@
       ("PPSeqTeachMenuK21FunctionSelection" ("tmbfs" "tmbofs" "mfsbo" "mk21")) 
       ("PPSeqTeachDataE31DSFuncSel" ("tddsfs" "ddsfs" "dfsds" "de31"))
       ("PPSeqTeachMenuE31DSFuncSel" ("tmdsfs" "mdsfs" "mfsds" "me31"))
+      ("PPSeqTeachDataS21FunctionSelection" ("tds21" "ds21"))
+      ("PPSeqTeachMenuS21FunctionSelection" ("tms21" "ms21" "s21"))
       
       ;; process
       ("PPSeqTeachMenuE17PeelProcess" ("tmpep" "mpep" "me17"))
@@ -684,6 +694,8 @@
       ("PPSeqTeachDataE62FluxProcess" ("tdfp" "dfp"))
       ("PPSeqTeachMenuK24BondProcess" ("tmbp" "mbp" "tmbop" "mbop" "mk24"))
       ("PPSeqTeachDataK24BondProcess" ("tdbp" "dbp" "tdbop" "dbop" "dk24" "k24"))
+      ("PPSeqTeachDataS22TakeProcess" ("tdtp" "tds22" "dtp" "ds22"))
+      ("PPSeqTeachMenuS22TakeProcess" ("tmtp" "tms22" "mtp" "ms22" "s22"))
       
       ;; verify
       ("PPSeqTeachMenuE14PickProcessVerify" ("tmppv"))
@@ -700,6 +712,8 @@
       ("PPSeqTeachDataE16OptimizePickProcess" ("tdoppt" "dopp" "tdo" "do" "de16" "e16"))
       ("PPSeqTeachMenuE46OptimizePickProcess" (                           "me46"))
       ("PPSeqTeachDataE46OptimizePickProcess" (                           "de46" "e46"))
+      ("PPSeqTeachMenuS23OptimizePickProcess" (                           "ms23"))
+      ("PPSeqTeachDataS23OptimizePickProcess" (                           "ds23" "s23"))
       ("PPSeqTeachMenuR15OptimizeTransferTablePosition" (                 "r15"))
       ("PPSeqTeachDataR15OptimizeTransferTablePosition" (                 "dr15" "r15"))
 
@@ -716,7 +730,9 @@
 
       ;; config specialized classes
       ;; ----------------------------
-      ("PPSeqCapabilityPickUpToolOffset" ("cputo" "cpto" "pto"))))
+      ("PPSeqFeaturePickUpToolOffset" ("fputo" "fput" "fpu"))
+      ("PPSeqFeaturePickerToolOffset" ("fpto" "fpt" "fp"))
+      ("PPSeqFeatureTableToolOffset" ("ftto" "ft" "ft"))))
 
 (setq dragon-ffe-pc-calibsrv `(
       ;; common
@@ -917,25 +933,25 @@
 
 (tempo-define-template "dragon-trace-method-enter"
  '( lws
-    "ETRACE_LEVEL2(_T(\"" '(insert-class-and-defun-name)  p "\"));" > %))
+    "ETRACE_LEVEL2(_T(\"" '(insert-class-and-defun-name)  ": " p "\"));" > %))
 
 (tempo-define-template "dragon-trace-error"
- '( lws "ETRACE_ERROR(_T(\"" '(insert-class-and-defun-name) p "\"));" > %))
+ '( lws "ETRACE_ERROR(_T(\"" '(insert-class-and-defun-name) ": " p "\"));" > %))
 
 (tempo-define-template "dragon-trace-warning"
- '( lws "ETRACE_WARNING(_T(\"" '(insert-class-and-defun-name) p "\"));" > %))
+ '( lws "ETRACE_WARNING(_T(\"" '(insert-class-and-defun-name) ": " p "\"));" > %))
 
 (tempo-define-template "dragon-trace-l0"
- '( lws "ETRACE_LEVEL0(_T(\"" '(insert-class-and-defun-name) p "\"));" > %))
+ '( lws "ETRACE_LEVEL0(_T(\"" '(insert-class-and-defun-name) ": " p "\"));" > %))
 
 (tempo-define-template "dragon-trace-l1"
- '( lws "ETRACE_LEVEL1(_T(\"" '(insert-class-and-defun-name) p "\"));" > %))
+ '( lws "ETRACE_LEVEL1(_T(\"" '(insert-class-and-defun-name) ": " p "\"));" > %))
 
 (tempo-define-template "dragon-trace-l2"
- '( lws "ETRACE_LEVEL2(_T(\"" '(insert-class-and-defun-name) p "\"));" > %))
+ '( lws "ETRACE_LEVEL2(_T(\"" '(insert-class-and-defun-name) ": " p "\"));" > %))
 
 (tempo-define-template "dragon-trace-ignore"
- '( lws "ETRACE_AND_IGNORE_IF_FAILED(_T(\"" '(insert-class-and-defun-name) p "\"), ehr);" > %))
+ '( lws "ETRACE_AND_IGNORE_IF_FAILED(_T(\"" '(insert-class-and-defun-name) ": " p "\"), ehr);" > %))
 
 (tempo-define-template "dragon-try-catch-std"
  '( lws
@@ -951,7 +967,7 @@
     "}" > %))
 
 (tempo-define-template "dragon-eassert"
- '( lws "EASSERT( " p " , _T(\"" p "\"));" > %)
+ '( lws "EASSERT( " p " , _T(\"" '(insert-class-and-defun-name) ": " p "\"));" > %)
  "ea")
 
 (tempo-define-template "dragon-todo"

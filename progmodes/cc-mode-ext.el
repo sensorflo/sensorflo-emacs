@@ -34,6 +34,7 @@ the directory part and without suffix. Thus for
 '~/src/foo/bar.cpp' it would be 'bar'.")
 
 ;;; Code:
+(require 'cc-mode)
 
 
 ;;; moving
@@ -429,6 +430,15 @@ the directory part and without suffix. Thus for
 	(delete-region (point) (progn (backward-word) (point)))))
       (insert-class-and-defun-name))
 
+     ((save-excursion
+	(beginning-of-line)
+	(looking-at "\\s-*\\(\\w\\|_\\)*EASSERT"))
+      (beginning-of-line)      
+      (when (re-search-forward "_T(\"")
+	(when (looking-at "\\(\\w\\|_\\)*::\\(\\w\\|_\\)*")
+	  (delete-region (match-beginning 0) (match-end 0)))
+	(insert-class-and-defun-name)))
+     
      ((save-excursion
 	(beginning-of-line)
 	(looking-at "EHRESULT\\s-+\\(\\(?:\\w\\|_\\)*\\)\\s-*::\\s-*\\(?:\\w\\|_\\)"))

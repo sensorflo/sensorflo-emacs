@@ -1,6 +1,6 @@
 ;;; yas-mode.el --- a major-mode for editing yasmala files in emacs
 ;; 
-;; Copyright 2009-2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; Created: 2009

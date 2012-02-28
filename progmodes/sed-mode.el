@@ -1,6 +1,6 @@
 ;;; sed-mode.el --- a major-mode for editing sed scripts in emacs
 ;; 
-;; Copyright 2009-2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Filename: sed-mode.el
 ;; Description: a major-mode for editing sed scripts in emacs

@@ -1,6 +1,6 @@
 ;;; meta-syntax-faces.el --- collection of faces for meta syntax language modes
 ;; 
-;; Copyright 2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2011-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; 

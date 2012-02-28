@@ -1,6 +1,6 @@
 ;;; simple-ext.el --- extensions to emacs' simple.el, subr.el, c source code
 ;; 
-;; Copyright 2009-2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; Created: 2009

@@ -1,6 +1,6 @@
 ;;; cc-mode-ext.el --- extensions to cc mode
 ;;
-;; Copyright (C) 2008-2011 Florian Kaufmann
+;; Copyright 2008-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;; 
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; 
@@ -22,10 +22,10 @@
 ;;; Commentary:
 ;; 
 ;;
-;;; Todo:
-;; - transpose bodies of if else 
-;;
+
 ;;; Variables:
+(require 'cc-mode)
+
 (defvar c-class-name-alist nil
   "Maps filename no classname.
 Typically used for occasions where the filename does not exactly
@@ -33,10 +33,9 @@ correspond to the contained class name. The filename is without
 the directory part and without suffix. Thus for
 '~/src/foo/bar.cpp' it would be 'bar'.")
 
-;;; Code:
-(require 'cc-mode)
-
 
+;;; Code:
+
 ;;; moving
 
 (defun c-beginning-of-defun-ext (&optional stay ignore-defuns-comment)

@@ -1,6 +1,6 @@
 ;;; hi-lock-ext.el --- extends functionality of hi-lock.el
 ;;
-;; Copyright 2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2011-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;; 
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; 

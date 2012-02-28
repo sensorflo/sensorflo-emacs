@@ -1,11 +1,10 @@
 ;;; kmacro-ext.el --- extensions to emacs' kmacro
 ;;
-;; Copyright 2009-2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;; 
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; URL: http://sensorflo-emacs.googlecode.com/svn/trunk/kmacro-ext.el
+;; URL: https://sourceforge.net/projects/sensorflo-emacs/
 ;; Created: 2009
-;; Version: 0.1
 ;; Keywords: wp bbcode
 ;; 
 ;; This file is not part of GNU Emacs.

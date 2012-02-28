@@ -1,6 +1,6 @@
 ;;; rl-mode.el --- a major-mode for editing readline init files
 ;; 
-;; Copyright 2009-2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Filename: rl-mode.el
 ;; Description: a major-mode for editing readline init files

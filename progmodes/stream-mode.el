@@ -1,9 +1,9 @@
 ;;; stream-mode.el --- a major-mode for editing indel stream files in emacs
 ;; 
-;; Copyright 2010-2011 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2010-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; URL: http://sensorflo-emacs.googlecode.com/svn/trunk/stream-mode.el
+;; URL: https://sourceforge.net/projects/sensorflo-emacs/
 ;; Created: 2010
 ;; Keywords: languages
 ;; 

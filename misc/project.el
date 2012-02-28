@@ -1,6 +1,6 @@
 ;;; project.el ---
 ;; 
-;; Copyright 2010 Florian Kaufmann <sensorflo@gmail.com>
+;; Copyright 2010-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;;

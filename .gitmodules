@@ -19,3 +19,6 @@
 [submodule "progmodes/doxymacs"]
 	path = progmodes/doxymacs
 	url = git://doxymacs.git.sourceforge.net/gitroot/doxymacs/doxymacs
+[submodule "misc/font-lock-ext"]
+	path = misc/font-lock-ext
+	url = https://sensorflo@github.com/sensorflo/font-lock-ext.git

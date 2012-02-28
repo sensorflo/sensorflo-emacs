@@ -23,7 +23,7 @@
 ;;; Commentary:
 ;;
 ;;; Code:
-(require 'font-lock-ext)
+(require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
 (defvar yas-mode-hook nil)
 

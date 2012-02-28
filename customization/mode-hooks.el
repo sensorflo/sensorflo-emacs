@@ -24,7 +24,7 @@
 ;;; Code
 
 (require 'sregex)
-(require 'font-lock-ext)
+(require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
 ;;; programming modes 
 ;;; ===================================================================

@@ -6,7 +6,7 @@
 ;;
 ;;; Code:
 (require 'tempo-ext)
-(require 'font-lock-ext)
+(require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
 ;;; misc settings
 (defun dragon-c-mode-common-hook()

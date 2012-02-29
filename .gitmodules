@@ -22,3 +22,9 @@
 [submodule "misc/font-lock-ext"]
 	path = misc/font-lock-ext
 	url = https://sensorflo@github.com/sensorflo/font-lock-ext.git
+[submodule "misc/logfile-mode"]
+	path = misc/logfile-mode
+	url = https://git.gitorious.org/logfile-mode/logfile-mode.git
+[submodule "misc/find-file-ext"]
+	path = misc/find-file-ext
+	url = https://git.gitorious.org/logfile-mode/find-file-ext.git

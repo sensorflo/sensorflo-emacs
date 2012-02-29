@@ -1,30 +1,30 @@
 [submodule "textmodes/adoc-mode"]
 	path = textmodes/adoc-mode
-	url = git://github.com/sensorflo/adoc-mode.git
+	url = git@github.com:sensorflo/adoc-mode.git
 [submodule "textmodes/bbcode-mode"]
 	path = textmodes/bbcode-mode
 	url = https://sensorflo@code.google.com/p/bbcode-mode/
 [submodule "textmodes/markup-faces"]
 	path = textmodes/markup-faces
-	url = git://github.com/sensorflo/markup-faces.git
+	url = git@github.com:sensorflo/markup-faces.git
 [submodule "textmodes/doxym-mode"]
 	path = textmodes/doxym-mode
-	url = git://gitorious.org/doxym-mode/doxym-mode.git
+	url = git@gitorious.org:doxym-mode/doxym-mode.git
 [submodule "misc/mks"]
 	path = misc/mks
 	url = https://sensorflo@code.google.com/p/mks/
 [submodule "misc/tempo-ext"]
 	path = misc/tempo-ext
-	url = git://gitorious.org/tempo-ext/tempo-ext.git
+	url = git@gitorious.org:tempo-ext/tempo-ext.git
 [submodule "progmodes/doxymacs"]
 	path = progmodes/doxymacs
-	url = git://git.code.sf.net/p/doxymacs-fork/code
+	url = https://sensorflo@git.code.sf.net/p/doxymacs-fork/code
 [submodule "misc/font-lock-ext"]
 	path = misc/font-lock-ext
-	url = git://github.com/sensorflo/font-lock-ext.git
+	url = https://sensorflo@github.com/sensorflo/font-lock-ext.git
 [submodule "misc/logfile-mode"]
 	path = misc/logfile-mode
-	url = git://gitorious.org/logfile-mode/logfile-mode.git
+	url = https://git.gitorious.org/logfile-mode/logfile-mode.git
 [submodule "misc/find-file-ext"]
 	path = misc/find-file-ext
-	url = git://gitorious.org/logfile-mode/find-file-ext.git
+	url = https://git.gitorious.org/logfile-mode/find-file-ext.git

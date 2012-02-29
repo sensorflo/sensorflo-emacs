@@ -9,10 +9,10 @@
 ;;
 ;;; Code
 
-
 ;; (eval-after-load "ispell"
 ;;   '(progn (defun ispell-get-coding-system () 'utf-8)))
 
+
 ;;; stettings part 1 - before loading libraries
 ;; ==================================================
 (message "init file: settings part 1")
@@ -63,6 +63,7 @@
 (load-library "aliases") 
 
 
+
 ;;; required libraries
 ;; ==================================================
 (message "init file: required libraries")
@@ -229,6 +230,7 @@
 ;(require 'planner)
 
 
+
 ;;; settings part 2
 ;; =======================================================
 ;; note that there are more in custom.el
@@ -283,7 +285,7 @@
     ("personality.*\\.txt\\'" . pm-mode)
     ("swat\\.eu\\.besi\\..*\\.txt" . mediawiki-mode)
     ("\\.env\\'" . conf-mode)
-    ("\\.gitconfig\\'" . conf-mode)
+    ("\\.git\\(config\\|modules\\)\\'" . conf-mode)
     ("\\.typ\\'" . gtypist-mode)
     ("\\.pl\\'" . cperl-mode)
     ("\\.dt2\\'" . dt2-mode)
@@ -331,7 +333,7 @@
 (load-library "bib") 
 (load-library "coma") 
 
-
+
 ;;; autostart
 ;; ----------
 (message "init file: autostart")

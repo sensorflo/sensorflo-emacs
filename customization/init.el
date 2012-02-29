@@ -91,7 +91,9 @@
 (require 'markup-faces)
 (require 'html-helper-mode)
 (require 'html-font)
-(load-library "nxhtml/autostart.el")
+;; nxhtml is not part of sensorflo-emacs git repo
+(when (file-readable-p "nxhtml/autostart.el") 
+  (load-library "nxhtml/autostart.el"))
 (require 'yas-mode)
 (require 'adoc-mode)
 ;(require 'mediawiki)

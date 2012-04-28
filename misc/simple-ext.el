@@ -545,5 +545,31 @@ directory (i.e. the .el and the .elc, only one of the two)."
         (print result-list)
       result-list)))
 
+(defun undo-get-state ()
+  "Return a handler for the current state to which we might want to undo.
+The returned handler can then be passed to `undo-revert-to-handle'."
+  (unless (eq buffer-undo-list t)
+    buffer-undo-list))
+
+(defun undo-revert-to-state (handle)
+  "Revert to the state HANDLE earlier grabbed with `undo-get-handle'.
+This undoing is not itself undoable (aka redoable)."
+  (unless (eq buffer-undo-list t)
+    (let ((new-undo-list (cons (car handle) (cdr handle))))
+      ;; Truncate the undo log at `handle'.
+      (when handle
+        (setcar handle nil) (setcdr handle nil))
+      (unless (eq last-command 'undo) (undo-start))
+      ;; Make sure there's no confusion.
+      (when (and handle (not (eq handle (last pending-undo-list))))
+        (error "Undoing to some unrelated state"))
+      ;; Undo it all.
+      (while (not (memq pending-undo-list '(nil t))) (undo-more 1))
+      ;; Reset the modified cons cell to its original content.
+      (when handle
+        (setcar handle (car new-undo-list))
+        (setcdr handle (cdr new-undo-list)))
+      ;; Revert the undo info to what it was when we grabbed the state.
+      (setq buffer-undo-list handle))))
 
 ;;; simple-ext.el ends here

@@ -102,6 +102,7 @@
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 (defun my-python-mode-hook ()
   (hs-minor-mode t)
+  (outline-minor-mode t)
   (my-python-mode-bindings))
   
 (defun my-python-mode-bindings ()
@@ -892,10 +893,11 @@
 ;;; font lock
 ;; --------------------------------------------------------------------
 ;; that's the way doxymacs suggests to call doxymacs-font-lock
-(defun my-doxymacs-font-lock-hook ()
-  (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode) (eq major-mode 'idl-mode))
-      (doxymacs-font-lock)))
-(add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
+;; (defun my-doxymacs-font-lock-hook ()
+;;   (if (or (eq major-mode 'c-mode) (eq major-mode 'c++-mode) (eq major-mode 'idl-mode))
+;;       (require 'doxymacs)
+;;       (doxymacs-font-lock)))
+;; (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)
 
 ;;; dired mode
 ;; --------------------------------------------------------------------
@@ -952,6 +954,7 @@
    (t 3)))
 
 (defun my-man-mode-hook ()
+  (buffer-face-mode)
   (setq outline-regexp
         (concat "\\(?:" Man-heading-regexp "\\|" Man-heading2-regexp "\\)"))
   (setq outline-level 'Man-outline-level))

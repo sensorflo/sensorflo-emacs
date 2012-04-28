@@ -131,7 +131,6 @@ keywords: tempo, skeletton, autopair, balanced, electric,
 - c-recenter-defun uses window-body-height, instead something (window-buffer-height?) that measures the BUFFERs height.
 - shell mode: filename completion does not quote chars of filenames that should be quoted, e.g. space
 - to to (temporarly) toggle/set case fold search in different searches (dired mark / dired querry replace / incremental search / highlight regexp / ....)
-- dwim query replace.  It knows in what files / in which parts of the files to replace. It knows the search pattern, and the replacement pattern.
 - compilation-error-alist oder so dynamisch erstellen aufgrund von compilation buffer. Oft ist im header ja information ueber den benutzten compiler. Dasselbe Prinzip fuer grep-mode
 - hi-lock mode for all buffers
 - font-lock:

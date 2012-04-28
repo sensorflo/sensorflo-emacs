@@ -22,6 +22,8 @@
 ;; 
 ;;; Commentary: 
 ;;
+;;  Look at http://www.emacswiki.org/emacs/RotateText
+;;
 ;;; Code: 
 (require 'tempo)
 (require 'tempo-snippets)
@@ -43,16 +45,17 @@
    ((eq element '>n) (indent-according-to-mode) "\n")
 
    ;; region or blank-line
-   ((eq element 'r-or-blank-line>) (if on-region 'r> '>n))
+   ((eq element 'r-or-blank-line>)
+    (if on-region 'r> '>n))
 
    ;; line wise start
-   ((eq element 'lws)
+   ((memq element '(lws line-wise-start))
     (cond
      (on-region
       (goto-char tempo-region-start)
       (set-mark tempo-region-stop)
       (mark-whole-lines)
-      'sr)
+      'save-region)
      ((save-excursion (beginning-of-line) (not (looking-at "\\s-*$")))
       (end-of-line)
       'n>)
@@ -64,7 +67,7 @@
    ;; ...........
 
    ;; save region
-   ((eq element 'sr)
+   ((memq element '(sr save-region))
     (when on-region
       (set-marker tempo-region-start (min (mark) (point)))
       (set-marker tempo-region-stop (max (mark) (point)))

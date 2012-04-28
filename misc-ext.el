@@ -299,12 +299,16 @@ and '.h' matches files ending in 'ch' where c is any character."
             (buffer-file-name (nth 2 marked-files)))))
 
 (defun dired-do-delete-ext (&optional arg)
-  ""
+  "As `dired-do-delete' but additionaly warns on certain occasions."
   (interactive "P")
   (let ((marked-files (dired-get-marked-files)))
-    (when (or (not (and (or (cdr marked-files) (not (string= (car marked-files) (dired-get-filename))))
-			(save-excursion (beginning-of-line) (not (looking-at dired-re-mark)))))
-	      (yes-or-no-p "Point is on an unmarked files. You want to delete the marked files?"))
+    (when (or (not (and
+		    ;; ???
+		    (or (cdr marked-files) (not (string= (car marked-files) (dired-get-filename))))
+		    ;; current line and line before are both not marked
+		    (save-excursion (and (progn (beginning-of-line) (not (looking-at dired-re-mark)))
+					 (progn (forward-line -1) (beginning-of-line) (not (looking-at dired-re-mark)))))))
+	      (y-or-n-p "Point is on an unmarked files. You want to delete the marked files? "))
       (call-interactively 'dired-do-delete))))
 
 

@@ -547,11 +547,16 @@ Key bindings:
 		 "[ \t]*\\*+/\\)")
     '(1 font-lock-doc-face prepend)
     '(2 font-lock-doc-face prepend t t))
-    ;; 
+   ;; other headings
+   (list
+    "\\([@\\\\]name\\)\\s-+\\(.*?\\)\\s-*\\(?:$\\|\\*+/\\)"
+    '(1 font-lock-keyword-face prepend)
+    '(2 font-lock-doc-face prepend))
+    ;; comments in comments
    (list
     "<!--.*?-->"
     ;;"<!--\\(-*-->\\|[^-]*\\(-+\\([^-]\\|-[^>]\\)[^-]*\\)*-->\\)"
-    '(0 font-lock-semi-unimportant t))
+    '(0 font-lock-semi-unimportant prepend))
    (list
     ;; attention, warning, etc. given a different font
     ;; One shot keywords that take no arguments
@@ -567,7 +572,7 @@ Key bindings:
 	    "\\|invariant\\|post\\|pre\\|remarks\\|since\\|test\\|version"
 	    "\\|\\(end\\)?htmlonly\\|\\(end\\)?latexonly\\|f\\$\\|file"
 	    "\\|\\(end\\)?xmlonly\\|\\(end\\)?manonly\\|property"
-	    "\\|mainpage\\|name\\|overload\\|typedef\\|deprecated"
+	    "\\|mainpage\\|overload\\|typedef\\|deprecated"
 	    "\\|addindex\\|line\\|skip\\|skipline\\|until\\|see"
 	    "\\|endlink\\|callgraph\\|endcond\\|else\\)\\)\\>")
     '(0 font-lock-keyword-face prepend))

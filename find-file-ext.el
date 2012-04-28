@@ -46,8 +46,7 @@ know an then what they are."
 ;;; Code:
 
 (defun ffe-find-file(abbrev-path)
-  "As find-file, however the file to be opened is given as an
-  abbreviation."
+  "As `find-file', however using an abbreves / aliases."
 
   ;; definitions:
   ;;                             path
@@ -132,6 +131,66 @@ nothing."
 	(message (if abbrev-list
 		     (concat "ffe abbrevs are: " (mapconcat 'identity abbrev-list ", "))
 		 "No abbrevs defined for this file"))))))
+
+(defun ffe-find-other-file (other-type)
+  "Similar to `ff-find-other-file', but additionaly 'type' of other file can be specified."
+  (interactive "cOther file's type : ")
+  ;; maybe can also be looked at as 'dynamic abbrev', i.e. a single abbrev dynamically specifying other files
+  ;; 
+  ;; u/d  hierarchy up/down
+  ;; s/b  sideway / brother / cycle sideway / partner-association
+  ;; 
+  ;;      e.g. teachmenu teachdata associated-config associated-setup
+  ;; 
+  (cond
+   ;; type brother
+   ((or (eq other-type ?s) (eq other-type ?b))
+    (let ((file-name (buffer-file-name)))
+      (if (string-match "\\(PPSeqTeach\\)\\(Menu\\|Data\\)\\(.*\\)" file-name)
+	  (let ((other-file-name (concat (match-string 1 file-name)
+					 (if (string= (match-string 2 file-name) "Menu") "Data" "Menu")
+					 (match-string 3 file-name))))
+	    (if (file-exists-p other-file-name)
+		(find-file other-file-name)
+	      (error "The brother file '%s' does not exist" other-file-name)))
+	(error "%s is not a file for which a 'brother' file can exist" file-name))))
+
+
+   ;; up in hierarchy
+   ((eq other-type ?u)
+    (let ((bases (nreverse (c-base-class-names))))
+      (cond
+       ;; no base classes
+       ((null bases)
+	(error "No base classes"))
+
+       ;; exactly one base
+       ((= (length bases) 1)
+	(let ((other-file-name (c-file-name-of-class (car bases))))
+	  (if (file-exists-p other-file-name)
+	      (find-file other-file-name)
+	    (error "Cant find file '%s' which I assume defines the class '%s'" other-file-name (car bases)))))
+
+       ;; multiple bases
+       (t
+	(let* ((base-class (completing-read
+			    (concat "Multiple base classes. Choose which one (default:" (car bases) ") : ")
+			    bases nil t nil nil (car bases)))
+	       (other-file-name (c-file-name-of-class base-class)))
+	 (if (file-exists-p other-file-name)
+	     (find-file other-file-name)
+	   (error "Cant find file '%s' which I assume defines the class '%s'" other-file-name base-class)))))))
+
+   ;; class at point
+   ((eq other-type ?p)
+    (let* ((class (buffer-substring-sexp-no-properties))
+	   (other-file-name (c-file-name-of-class class)))
+      (if (file-exists-p other-file-name)
+	  (find-file other-file-name)
+	(error "Cant find file '%s' which I assume defines the class '%s'" other-file-name class))))
+
+   ;; unknown type
+   (t (error "Unknown type %c" other-type))))
 
 (defun ffe-struct-by-abbrev (abbrev map)
   "Returns ffe-struct element with given abbrev."

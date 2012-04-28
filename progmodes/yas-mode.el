@@ -128,6 +128,7 @@
   (re-search-forward "^\\s-*\\w+\\s-*=")
   (forward-line -1))
 
+;;;###autoload
 (defun yas-mode()
   (interactive)
   (kill-all-local-variables)

@@ -4,16 +4,16 @@
 ;; Description: Macros for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 13:20:31 2011 (-0700)
+;; Last-Updated: Tue Jul 24 11:12:51 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 933
+;;     Update #: 1001
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -350,8 +350,8 @@ the buffer list ordering."
            ;; It is necessary to save all of these, because calling
            ;; select-window changes frame-selected-window for whatever
            ;; frame that window is in.
-           (save-selected-window-alist   (mapcar #'(lambda (frame)
-                                                     (list frame (frame-selected-window frame)))
+           (save-selected-window-alist   (mapcar (lambda (frame)
+                                                   (list frame (frame-selected-window frame)))
                                           (frame-list))))
       (save-current-buffer
         (unwind-protect
@@ -444,18 +444,30 @@ created after the others."
         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
        (icicle-all-candidates-list-alt-action-fn
         (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
+       (bufflist
+        (if (and icicle-ignore-space-prefix-flag  (eq icicle-current-TAB-method 'vanilla))
+            (icicle-remove-if (lambda (buf) (eq ?\   (aref (buffer-name buf) 0)))
+                              (buffer-list))
+          (buffer-list)))
        (icicle-bufflist
         (if current-prefix-arg
-            (cond ((zerop (prefix-numeric-value current-prefix-arg))
+            (cond ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
+                   (icicle-remove-if-not (lambda (bf)
+                                           (derived-mode-p (with-current-buffer bf major-mode)))
+                                         bufflist))
+                  ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
                    (let ((this-mode  major-mode))
-                     (icicle-remove-if-not #'(lambda (bf)
-                                               (with-current-buffer bf (eq major-mode this-mode)))
-                                           (buffer-list))))
-                  ((< (prefix-numeric-value current-prefix-arg) 0)
+                     (icicle-remove-if-not `(lambda (bf)
+                                             (with-current-buffer bf (eq major-mode ',this-mode)))
+                                           bufflist)))
+                  ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
                    (cdr (assq 'buffer-list (frame-parameters))))
-                  (t
-                   (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
-          (buffer-list))))
+                  (t                    ; `C-1'
+                   (icicle-remove-if-not (lambda (bf)
+                                           (or (buffer-file-name bf)
+                                               (with-current-buffer bf (eq major-mode 'dired-mode))))
+                                         bufflist)))
+          bufflist)))
      post-bindings))
 
 (defmacro icicle-file-bindings (&optional pre-bindings post-bindings)
@@ -500,8 +512,8 @@ created after the others."
                                                                                 icicle--temp-orders)))
                        (cons `("by `icicle-file-sort'" ,@icicle-file-sort) icicle--temp-orders)))
                  icicle--temp-orders)))
-       (icicle-candidate-help-fn                    #'(lambda (cand)
-                                                        (icicle-describe-file cand current-prefix-arg)))
+       (icicle-candidate-help-fn                    (lambda (cand)
+                                                      (icicle-describe-file cand current-prefix-arg)))
        (icicle-candidate-alt-action-fn
         (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
        (icicle-all-candidates-list-alt-action-fn
@@ -859,15 +871,26 @@ The command defined raises an error unless library `Bookmark+' can be
 loaded."
   `(icicle-define-command
     ,(intern (format "icicle-bookmark-%s%s" type (if otherp "-other-window" ""))) ; Command name
-    ,(format "Jump to a %s bookmark%s.
+    ,(format "Jump to a%s %s bookmark%s.
 Like `icicle-bookmark%s',
  but with %s bookmarks only.
 This is a multi-command version of
  `bmkp-%s-jump%s'.
+%s
 You need library `Bookmark+' for this command."
+             (if (memq (aref type 0) '(?a ?e ?i ?o ?u)) "n" "") ; `a' or `an'
              type (if otherp " in other window" "")
              (if otherp "-other-window" "") type
-             type (if otherp "-other-window" "")) ; Doc string
+             type (if otherp "-other-window" "")
+             (if (string-match "tags" type) ; Additional info about refreshing tags list.
+                 "
+By default, the tag choices for completion are NOT refreshed, to save
+time.  Use a prefix arg if you want to refresh them.  For example, use
+a prefix arg after you have switched to a different bookmark file,
+after you have added new tags to some bookmarks, or after you have
+completely removed some tags from all bookmarks.  IOW, any time the
+set of existing tags has changed, you might want to use a prefix arg,
+to update the list of tags available for completion." "")) ; Doc string
     (lambda (cand) (,(if otherp 'icicle-bookmark-jump-other-window 'icicle-bookmark-jump) ; Action fn.
                      (icicle-transform-multi-completion cand)))
     prompt1 icicle-candidates-alist nil ; `completing-read' args
@@ -878,6 +901,9 @@ You need library `Bookmark+' for this command."
                                                (error "You need library `Bookmark+' for this command")))
      (IGNORED2                               (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
+     (bmk-alist                              (bmkp-sort-omit
+                                              (funcall ',(intern (format "bmkp-%s-alist-only" type))
+                                               ,@args)))
      (completion-ignore-case                 bookmark-completion-ignore-case)
      (prompt1                                ,(or prompt
                                                   (format "%s%s bookmark: "
@@ -894,6 +920,10 @@ You need library `Bookmark+' for this command."
      (icicle-whole-candidate-as-text-prop-p  t)
      (icicle-transform-before-sort-p         t)
      (icicle-delete-candidate-object         'icicle-bookmark-delete-action)
+     ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
+     (icicle-full-cand-fn                    (and (equal ,type "autofile")
+                                              #'icicle-make-bookmark-candidate))
+     (icicle-candidates-alist                (mapcar #'icicle-make-bookmark-candidate bmk-alist))
      (icicle-sort-orders-alist
       (append
        '(("in *Bookmark List* order")	; Renamed from "turned OFF'.
@@ -929,48 +959,17 @@ You need library `Bookmark+' for this command."
        '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
          ("case insensitive" . icicle-case-insensitive-string-less-p))))
      (icicle-candidate-help-fn
-      #'(lambda (cand)
-          (when icicle-show-multi-completion-flag
-            (setq cand  (funcall icicle-get-alist-candidate-function cand))
-            (setq cand  (cons (caar cand) (cdr cand))))
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))))
-     (icicle-candidates-alist
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
-                            (cons (append (list (icicle-candidate-short-help
-                                                 (icicle-bookmark-help-string bname)
-                                                 (icicle-bookmark-propertize-candidate bname))
-                                                file/buf)
-                                          (and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
-       (bmkp-sort-omit (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
-    nil                                 ; First code
+      (lambda (cand)
+        (when icicle-show-multi-completion-flag
+          (setq cand  (funcall icicle-get-alist-candidate-function cand))
+          (setq cand  (cons (caar cand) (cdr cand))))
+        (if current-prefix-arg
+            (bmkp-describe-bookmark-internals cand)
+          (bmkp-describe-bookmark cand)))))
+    (when (equal ,type "autofile") (icicle-bind-file-candidate-keys)) ; First code
     (icicle-bookmark-cleanup-on-quit)	; Undo code
-    (icicle-bookmark-cleanup)))         ; Last code
+    (progn (when (equal ,type "autofile") (icicle-unbind-file-candidate-keys))
+           (icicle-bookmark-cleanup)))) ; Last code
 
 ;; Similar to `icicle-define-bookmark-command-1'.  Could combine them.
 (defmacro icicle-define-search-bookmark-command (type &optional prompt &rest args)
@@ -1011,6 +1010,13 @@ command")))
      (icicle-whole-candidate-as-text-prop-p    t)
      (icicle-transform-before-sort-p           t)
      (icicle-delete-candidate-object           'icicle-bookmark-delete-action)
+     ;; This binding is for `icicle-autofile-action', in `icicle-bind-file-candidate-keys'.
+     (icicle-full-cand-fn                      (and (equal ,type "autofile")
+                                                #'icicle-make-bookmark-candidate))
+     (icicle-candidates-alist                  (mapcar #'icicle-make-bookmark-candidate
+                                                (bmkp-sort-omit
+                                                 (funcall ',(intern (format "bmkp-%s-alist-only" type))
+                                                  ,@args))))
      (regexp                                   (icicle-search-read-context-regexp))
      (bookmark-automatically-show-annotations  nil) ; Do not show annotations
      (icicle-sort-orders-alist
@@ -1048,48 +1054,17 @@ command")))
        '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
          ("case insensitive" . icicle-case-insensitive-string-less-p))))
      (icicle-candidate-help-fn
-      #'(lambda (cand)
-          (when icicle-show-multi-completion-flag
-            (setq cand  (funcall icicle-get-alist-candidate-function cand))
-            (setq cand  (cons (caar cand) (cdr cand))))
-          (if current-prefix-arg
-              (bmkp-describe-bookmark-internals cand)
-            (bmkp-describe-bookmark cand))))
-     (icicle-candidates-alist
-      (mapcar (if icicle-show-multi-completion-flag
-                  #'(lambda (bmk)
-                      ;; Ignore errors, e.g. from bad or stale bookmark records.
-                      (icicle-condition-case-no-debug nil
-                          (let* ((bname     (bookmark-name-from-full-record bmk))
-                                 (guts      (bookmark-get-bookmark-record bmk))
-                                 (file      (bookmark-get-filename bmk))
-                                 (buf       (bmkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
-                                                buf
-                                              file))
-                                 (tags      (bmkp-get-tags bmk)))
-                            ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
-                            (cons (append (list (icicle-candidate-short-help
-                                                 (icicle-bookmark-help-string bname)
-                                                 (icicle-bookmark-propertize-candidate bname))
-                                                file/buf)
-                                          (and tags (list (format "%S" tags))))
-                                  guts))
-                        (error nil)))
-                #'(lambda (bmk)
-                    ;; Ignore errors, e.g. from bad or stale bookmark records.
-                    (icicle-condition-case-no-debug nil
-                        (let ((bname  (bookmark-name-from-full-record bmk))
-                              (guts   (bookmark-get-bookmark-record bmk)))
-                          (cons (icicle-candidate-short-help
-                                 (icicle-bookmark-help-string bname)
-                                 (icicle-bookmark-propertize-candidate bname))
-                                guts))
-                      (error nil))))
-       (bmkp-sort-omit (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
-    nil                                 ; First code
+      (lambda (cand)
+        (when icicle-show-multi-completion-flag
+          (setq cand  (funcall icicle-get-alist-candidate-function cand))
+          (setq cand  (cons (caar cand) (cdr cand))))
+        (if current-prefix-arg
+            (bmkp-describe-bookmark-internals cand)
+            (bmkp-describe-bookmark cand)))))
+    (when (equal ,type "autofile") (icicle-bind-file-candidate-keys)) ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
-    (icicle-bookmark-cleanup)))         ; Last code
+    (progn (when (equal ,type "autofile") (icicle-unbind-file-candidate-keys))
+           (icicle-bookmark-cleanup)))) ; Last code
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

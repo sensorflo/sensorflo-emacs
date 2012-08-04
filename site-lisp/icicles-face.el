@@ -4,20 +4,20 @@
 ;; Description: Faces for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 21 08:44:42 2011 (-0700)
+;; Last-Updated: Tue Jul 17 10:03:46 2012 (-0700)
 ;;           By: dradams
-;;     Update #: 606
+;;     Update #: 653
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp'.
+;;   `hexrgb'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -35,10 +35,6 @@
 ;;    `Icicles-Minibuffer-Display', `Icicles-Miscellaneous',
 ;;    `Icicles-Searching'.
 ;;
-;;  Macros defined here:
-;;
-;;    `icicle-maybe-byte-compile-after-load'.
-;;
 ;;  Faces defined here:
 ;;
 ;;    `icicle-candidate-part',
@@ -47,7 +43,9 @@
 ;;    `icicle-Completions-instruction-1',
 ;;    `icicle-Completions-instruction-2',
 ;;    `icicle-current-candidate-highlight', `icicle-extra-candidate',
-;;    `icicle-historical-candidate', `icicle-input-completion-fail',
+;;    `icicle-historical-candidate',
+;;    `icicle-historical-candidate-other',
+;;    `icicle-input-completion-fail',
 ;;    `icicle-input-completion-fail-lax',
 ;;    `icicle-match-highlight-Completions',
 ;;    `icicle-match-highlight-minibuffer', `icicle-mode-line-help',
@@ -67,7 +65,7 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `icicle-face-after-load-hexrgb', `icicle-increment-color-hue',
+;;    `icicle-increment-color-hue',
 ;;    `icicle-increment-color-saturation'
 ;;    `icicle-increment-color-value'.
 ;;
@@ -107,27 +105,15 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'hexrgb nil t)) ;; (no error if not found):
-  ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
 ;;(@* "Icicles Commands for Other Packages")
 
 ;;; Icicles Commands for Other Packages ------------------------------
 
-;; Same as the definition in `icicles-cmd2.el'.
-(defmacro icicle-maybe-byte-compile-after-load (function)
-  "Byte-compile FUNCTION if `icicle-byte-compile-eval-after-load-flag'.
-Do nothing if FUNCTION has not been defined (`fboundp')."
-  `(when (and icicle-byte-compile-eval-after-load-flag (fboundp ',function))
-    (require 'bytecomp)
-    (let ((byte-compile-warnings  ())
-          (byte-compile-verbose   nil))
-      (byte-compile ',function))))
+(when (require 'hexrgb nil t);; (no error if not found):
+  ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv.
 
-(defun icicle-face-after-load-hexrgb ()
-  "Things to do for `icicles-face.el' after loading `hexrgb.el'."
 
   ;; Essentially a version of `doremi-increment-color-component' for hue only.
   ;; Must be before `icicle-search-context-level-1'.
@@ -149,9 +135,6 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
       (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
                                           (hexrgb-hsv-to-rgb hue saturation value)))))
 
-  (icicle-maybe-byte-compile-after-load icicle-increment-color-hue)
-
-
   ;; Essentially a version of `doremi-increment-color-component' for saturation only.
   ;; Must be before `icicle-search-context-level-1'.
   (defun icicle-increment-color-saturation (color increment)
@@ -172,9 +155,6 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
       (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
                                           (hexrgb-hsv-to-rgb hue saturation value)))))
 
-  (icicle-maybe-byte-compile-after-load icicle-increment-color-saturation)
-
-
   ;; Essentially a version of `doremi-increment-color-component' for value only.
   ;; Must be before definition of option `icicle-region-background' (in `icicles-opt.el').
   (defun icicle-increment-color-value (color increment)
@@ -193,19 +173,7 @@ Do nothing if FUNCTION has not been defined (`fboundp')."
       (setq value  (+ value (/ increment 100.0)))
       (when (> value 1.0) (setq value  (1- value)))
       (hexrgb-color-values-to-hex (mapcar (lambda (x) (floor (* x 65535.0)))
-                                          (hexrgb-hsv-to-rgb hue saturation value)))))
-
-  (icicle-maybe-byte-compile-after-load icicle-increment-color-value)
-
-  )
-
-
-;;; Library `hexrgb.el'.
-;;;
-;;;###autoload (autoload 'icicle-increment-color-hue        "icicles-face.el")
-;;;###autoload (autoload 'icicle-increment-color-saturation "icicles-face.el")
-;;;###autoload (autoload 'icicle-increment-color-value      "icicles-face.el")
-(eval-after-load "hexrgb" '(icicle-face-after-load-hexrgb))
+                                          (hexrgb-hsv-to-rgb hue saturation value))))))
  
 ;;(@* "Groups, Organized Alphabetically")
 
@@ -474,6 +442,20 @@ This means that they belong to list `icicle-extra-candidates'."
   "*Face used to highlight `*Completions*' candidates that have been used."
   :group 'Icicles-Completions-Display :group 'faces)
 
+(when (> emacs-major-version 21)
+  (defface icicle-historical-candidate-other '((t (:inherit icicle-historical-candidate
+                                                   :underline t)))
+    "*Face to highlight `*Completions*' candidates that were used indirectly.
+That is, you might or might not have entered these candidates but in
+some sense you have used or visited them.  Example: index topics that
+point to Info nodes that you have visited.
+
+Whether or not such highlighting is done at all is governed by option
+`icicle-highlight-historical-candidates-flag'.  Whether it is done for
+a given set of candidates is governed by option
+`icicle-Info-visited-max-candidates'."
+    :group 'Icicles-Completions-Display :group 'faces))
+
 ;;;###autoload
 (defface icicle-input-completion-fail
     '((((background dark)) (:background "#22225F5F2222")) ; a dark green
@@ -559,7 +541,6 @@ Not used for versions of Emacs before version 21."
 This highlighting is done during Icicles searching."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-1
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -577,7 +558,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-2
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -595,7 +575,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-3
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -613,7 +592,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-4
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -631,7 +609,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-5
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -647,7 +624,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-6
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -663,7 +639,6 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
 (defface icicle-search-context-level-7
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))
@@ -679,7 +654,7 @@ This highlighting is done during Icicles searching whenever
 search context corresponds to the entire regexp."
   :group 'Icicles-Searching :group 'faces)
 
-;;;###autoload
+;; NO AUTOLOAD COOKIE HERE.
 (defface icicle-search-context-level-8
     (let ((context-bg  (face-background 'icicle-search-main-regexp-current)))
       `((((background dark))

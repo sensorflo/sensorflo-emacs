@@ -17,26 +17,29 @@
 ;; ==================================================
 (message "init file: settings part 1")
 
-(dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
-  (let ((default-directory (concat user-emacs-directory x)))
-		(add-to-list 'load-path default-directory)
-    (normal-top-level-add-subdirs-to-load-path))) 
-(dolist
-    (x (append
-				'("site-lisp/"
-					"site-lisp/ecb-2.40/")
-				(if (not (and (>= emacs-major-version 23) (>= emacs-minor-version 2)))
-						(mapcar
-						 (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))
-						 '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
-  (add-to-list 'load-path (concat user-emacs-directory x)))
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
+(load-file "~/.emacs.d/localinit.el")
 
+;; (dolist
+;;     (x (append
+;; 	'("site-lisp/"
+;; 	  "site-lisp/ecb-2.40/"
+;; 	  "."
+;; 	  "adoc-mode"
+;; 	  "modified-lisp/"
+;; 	  "modified-lisp/mediawiki-el/font-lock"
+;; 	  "modified-lisp/mediawiki-el/mediawiki-el"
+;; 	  "patches")
+;; 	(if (not (and (>= emacs-major-version 23) (>= emacs-minor-version 2)))
+;; 	    (mapcar
+;; 	     (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))
+;; 	     '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
+;;   (add-to-list 'load-path (concat "~/.emacs.d/" x)))
+;; (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
 ;; (setq generated-autoload-file (concat "~/.emacs.d/my-loaddefs.el"))
 ;; (load-file generated-autoload-file)
 
-(setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
-
+;; 
+(setq custom-file "~/.emacs.d/custom-file.el")
 (setq find-function-C-source-directory
       (concat (getenv "HOME") "/src/emacs-"
 	      (progn
@@ -59,9 +62,6 @@
 ;; some modes initialize stuff using their custom variables while loading, thus
 ;; load custom file before loading modes
 (load custom-file) 
-
-(load-library "aliases") 
-
 
 ;;; required libraries
 ;; ==================================================
@@ -208,6 +208,7 @@
 (load-library "hi-lock-ext") 
 (load-library "project") 
 (load-library "kmacro-ext") 
+(load-library "filealias") 
 (load-library "find-file-ext") 
 ;(load-library "subr-patch") 
 
@@ -241,6 +242,7 @@
 ;; 
 ;; - require-final-newline, mode-require-final-newline, c-require-final-newline
 
+(load-library "aliases") 
 (put 'upcase-region 'disabled nil)   
 (put 'set-goal-column 'disabled nil) 
 (put 'narrow-to-region 'disabled nil) 

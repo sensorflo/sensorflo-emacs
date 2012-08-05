@@ -171,6 +171,14 @@ the directory part and without suffix. Thus for
      (t
       (c-goto-specific-defun-name name nil t)))))
 
+;; todo: let user choose wheter this class or the class point is on (well, for the later probably
+;; using tags or the like is better)
+(defun c-goto-class-declaration ()
+  (interactive)
+  (if (c-src-buffer-p) (ff-get-other-file))
+  (beginning-of-buffer)
+  (re-search-forward (concat "^[ \t]*class[ \t]+" (regexp-quote (c-class-name)) "\\b")))
+
 (defun c-goto-specific-defun-name (defun-name &optional search-from-point exact)
   (interactive "sMethod name: ")
   (let ((saved-point (point))
@@ -322,6 +330,36 @@ the directory part and without suffix. Thus for
     (when (null name)
       (error "no class name found"))
     name))
+
+;; todo: probably its better to use info from tags
+(defun c-file-name-of-class (class-name)
+  "Returns the file name which declares the given CLASS-NAME"
+  (concat (substring class-name 1) ".h"))
+
+(defun c-base-class-names ()
+  "Returns a list of class names from which this class derives"
+  (save-excursion
+    (c-goto-class-declaration)
+    (let* (bases
+	   (whites "\\(?:[ \t\n]+\\)")
+	   (span-comment "\\(?:/\\*[^*]*\\(?:\\*[^/][^*]*\\)*\\*/\\)")
+	   (line-comment "\\(?://.*\n\\)")
+	   (comment (concat "\\(?:" span-comment "\\|" line-comment "\\)"))
+	   (tmp (concat "\\(?:\\(?:" whites "\\|" comment "\\)")) 
+	   (skip+ (concat tmp "+\\)"))	;exclusive empty string
+	   (skip* (concat tmp "*\\)"))	;inclusive empty string
+	   (identifier "\\(?:[_A-Za-z][_A-Za-z0-9]+\\)"))
+      (re-search-forward (concat "\\=" skip* "\\([:{]\\)" skip*))
+      (setq stop (string= (match-string 1) "{"))
+      (while (not stop)
+      	(if (re-search-forward (concat "\\=" skip* "\\(?:public\\|private\\|protected\\)" skip+ "\\(?:virtual" skip+ "\\)?" "\\(" identifier "\\)" skip* ",?" ) nil t)
+      	    (add-to-list 'bases (match-string-no-properties 1))
+      	  (setq stop t)))
+      bases)))
+
+(defun c-derived-class-names ()
+  "Returns a list of class names which derive from this class"
+  nil)
 
 (defun c-defun-name ()
   (interactive)
@@ -480,6 +518,13 @@ the directory part and without suffix. Thus for
 (defun insert-defun-name ()
   (interactive)
   (insert (c-defun-name)))
+
+(defun insert-base-class-name-with-scope ()
+  (interactive)
+  (let ((bases (c-base-class-names)))
+    (if (null bases)
+	(error "No base classes"))
+    (insert (car (c-base-class-names)) "::")))
 
 (defun c-copy-param-list ()
   (interactive)
@@ -689,5 +734,10 @@ the directory part and without suffix. Thus for
    ((looking-at "/\\*")
     (replace-regexp "/\\*[*!]*\\(.*?\\)\\**/" "//\\1" nil (point) (line-end-position)))))
 
+;; (defun c-font-lock-invalid-string ()
+;;   "Replacement of the original `c-font-lock-invalid-string'.
+;; The original one wronly fontifies double quotes when the whole
+;; string is fontified with an not font-lock-string-face."
+;;   nil)
 
 ;;; cc-mode-ext.el ends here

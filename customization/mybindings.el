@@ -37,7 +37,10 @@
 ;; require/autoload: thanks to autoload most commands need not to be loaded with
 ;; require & co. However 
 ;;
+
 ;;; Code
+(require 'repeatable)
+
 
 ;;; redifine with similar functionality
 (global-set-key [remap isearch-forward]         'isearch-forward-regexp) 
@@ -70,6 +73,7 @@
 (global-set-key "\C-y"                          'yank-ext)
 (global-set-key "\M-y"                          'yank-pop-ext) ;see also yank-push below
 
+
 ;;; redefine existing bindings with new functionality           
 (global-set-key [(control l)]      'forward-char)         ; recenter-top-bottom     -> nowhere (use c-recenter-defun-or-region)
 (global-set-key [(meta l)]         'forward-word)         ; downcase-word           -> nowhere
@@ -77,21 +81,20 @@
 (global-set-key [(meta m)]          (make-sparse-keymap)) ; back-to-indentation     -> nowhere (use beginning-of-line-dwim)
 (global-set-key [(control f)]       (make-sparse-keymap)) ; forward-char            -> C-l
 
-
+
 ;;; add new bindings 
 ;; (prexix-keymaps M-m / C-f were created above)
 (global-set-key [(control ?\')]           'mark-word)     ; by default on M-@
 (global-set-key [(control f)(control f)]  'ffe-find-file)
+(global-set-key [(control f)(control o)]  'ffe-find-other-file)
 (global-set-key [(control f)(f)]          'globalff)
 (global-set-key [(control f)(control r)]  'query-replace-regexp) 
 (global-set-key [(control f)(control k)]  'execute-extended-command) 
-(global-set-key [(control f)(control b)]  'next-buffer-ext) 
-(global-set-key [(control f)(control l)]  'previous-buffer-ext) 
+(autoload 'doremi-buffers+ "doremi-cmd.el")
+(global-set-key [(control f)(control b)]  'doremi-buffers+) ; old next-buffer-ext / previous-buffer-ext
 (global-set-key [(control f)(control s)]  'grep-find-ext) 
 (global-set-key [(meta m)(meta m)]        'kmacro-start-stop-macro-ext)
 (global-set-key [(control meta y)]        'yank-push-ext) ; see also yank-pop above
-(unless (lookup-key global-map [(control c)])
-  (global-set-key [(control c)] (make-sparse-keymap)))
 (global-set-key [(control c)(w)] (make-sparse-keymap))
 (global-set-key [(control c)(w)(b)]  'windmove-left) 
 (global-set-key [(control c)(w)(l)]  'windmove-right) 
@@ -109,7 +112,15 @@
 (define-key ctl-x-r-map "w" 'copy-rectangle-as-kill)
 (define-key ctl-x-r-map "T" 'string-insert-rectangle) ; C-x r t is string-rectangle
 
+
+;;; repeatable
+(repeatable-command-advice forward-page)
+(repeatable-command-advice backward-page)
+(repeatable-command-advice next-error)
+(repeatable-command-advice previous-error)
+;;set-mark-command-repeat-pop = t
 
+
 ;;; my-common-mode-bindings
 ;; Maybe theres a function returning local key map, so a generic mehtod including
 ;; global map is possible

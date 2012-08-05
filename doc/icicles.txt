@@ -1,0 +1,33 @@
+= icicles
+
+== toggle options on the fly
+- C-A icicle-toggle-case-sensitivity
+- `M-?'  `icicle-minibuffer-help'
+
+== cycle
+modal (icicle-default-cycling-mode): mouse wheel, up/down
+prefix : end/home
+apropos : next/prior
+
+=== chain
+M-* (but only after first chuck was ended with S-TAB)
+S-SPC shortcut for S-TAB M-*
+
+=== chip
+delete (optionally keep pressed) deletes the completion canditate
+C-~ removes the current matches from the possible matcheso
+
+== choose / select  / mark
+
+== default
+M-n insert default value
+
+== completion types
+prefix aka vanilla emacs: TAB
+apropos: S-TAB
+
+
+= terms
+possible matches/completions:: ss
+current matches/completions:: slkj
+completion candiate:: o

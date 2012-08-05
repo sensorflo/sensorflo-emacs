@@ -348,8 +348,8 @@
 ;;   (semantic-load-enable-gaudy-code-helpers))
 ;; (when (require 'srecode-mode nil t)
 ;;   (global-srecode-minor-mode 1))
-;(require 'icicles)
-;(icy-mode) ; icy-mode wants to be the last thing called 
+(require 'icicles)
+(icy-mode) ; icy-mode wants to be the last thing called 
 
 (setq debug-on-error nil) ;; customized to nil, but for some reasons does not work
 

@@ -1,33 +1,92 @@
 = icicles
 
-== toggle options on the fly
-- C-A icicle-toggle-case-sensitivity
-- `M-?'  `icicle-minibuffer-help'
+== cycle completion candiates
+cycle within minibuffer
 
-== cycle
-modal (icicle-default-cycling-mode): mouse wheel, up/down
-prefix : end/home
-apropos : next/prior
+regex, apropos (i.e. implicit `.*' at front/end) 
++<next>|<prev>+ +icicle-next|prev-apropos-candiate+
 
-=== chain
-M-* (but only after first chuck was ended with S-TAB)
-S-SPC shortcut for S-TAB M-*
+string, prefix
++<home>|<end>+ +icicle-next|previous-prefix-candidate+
 
-=== chip
-delete (optionally keep pressed) deletes the completion canditate
-C-~ removes the current matches from the possible matcheso
+modal (= current completion mode +icicle-default-cycling-mode+ [prefix or apropos] is used)
+up|down icicle-next|previous-candidate-per-mode
 
-== choose / select  / mark
+choose what is selected
++<RET>|<mouse-2>+ +minibuffer-complete-and-exit|mouse-choose-completion+
 
-== default
-M-n insert default value
+When any of the above (next,prev,home,end,up,down,ret,mouse-2,...) addinaly with
+modifiers C-M-, then show help is shown in a buffer
 
-== completion types
-prefix aka vanilla emacs: TAB
-apropos: S-TAB
+Works also when already a completion window is shown. 
 
+== display completion candiates
+show completions buffer and cycle within that one
 
-= terms
-possible matches/completions:: ss
-current matches/completions:: slkj
-completion candiate:: o
++<S-TAB>+ +icicle-apropos-complete+
++<TAB>+ +icicle-prefix-complete+
++<C-v>|<M-v>+ +icicle-scroll-Completions-forward|backward+
+
+== Progressive completion
+
+only seems to work during `display completion', altough also callable when just
+cicling in the minibuffer. It seems that then the list of candidates is empty.
+
+modal (mode from previous completion buffer, or changed by S-TAB/TAB/NEXT/....)
++<M-*>+ +icicle-narrow-candidates+
++<S-SPC>+ +icicle-apropos-complete-and-narrow+, short for +<S-TAB><M-*>+
+`M-&', `icicle-narrow-candidates-with-predicate'
+
+== Set of completions candidates
+
+removes what matches currently from the parent set
++<C-~>+ +icicle-candidate-set-complement+
+
+remove the currently selected candiate from set of candidates
++<delete>+ +icicle-remove-canditate+
+
+== Multi commands
+
+Perform the original action (e.g. finding a file when you started with
+find-file) _before_ ending minibufer, i.e. you still can further refine you
+search.
+
++<C-RET>+ +icicle-candidate-action+
++<C-down>+ +icicle-next-candidate-per-mode-action+
++<C-end>+ +icicle-next-prefix-candidate-action+
++<C-next>+ +icicle-next-apropos-candidate-action+
+
+== Alternate actions
+
+Perform an alternate (not the original) action
++<C-S-return>+ +icicle-candidate-alt-action+
++<C-|>+ +icicle-all-candidates-alt-action+
+
+== Key completion
+
+Show all keys and their binding. RET executes the binded commanded, or if its a
+keymap, shows the list of bindings in that keymap.
++(Prefixkeys)*<S-TAB>+ +icicle-complete-keys+
+
+remember that with the modifiers C-M-... you get help
+
+== History
+
+M-n|M-p next|previous-history-element, as in vanilla. 
+
+`C-l'|`C-S-l' `icicle-retrieve-(previous|next)-input': to go back to your
+previous input in the minibufer, e.g. after icicles auto completed it, or
+changed it because you cicled.
+
+icicle-expand-input-to-common-match-flag, toggle with C-;
+
+== Misc
+
+- Within minibufer, +<M-.>+ +icicle-insert-string-at-point+ yanks the text at
+  point into the minibuffer. Use it successively to grap 1) alternative bits 2)
+  succesive bits. +icicle-default-thing-insertion+ chooses which of the two is
+  used.
+- Proxy candidates ????
+- `C-x C-f' (`icicle-resolve-file-name') (within minibufer): to resolve a file
+ 	name to its true, absolute name.
+

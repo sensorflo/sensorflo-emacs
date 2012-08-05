@@ -106,20 +106,20 @@
 
 (defun nova-c-mode-common-bindings()
   ;; definitions / declarations
-  (local-set-key [(control ,)(d)(d)] 'tempo-template-c-nova-method)
-  (local-set-key [(control ,)(d)(c)] '(lambda () (interactive) (open-line 1) (tempo-template-c-nova-class)))
+  (local-set-key [(control ?,)(d)(d)] 'tempo-template-c-nova-method)
+  (local-set-key [(control ?,)(d)(c)] 'tempo-template-c-nova-class)
 
   ;; comment stuf
-  (local-set-key [(control ,)(k)(i)] 'tempo-template-c-nova-internal)
-  (local-set-key [(control ,)(k)(c)] 'tempo-template-doxy-code)
+  (local-set-key [(control ?,)(k)(i)] 'tempo-template-c-nova-internal)
+  (local-set-key [(control ?,)(k)(c)] 'tempo-template-doxy-code)
 
   ;; statements
-  (local-set-key [(control ,)(s)(?\;)] '(lambda () (interactive) (end-of-line) (tempo-template-c-nova-statement-common))) 
-  (local-set-key [(control ,)(s)(r)] '(lambda () (interactive) (end-of-line) (tempo-template-c-nova-early-return)))
+  (local-set-key [(control ?,)(s)(?\;)] 'tempo-template-c-nova-statement-common)
+  (local-set-key [(control ?,)(s)(r)] 'tempo-template-c-nova-early-return)
   
   ;; text
-  (local-set-key [(control ,)(t)(o)] 'tempo-template-c-nova-oi18n)
-  (local-set-key [(control ,)(t)(t)] 'tempo-template-c-nova-ti18n)
+  (local-set-key [(control ?,)(t)(o)] 'tempo-template-c-nova-oi18n)
+  (local-set-key [(control ?,)(t)(t)] 'tempo-template-c-nova-ti18n)
 
   ;; nova project
   (local-set-key [(control f)(p)] (make-sparse-keymap))

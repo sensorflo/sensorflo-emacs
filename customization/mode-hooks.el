@@ -156,10 +156,9 @@
   (doxymacs-font-lock)
 
   ;; TODO subword-mode shall be turned on globally 
-  (eval-when-compile
-    (if (< (+ (* 100 emacs-major-version) emacs-minor-version) 2302)
-	(c-subword-mode t)
-      (subword-mode t)))
+  (if (< (+ (* 100 emacs-major-version) emacs-minor-version) 2302)
+      (c-subword-mode t)
+    (subword-mode t))
 
   (setq c-basic-offset 2)
   ;; (set (make-local-variable 'compilation-error-regexp-alist)
@@ -244,6 +243,7 @@
   (local-set-key [(control ?\.)(p)] 'c-beginning-of-defun-param-list)
   (local-set-key [(control ?\.)(b)] 'c-beginning-of-defun-body) 
   (local-set-key [(control ?\.)(r)] 'c-recenter-defun-or-region) 
+  (local-set-key [(control ?\.)(c)] 'c-goto-class-declaration) 
   
   ;; misc
   (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
@@ -268,6 +268,7 @@
   (local-set-key [(control ?\,)(c)(f)] (make-sparse-keymap)) 
   (local-set-key [(control ?\,)(c)(f)(f)] 'tempo-template-c-for-std-2) 
   (local-set-key [(control ?\,)(c)(f)(a)] 'tempo-template-c-for-std) 
+  (local-set-key [(control ?\,)(c)(f)(i)] 'tempo-template-c-for-iter) 
   (local-set-key [(control ?\,)(c)(w)] 'tempo-template-c-while)
   (local-set-key [(control ?\,)(c)(d)] 'tempo-template-c-do)
   (local-set-key [(control ?\,)(c)(s)] 'tempo-template-c-switch)
@@ -292,11 +293,11 @@
   (local-set-key [(control ?\,)(p)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(p)(i)] 'tempo-template-c-include) 
   (local-set-key [(control ?\,)(p)(I)] 'tempo-template-c-include-system) 
-  (local-set-key [(control ?\,)(p)(m)] '(lambda () (interactive) (tempo-template-c-pragma-message)))
   
   ;; names / ids
   (local-set-key [(control ?\,)(n)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(n)(n)] 'insert-class-name-dwim)
+  (local-set-key [(control ?\,)(n)(b)] 'insert-base-class-name-with-scope)
 
   ;; text
   (local-set-key [(control ?\,)(t)] (make-sparse-keymap))

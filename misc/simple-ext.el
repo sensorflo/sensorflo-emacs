@@ -109,7 +109,7 @@ same way the initial block had."
   (end-of-line)
   (forward-char 1))
   
-(defun mark-whole-lines ()
+(defun mark-whole-lines (&optional point-end-of-last-line)
   "If region not active, mark whole line is point on.
 If region is active, mark all lines between point and mark."
   (interactive)
@@ -125,11 +125,14 @@ If region is active, mark all lines between point and mark."
         (unless (eq (point) (line-beginning-position))
           (forward-line))
         (set-mark beg))
-  
+    
     ;; mark line: mark to beginning, point to beginning of next line
     (beginning-of-line)
     (set-mark (point))
-    (forward-line)))
+    (forward-line))
+
+  (when point-end-of-last-line
+    (forward-char -1)))
 
 (defun mark-paragraph-ext(&optional arg)
   "With prefix argument, call \\[mark-paragraph-rect], else call \\[mark-paragraph]."
@@ -224,10 +227,14 @@ Behaviour of point is unspecified."
 (defun beginning-of-line-dwim ()
   "Toggles between beginning of line and the first non white of the line."
   (interactive)
-  (if (and (equal last-command 'beginning-of-line-dwim)
-           (looking-at "^"))
-      (back-to-indentation)
-    (move-beginning-of-line nil)))
+  (cond
+   ((and (equal last-command 'beginning-of-line-dwim) (looking-at "^"))
+      (back-to-indentation))
+   ;; todo: this is dragon.el specific, find a way to define that functionality within dragon.el 
+   ((and (equal last-command 'beginning-of-line-dwim) (looking-back "^[ \t]+"))
+    (re-search-forward "[ \t]*\\(EHRESULT[ \t]+\\)?ehr[ \t]*\\+?=[ \t]*"))
+   (t
+    (move-beginning-of-line nil))))
 
 (defun end-of-line-dwim (&optional arg)
   "Cycles among different positions at the end of the line.

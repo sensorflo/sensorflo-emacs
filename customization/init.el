@@ -35,8 +35,8 @@
 ;; (setq generated-autoload-file (concat "~/.emacs.d/my-loaddefs.el"))
 ;; (load-file generated-autoload-file)
 
+;; 
 (setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
-
 (setq find-function-C-source-directory
       (concat (getenv "HOME") "/src/emacs-"
 	      (progn

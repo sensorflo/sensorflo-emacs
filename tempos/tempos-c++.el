@@ -1,10 +1,12 @@
 (require 'tempo-ext)
 
+
 ;;; common structures
 ;; -----------------------------------------------------------------------------
 (tempo-define-template "c-block"
  '( "{ " > n> r> n> "}" >))
 
+
 ;;; declartions
 ;; -----------------------------------------------------------------------------
 
@@ -33,14 +35,15 @@
     "real64* pf" p " = " p "0.0;" > )
  "preal")
 
+
 ;;; flow controll
 ;; -----------------------------------------------------------------------------
 
 (tempo-define-template "c-for"
- '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "")
-   "for ( " p "; " p "; " p " ) {" > n>
-   r> n>
-   "}" > )
+ '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
+   "for ( " p "; " p "; " p " ) {" >n
+   r-or-blank-line>
+   "}" > % )
  "for")
 
 ;; (defun tempo-template-c-for-fuck()
@@ -48,48 +51,55 @@
 ;;   ))
 
 (tempo-define-snippet "c-for-std"
- '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "")
+ '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
     "for ( " (p "type" type) " " (p "name" name) " = 0; "
-    (s name) " < " (p "max" max) " ; "
-    (s name) "++ ) {" > n>
-    r> n>
-    "}" >))
+      (s name) " < " (p "max" max) " ; "
+      (s name) "++ ) {" >n
+    r-or-blank-line>
+    "}" > %))
 
 (tempo-define-template "c-for-std-2"
- '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "")
-   "for ( int i = 0 ; i < " p "; i++ ) {" > n>
-   r> n>
-   "}" > ))
+ '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
+   "for ( int i = 0 ; i < " p "; i++ ) {" >n
+   r-or-blank-line>
+   "}" > %))
 
+(tempo-define-template "c-for-iter"
+  '( lws
+     "for ( auto iter=" p ".begin() ; "
+            "iter!=" p ".end() ; "
+            "++iter ) {" >n
+     r-or-blank-line>
+     "}" > %))
 
 ;; if
 (tempo-define-template "c-if"
- '((progn (tempo-entry "\\bi\\(f\\sw*\\)?") "")
-   "if ( " p " ) {" > n>
-    r> n>
-    "}" > )
+ '((progn (tempo-entry "\\bi\\(f\\sw*\\)?") "") lws
+   "if ( " p " ) {" >n
+   r-or-blank-line>
+    "}" > % )
  "if")
 
 ;; else if
 (tempo-define-template "c-else-if"
- '((progn (tempo-entry) "")
-   "else if ( " p " ) {" > n>
-    r> n>
-    "}" >)
+ '((progn (tempo-entry) "") lws
+   "else if ( " p " ) {" >n
+   r-or-blank-line>
+    "}" > %)
  "elif")
 
 ;; else
 (tempo-define-template "c-else"
- '((progn (tempo-entry "\\bi\\(f\\sw*\\)?") "")
-   "else {" > n>
-    r> n>
-    "}" >)
+ '((progn (tempo-entry "\\bi\\(f\\sw*\\)?") "") 
+   "else {" >n
+   r-or-blank-line>
+    "}" > %)
  "else")
 
 ;; switch
 (tempo-define-template "c-switch"
- '( &
-    "switch ( " p " ) {" > n>
+ '( lws
+    "switch ( " p " ) {" >n
     > n>
     "case " p ": " > n>
     p > n>
@@ -107,55 +117,56 @@
 
 ;; case
 (tempo-define-template "c-case"
- '( &
-    "case " p ":" > n>
-    p > n>
-    "break;" > )
+ '( lws
+    "case " p ":" >n
+    r-or-blank-line>
+    "break;" > %)
  "case")
 
 ;; default
 (tempo-define-template "c-default"
- '( &
-    "default :" > n>
-    p > n>
+ '( lws
+    "default :" >n
+    r-or-blank-line>
     "break;" > )
  "default")
 
 ;; while
 (tempo-define-template "c-while"
- '( &
-    "while ( " p " ) {" > n>
-    r> n>
-    "}" > )
+ '( lws
+    "while ( " p " ) {" >n
+    r-or-blank-line>
+    "}" > % )
  "while")
 
 ;; do
 (tempo-define-template "c-do"
- '( &
-    "do {" > n>
-    r> n>
-    "} while ( " p " );" > )
+ '( lws
+    "do {" >n
+    r-or-blank-line>
+    "} while ( " p " );" > %)
  "do")
 
 ;; try
 (tempo-define-template "c-try"
- '( &
-    "try {" > n>
-    r> n>
-    "}" > n>
-    "catch ( " p " ) {" > n>
+ '( lws
+    "try {" >n
+    r-or-blank-line>
+    "}" >n
+    "catch ( " p " ) {" >n
     p > n>
-    "}" > )
+    "}" > %)
  "try")
 
 ;; catch
 (tempo-define-template "c-catch"
- '( &
-    "catch ( " p " ) {" > n>
-    p > n>
-    "}" > )
+ '( lws
+    "catch ( " p " ) {" >n
+    r-or-blank-line>
+    "}" > %)
  "catch")
 
+
 ;;; misc
 ;; -----------------------------------------------------------------------------
 
@@ -220,14 +231,14 @@
 ;; (p "classname: \n" class)
 ;; (upcase (tempo-lookup-named 'class))
 
-(tempo-define-snippet "-c-delete"
+(tempo-define-snippet "c-delete"
  '( &    
     "if (" (p "ptr: " ptr)") {" > n>
     "delete " (s ptr) ";" > n>
     (s ptr) " = NULL;" > n>
     "}" > ))
 
-
+
 ;;; scratch tempo exentions
 ;; ----------------------------------------------------------------------
 ;; todo:

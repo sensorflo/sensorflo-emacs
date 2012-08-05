@@ -25,6 +25,19 @@
     (c-set-offset 'access-label '-)
     (c-set-offset 'inclass '++)
     (dragon-font-lock-add-keywords)
+
+    ;; todo: maybe its cleaner to make dragon-abbrev-table the
+    ;; local-abbrev-table, and the ex local-abbrev-table a parent of it
+    (abbrev-mode 1)
+    ;; (when (or (not (listp local-abbrev-table))
+    ;; 	      (not (member dragon-abbrev-table local-abbrev-table)))
+    ;;   (if (not (listp local-abbrev-table))
+    ;; 	  (setq local-abbrev-table (list local-abbrev-table dragon-abbrev-table))
+    ;; 	(setq local-abbrev-table (list local-abbrev-table dragon-abbrev-table))))
+    (dolist (x dragon-abbrev-table) 	
+      (define-abbrev local-abbrev-table (nth 0 x) (nth 1 x) (nth 2 x)
+	:enable-function (dragon-create-abbrev-enable-function (nth 3 x))))
+
     (when (and (dragon-file-p) (not (dragon-coding-system-p)))
       (message "%s: encoding system is %S which is not dragons's encoding system (windows-1252-dos undecided-dos)"
                (buffer-name) buffer-file-coding-system)
@@ -36,10 +49,10 @@
 (defun dragon-c-mode-common-bindings()
   ;; definitions
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
-  (local-set-key [(control ?\,)(d)(d)] '(lambda () (interactive) (open-line 1) (tempo-template-dragon-method-def-std)))
-  (local-set-key [(control ?\,)(d)(D)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-def)))
-  (local-set-key [(control ?\,)(d)(m)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-decl-std)))
-  (local-set-key [(control ?\,)(d)(M)] '(lambda () (interactive) (end-of-line) (tempo-template-dragon-method-decl)))
+  (local-set-key [(control ?\,)(d)(d)] 'tempo-template-dragon-method-def-std)
+  (local-set-key [(control ?\,)(d)(D)] 'tempo-template-dragon-method-def)
+  (local-set-key [(control ?\,)(d)(m)] 'tempo-template-dragon-method-decl-std)
+  (local-set-key [(control ?\,)(d)(M)] 'tempo-template-dragon-method-decl)
 
   ;; control flow
   (local-set-key [(control ?\,)(c)(t)] 'tempo-template-dragon-try-catch-std) 
@@ -48,7 +61,10 @@
   ;; statements
   (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(s)(r)] 'tempo-template-dragon-early-return-std)
-  (local-set-key [(control ?\,)(s)(a)] 'tempo-template-dragon-eassert)
+  (local-set-key [(control ?\,)(s)(a)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(s)(a)(a)] 'tempo-template-dragon-eassert)
+  (local-set-key [(control ?\,)(s)(a)(n)] 'tempo-template-dragon-eassert-new)
+  (local-set-key [(control ?\,)(s)(a)(p)] 'tempo-template-dragon-eassert-pointer)
   (local-set-key [(control ?\,)(s)(s)] 'tempo-template-dragon-statement-common-ehr)
 
   ;; misc
@@ -139,7 +155,8 @@
       
       (list "^\\s-*EHRESULT\\s-+ehr\\s-*[;=]" '(0 font-lock-semi-unimportant t))
       (list "^\\s-*ehr\\s-*\\+=" '(0 font-lock-semi-unimportant t))
-      (list "^\\s-*[a-zA-Z0-9_]*\\(STOP\\|RETURN\\|ASSERT\\|THROW\\)[a-zA-Z0-9_]*\\s-*(.*" '(0 font-lock-semi-unimportant t))
+      ;; dont gray out CPPUNIT_ASSERT, thus EASSERT instead ASSERT
+      (list "^\\s-*[a-zA-Z0-9_]*\\(STOP\\|RETURN\\|EASSERT\\|THROW\\)[a-zA-Z0-9_]*\\s-*(.*" '(0 font-lock-semi-unimportant t))
       (list "\\(?:^\\|}\\)\\s-*\\([a-zA-Z0-9_]*CATCH[a-zA-Z0-9_]*\\s-*(.*\\)" '(1 font-lock-semi-unimportant t))
       (list "^\\s-*\\(return\\s-*ehr\\s-*;\\)\\s-*\n}" '(1 font-lock-semi-unimportant t))
       (list "^\\s-*E\\(END\\|BEGIN\\)_COM_METHOD.*" '(0 font-lock-semi-unimportant t))
@@ -323,6 +340,80 @@
 	(delete-region (point) (match-end 1))
 	(insert replacement))))))
 
+;;; abbrevs
+;; (setq dragon-abbrev-table (make-abbrev-table)) ;props are added in mode hook
+(setq dragon-abbrev-table
+      '(("cdbm" "CPPSeqDBMenu")
+	("dbm" "DBMenu")
+	("cmh" "CPPSeqMenuHandler")
+	("mh" "MenuHandler")
+	("cdh" "CPPSeqDataHandler")
+	("dh" "DataHandler")
+	("cdhb" "CPPSeqDataHandlerBase")
+	("dhb" "DataHandlerBase")
+	("cf" "CPPSeqFeature")
+	("f" "Feature")
+	("cfc" "CPPSeqFeatureCoordinator")
+	("fc" "FeatureCoordinator")
+	("cmc" "CPPSeqMenuCoordinator")
+	("mc" "MenuCoordinator")
+	("ce" "CPPSeqEnabler")
+	("e" "Enabler")
+	("ceo" "CPPSeqEnablerObserver")
+	("eie" "EPPSeqIsEnabled")
+	("ie" "IsEnabled")
+	("cls" "CPPSeqLogicState")
+	("ls" "LogicState")
+	("csl" "CPPSeqStateHdlList")
+	("sl" "StateHdlList")
+	("cog" "CPPSeqOptGroup")
+	("og" "PPSeqOptGroup")
+	("cfs" "CPPSeqFuncSel")
+	("fs" "FuncSel")
+	("cs" "CPPSeqSelector")
+	("s" "Selector")
+	("cso" "CPPSeqSelectorObserver")
+	("so" "SelectorObserver")
+	("cm" "CPPSeqMeth")
+	("cgd" "CPPSeqGlobalData")
+	("ifc" "CPPSeqIfc")
+	("vec" "EVecXy")
+
+	("EH" "EHRESULT ehr;")
+	
+	("if" "" tempo-template-c-if 'only-in-code)
+	("for" "" tempo-template-c-for 'only-in-code)
+	("case" " " tempo-template-c-case 'only-in-code)
+	("default" " " tempo-template-c-default 'only-in-code)
+	("do" " " tempo-template-c-do 'only-in-code)
+	("er" " " tempo-template-c-early-return-std 'only-in-code)
+	("eret" " " tempo-template-c-early-return-std 'only-in-code)
+	("et" " " tempo-template-c-ethrow 'only-in-code)
+	("inc" " " tempo-template-c-include 'only-in-code)
+	("include" " " tempo-template-c-include 'only-in-code)
+	("r" " " tempo-template-c-return-std 'only-in-code)
+	("switch" " " tempo-template-c-switch 'only-in-code)
+	("while" " " tempo-template-c-while 'only-in-code)))
+
+(defun dragon-create-abbrev-enable-function (arg)
+  `(lambda () (dragon-abbrev-enable-function ,arg)))
+
+(defun dragon-abbrev-enable-function (arg) 
+  (let ((in-code (not (nth 8 (syntax-ppss)))))
+    (cond
+     ;; only expand in code syntax
+     ((eq arg 'only-in-code)
+      (and in-code (looking-at "[ \t]*$")))
+
+     ;; expand (potentially) always
+     (t
+      ;; dont expand if 'abbrev' is preceded by . or \
+      (if in-code
+	  t
+	(save-excursion
+	  (backward-word)
+	  (looking-back "[^.\\]")))))))
+
 ;;; file aliases / cache
 (setq filealias-default-root-dir "W:")
 
@@ -379,11 +470,15 @@
 	  "~/src/DieBonder/PC"
 	  "~/src/DieBonder/RTOS/PickPlace"
 	  "~/src/DieBonder/PC/PickPlace"
-	  "~/src/DieBonder/PC/PickPlace"
 	  "~/src/DieBonder/PC/PickPlace/PPSeqBaseLib"
 	  "~/src/DieBonder/PC/PickPlace/PPCalibMod"
 	  "~/src/DieBonder/RTOS/PickPlace/PPCalibMod"
+	  "~/src/DieBonder/PC/PickPlace/PPPPickerMod"
+	  "~/src/DieBonder/RTOS/PickPlace/PPPPickerMod"
+	  "~/src/DieBonder/PC/PickPlace/PPPPickerShuttleMod"
+	  "~/src/DieBonder/RTOS/PickPlace/PPPPickerShuttleMod"
 	  "~/drives/xpc/Program Files/Esec/DieBonder/Data/BuildVersion.txt"
+	  "~/office/dragon/todo.txt"
 	  ))
 
 (setq ffe-dir-map-map '(
@@ -568,30 +663,43 @@
       ("StdAfx" ("afx") "h")
       ("PPSeqDoxygen" ("doxy" "dox") "h")
       ("PPSeqMeth" ("m"))
+      ("PPSeqStateHandlingMethods" ("shm"))
+      ("IPPSeqStateHandlingMethods" ("ishm"))
       ("PPSeqRTOSModData" ("rmd"))
       ("PPSeqRTOSBase" ("rb"))
       ("PPSeqGlobalData" ("gd"))
+      ("PPSeqGlobalMenuDataAccess" ("gmda"))
       ("PPSeqItemIDs" ("ii" "i") "h")
       ("PPSeqForeignItemIDs" ("fii" "fi") "h")
       ("PPSeqDiagCondition" ("dc" "di") "h")
-      ("PPSeqTypeDefinitions" ("td") "h")
+      ("PPSeqTypeDefinitions" ("td" "type") "h")
       ("PPSeqIfc" ("ic" "ifc") "h")
-      ("PPSequencer" ("idl") "idl")
+      ("IPPSeq" ("idl") "idl")
       ("PPSeqDataMgrPC" ("dmp"))
       ("PPSeqRTOSDataTransferCtrl" ("rdtc" "dtc"))
       ("PPSeqRTOSString" ("rs") "h")
       ("PPSeqMessages" ("msg") "h")
+      ("PPSeqFuncSel" ("fs") )
+      ("PPSeqFuncSelTeachSetup" ("fsts") )
       ("PPSeqOptGroup" ("og") )
       ("PPSeqStateHdlList" ("shl" "sl") )
+      ("IPPSeqLogicState" ("ils") "h" )
+      ("PPSeqLogicState" ("ls") )
       ("MCDynComboboxHdlList" ("dchl" "dcl") )
       ("PPSeqDisplayDepData" ("ddd") )
       ("PPSeqSingleton" ("s") "h")
       ("PPSeqAutoPtr" ("ap") "h")
       ("PPSeqFeature" ("f"))
       ("PPSeqFeatureCoordinator" ("fc"))
-      ("IPPSeqEnabler" ("er") "h")
-      ("IPPSeqEnablee" ("ee") "h")
+      ("PPSeqEnabler" ("er") "h")
+      ("IPPSeqEnablerObserver" ("eo") "h")
+      ("PPSeqEnablers" ("ers"))
+      ("PPSeqSelector" ("sr") "h")
+      ("IPPSeqSelectorObserver" ("so") "h")
+      ("PPSeqSelectors" ("srs"))
       ("PPSeqCommandHandler" ("ch") "h")
+      ("PPProcessSelection" ("ps"))
+      ("PPSeqServiceProvider" ("sp"))
 
       ;; wrappers
       ("PPSeqWPPBAMod" ("wba"))
@@ -609,6 +717,9 @@
       ("PPSeqMenuCoordinator" ("mc"))
       ("PPSeqMenuHandlerBase" ("mhb"))
       ("PPSeqMenuHandler" ("mh"))
+      ("PPSeqDBMenu" ("dbm"))
+      ("PPSeqLink" ("l"))
+      ("PPSeqLinkCoordinator" ("lc"))
       ("PPSeqDataHandlerBase" ("dhb"))
       ("PPSeqDataHandler" ("dh"))
       ("PPSeqProcessData" ("pd") "h")
@@ -660,20 +771,22 @@
       ("PPSeqTeachDataProcessVerifyBase" ("tdpvb"))
       ("PPSeqTeachMenuBAProcessBase" ("tmbapb" "mbapb" "bapb"))
       ("PPSeqTeachDataBAProcessBase" ("tdbapb" "dbapb"))
+      ("PPSeqTeachMenuMFDieSenBase" ("tmmfdsb" "mmfdsb" "mmfb"))
+      ("PPSeqTeachDataMFDieSenBase" ("tdmfdsb" "dmfdsb" "dmfb" "mfb"))
       
       ;; teach / new recipe & install 
       ("PPSeqTeachMenuA51InsertAndDefinePPTools" ("tmiadppt" "tmippt" "tmipt" "tmit" "tmi" "ma51"))
-      ("PPSeqTeachDataA51InsertAndDefinePPTools" ("tdiadppt" "tdippt" "tdipt" "tdit" "tdi" "da51"))
+      ("PPSeqTeachDataA51InsertAndDefinePPTools" ("tdiadppt" "tdippt" "tdipt" "tdit" "tdi" "da51" "a51"))
 
       ;; function selection
-      ("PPSeqTeachDataE11FunctionSelection" ("tdpfs" "dfsp" "de11")) 
       ("PPSeqTeachMenuE11FunctionSelection" ("tmpfs" "mfsp" "me11")) 
-      ("PPSeqTeachDataK21FunctionSelection" ("tdbfs" "tdbofs" "dfsbo" "dk21")) 
+      ("PPSeqTeachDataE11FunctionSelection" ("tdpfs" "dfsp" "de11" "e11")) 
       ("PPSeqTeachMenuK21FunctionSelection" ("tmbfs" "tmbofs" "mfsbo" "mk21")) 
-      ("PPSeqTeachDataE31DSFuncSel" ("tddsfs" "ddsfs" "dfsds" "de31"))
+      ("PPSeqTeachDataK21FunctionSelection" ("tdbfs" "tdbofs" "dfsbo" "dk21" "k21")) 
       ("PPSeqTeachMenuE31DSFuncSel" ("tmdsfs" "mdsfs" "mfsds" "me31"))
-      ("PPSeqTeachDataS21FunctionSelection" ("tds21" "ds21"))
-      ("PPSeqTeachMenuS21FunctionSelection" ("tms21" "ms21" "s21"))
+      ("PPSeqTeachDataE31DSFuncSel" ("tddsfs" "ddsfs" "dfsds" "de31" "e31"))
+      ("PPSeqTeachMenuS21FunctionSelection" ("tms21" "ms21"))
+      ("PPSeqTeachDataS21FunctionSelection" ("tds21" "ds21" "s21"))
       
       ;; process
       ("PPSeqTeachMenuE17PeelProcess" ("tmpep" "mpep" "me17"))
@@ -686,16 +799,22 @@
       ("PPSeqTeachDataE43PickProcess" (             "de43" "e43"))
       ("PPSeqTeachMenuQ1PlaceProcess" (             "mq1"))
       ("PPSeqTeachDataQ1PlaceProcess" (             "dq1" "q1"))
-      ("PPSeqTeachMenuE32DSProcess" ("tmdsp" "mdsp"))
-      ("PPSeqTeachDataE32DSProcess" ("tddsp" "ddsp"))
-      ("PPSeqTeachMenuE52ExchProcess" ("tmep" "mep"))
-      ("PPSeqTeachDataE52ExchProcess" ("tdep" "dep"))
-      ("PPSeqTeachMenuE62FluxProcess" ("tmfp" "mfp"))
-      ("PPSeqTeachDataE62FluxProcess" ("tdfp" "dfp"))
+      ("PPSeqTeachMenuE32DSProcess" ("tmdsp" "mdsp" "me32lb" "me3lb"))
+      ("PPSeqTeachDataE32DSProcess" ("tddsp" "ddsp" "de32lb" "de3lb" "e32lb" "e3lb"))
+      ("PPSeqTeachMenuE3MFDieSen" ("tme3mf" "me3mf"))
+      ("PPSeqTeachDataE3MFDieSen" ("tde3mf" "de3mf" "e3mf"))
+      ("PPSeqTeachMenuE8MFDieSen" ("tme8mf" "me8mf"))
+      ("PPSeqTeachDataE8MFDieSen" ("tde8mf" "de8mf" "e8mf"))
+      ("PPSeqTeachMenuR2MFDieSen" ("tmr2mf" "mr2mf"))
+      ("PPSeqTeachDataR2MFDieSen" ("tdr2mf" "dr2mf" "r2mf"))
+      ("PPSeqTeachMenuE52ExchProcess" ("tmep" "mep" "me52"))
+      ("PPSeqTeachDataE52ExchProcess" ("tdep" "dep" "de52" "e52"))
+      ("PPSeqTeachMenuE62FluxProcess" ("tmfp" "mfp" "me62"))
+      ("PPSeqTeachDataE62FluxProcess" ("tdfp" "dfp" "de62" "e62"))
       ("PPSeqTeachMenuK24BondProcess" ("tmbp" "mbp" "tmbop" "mbop" "mk24"))
       ("PPSeqTeachDataK24BondProcess" ("tdbp" "dbp" "tdbop" "dbop" "dk24" "k24"))
-      ("PPSeqTeachDataS22TakeProcess" ("tdtp" "tds22" "dtp" "ds22"))
-      ("PPSeqTeachMenuS22TakeProcess" ("tmtp" "tms22" "mtp" "ms22" "s22"))
+      ("PPSeqTeachMenuS22TakeProcess" ("tmtp" "tms22" "mtp" "ms22"))
+      ("PPSeqTeachDataS22TakeProcess" ("tdtp" "tds22" "dtp" "ds22" "s22"))
       
       ;; verify
       ("PPSeqTeachMenuE14PickProcessVerify" ("tmppv"))
@@ -714,7 +833,7 @@
       ("PPSeqTeachDataE46OptimizePickProcess" (                           "de46" "e46"))
       ("PPSeqTeachMenuS23OptimizePickProcess" (                           "ms23"))
       ("PPSeqTeachDataS23OptimizePickProcess" (                           "ds23" "s23"))
-      ("PPSeqTeachMenuR15OptimizeTransferTablePosition" (                 "r15"))
+      ("PPSeqTeachMenuR15OptimizeTransferTablePosition" (                 "mr15"))
       ("PPSeqTeachDataR15OptimizeTransferTablePosition" (                 "dr15" "r15"))
 
 
@@ -895,15 +1014,15 @@
     "EHRESULT " p "(" p ");" > ))
 
 (tempo-define-template "dragon-method-def-std"
- '( &
-    "/** */" > n>
-    "EHRESULT " '(insert-class-name) "::" p "()" > n>
-    "{" > n>
-    "EHRESULT ehr;" > n>
-    p n>
-    "ERETURN_IF_FAILED(ehr);" n>
-    "return ehr;" n>
-    "}" > n> ))
+  '( &
+     "/** */" > n>
+     "EHRESULT " '(insert-class-name) "::" p "()" > n>
+     "{" > n>
+     "EHRESULT ehr;" > n>
+     p n>
+     "ERETURN_IF_FAILED(ehr);" n>
+     "return ehr;" n>
+     "}" > n> ))
 
 (tempo-define-template "dragon-early-return-std"
  '( lws "ERETURN_IF_FAILED(ehr);" > %)
@@ -970,25 +1089,33 @@
  '( lws "EASSERT( " p " , _T(\"" '(insert-class-and-defun-name) ": " p "\"));" > %)
  "ea")
 
+(tempo-define-template "dragon-eassert-new"
+ '( lws "EASSERT_NEW( " r " );" > %)
+ "ean")
+
+(tempo-define-template "dragon-eassert-pointer"
+ '( lws "EASSERT_POINTER_NOT_NULL( " r " );" > %)
+ "eap")
+
 (tempo-define-template "dragon-todo"
  '( "#pragma message( __TODO__ \"FLKA " '(format-time-string "%d.%m.%Y") " : " r "\" )" > %))
 
 (tempo-define-template "dragon-utf-block"
- '( &
+ '( lws
     "//..begin \"UTF:" (P "Type : " type) "\"" n>
-    r> n>
+    r-or-blank-line>
     "//..end \"UTF:" (s type) "\"" >))
 
 (tempo-define-template "dragon-utf-forwards"
- '( &
+ '( lws
     "//..begin \"UTF:Forwards\"" n>
-    r> n>
+    r-or-blank-line>
     "//..end \"UTF:Forwards\"" >))
 
 (tempo-define-template "dragon-utf-includes"
- '( &
+ '( lws
     "//..begin \"UTF:Includes\"" n>
-    r> n>
+    r-or-blank-line>
     "//..end \"UTF:Includes\"" >))
 
 ;;; dragon.el ends here

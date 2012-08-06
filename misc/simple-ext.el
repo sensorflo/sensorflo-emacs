@@ -579,4 +579,13 @@ This undoing is not itself undoable (aka redoable)."
       ;; Revert the undo info to what it was when we grabbed the state.
       (setq buffer-undo-list handle))))
 
+(defun re-search-backward-greedy (regexp &optional bound noerror count)
+  "As `re-search-backward-greedy' but makes a match as long as possible.
+I.e. a match extends to the left as far as possible."
+  (when (re-search-backward regexp bound noerror count)
+    (while (and (or (null bound) (>= (point) bound))
+		(save-excursion (backward-char) (looking-at regexp)))
+      (backward-char))
+    (point)))
+
 ;;; simple-ext.el ends here

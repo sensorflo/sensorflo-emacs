@@ -45,6 +45,7 @@ Returns nil if it is unknown."
     (cond
      ((null actual-fn) nil)
      ((string-match "/diebonder/pc\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
+     ((string-match "/Common\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
      ((string-match "/diebonder/rtos\\(/\\|$\\)" actual-fn) 'project-diebonder-rtos)
      ((string-match "/\\(inos\\|inco\\)\\(/\\|$\\)" actual-fn) 'project-indel)
      ((string-match "/prog\\w*/\\w+\\(/\\|$\\)" actual-fn) 'project-nova)

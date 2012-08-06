@@ -85,6 +85,7 @@
 ;;; add new bindings 
 ;; (prexix-keymaps M-m / C-f were created above)
 (global-set-key [(control ?\')]           'mark-word)     ; by default on M-@
+(global-set-key [(control meta ?\')]      'mark-comment-dwim) 
 (global-set-key [(control f)(control f)]  'ffe-find-file)
 (global-set-key [(control f)(control o)]  'ffe-find-other-file)
 (global-set-key [(control f)(f)]          'globalff)

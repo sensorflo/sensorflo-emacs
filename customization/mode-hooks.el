@@ -155,6 +155,14 @@
   (doxymacs-mode 1)
   (doxymacs-font-lock)
 
+  (font-lock-add-keywords nil
+    (list
+     ;; C++11
+     "\\_<static_assert\\_>" "\\_<alignas\\_>" "\\_<alignof\\_>" "\\_<decltype\\_>" "\\_<constexpr\\_>"
+     "\\_<noexcept\\_>" "\\_<nullptr\\_>" "\\_<thread_local\\_>"
+     (list "\\_<char\\(?:16\\|32\\)_t\\_>" '(0 font-lock-type-face))
+     ))
+
   ;; TODO subword-mode shall be turned on globally 
   (if (< (+ (* 100 emacs-major-version) emacs-minor-version) 2302)
       (c-subword-mode t)
@@ -618,6 +626,26 @@
   (local-set-key "\C-c\C-p" 'adoc-promote-title)
   (local-set-key "\C-c\C-t" 'adoc-toggle-title-type)
 
+  (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
+  ;; (local-set-key [(control ?\,)(f)(v)] 'tempo-template-latex-verbatim)
+  (local-set-key [(control ?\,)(f)(c)] 'tempo-template-adoc-code)
+  (local-set-key [?\+] 'tempo-template-adoc-code)
+  (local-set-key [(control ?\,)(f)(b)] 'tempo-template-adoc-bold)
+  (local-set-key [?\*] 'tempo-template-adoc-bold)
+  (local-set-key [(control ?\,)(f)(e)] 'tempo-template-adoc-emph)
+  (local-set-key [?\_] 'tempo-template-adoc-emph)
+
+  ;; (local-set-key [(control ?\,)(f)(m)] 'tempo-template-adoc-math)
+  ;; (local-set-key [(control ?\,)(f)(t)] 'tempo-template-adoc-text-in-math)
+
+  (local-set-key [(control ?\,)(h)] (make-sparse-keymap))
+  (local-set-key [(control ?\,)(h)(?0)] 'tempo-template-adoc-title-0)
+  (local-set-key [(control ?\,)(h)(?t)] 'tempo-template-adoc-title-0)
+  (local-set-key [(control ?\,)(h)(?1)] 'tempo-template-adoc-title-1)
+  (local-set-key [(control ?\,)(h)(?2)] 'tempo-template-adoc-title-2)
+  (local-set-key [(control ?\,)(h)(?3)] 'tempo-template-adoc-title-3)
+  (local-set-key [(control ?\,)(h)(?4)] 'tempo-template-adoc-title-4)
+
   (set (make-local-variable 'compile-command)
        (concat "asciidoc "
                (if (buffer-file-name)
@@ -678,7 +706,9 @@
   ;; (inline) formatting
   (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(f)(e)] 'tempo-template-html-em)
+  (local-set-key [(control ?\,)(f)(i)] 'tempo-template-html-i)
   (local-set-key [(control ?\,)(f)(s)] 'tempo-template-html-strong)
+  (local-set-key [(control ?\,)(f)(b)] 'tempo-template-html-b)
   (local-set-key [(control ?\,)(f)(c)] 'tempo-template-html-code)
   (local-set-key [(control ?\,)(f)(v)] 'tempo-template-html-var)
   (local-set-key [(control ?\,)(f)(p)] 'tempo-template-html-pre)

@@ -513,15 +513,56 @@ read only flag is automatically unset."
 ;;; comment
 ;; ----------------------------------------------------------------------
 
-;; Bug: when point is within comment-start-skip, then the previous comment is selected
-(defun mark-comment ()
-  "Marks the current or next comment"
+;; Bugs
+;; - when point is within comment-start-skip, then the previous comment is selected
+;; - when multple comment syntaxes exist (eg. as in C++ \\..\n and /*..*/), then
+;;   it is NOT ensured that the end-delimiter matching the start-delimiter is
+;;   found - ANY found end delimiter will end the comment
+;; - multiple technical comments in a row, which most probably constitue one
+;;   logical comment (e.g. in shell scripts, multiple #...) are NOT considered
+;;   as one comment
+(defun mark-comment-dwim ()
+  "Marks 'the' comment in a dwim fashion.
+To select a previous/following comment, move point out of comment"
   (interactive)
-  (unless (looking-at comment-start-skip)
-    (re-search-backward comment-start-skip))
-  (set-mark (point))
-  (re-search-forward comment-end-skip)
-  (setq mark-active t))
+
+  (let (point-mark-exchanged)
+
+    ;; canonicalize: point <= mark
+    (when (and mark-active (> (point) (mark))) 
+      (exchange-point-and-mark)
+      (setq point-mark-exchanged t))
+
+    (cond
+     ;; whole comment incl delimiter -> comment's text
+     ((and
+       mark-active
+       (looking-at comment-start-skip)
+       (save-excursion (goto-char (mark)) (looking-back comment-end-skip)))
+      (re-search-forward comment-start-skip)
+      (exchange-point-and-mark)
+      (re-search-backward-greedy comment-end-skip)
+      (exchange-point-and-mark))
+
+     ;; comment's text -> whole comment incl delimiter
+     ((and
+       mark-active
+       (looking-back comment-start-skip)
+       (save-excursion (goto-char (mark)) (looking-at comment-end-skip)))
+      (re-search-backward-greedy comment-start-skip)
+      (exchange-point-and-mark)
+      (re-search-forward comment-end-skip)
+      (exchange-point-and-mark))
+
+     ;; marks whole previous comment
+     (t
+      (unless (looking-at comment-start-skip)
+	(re-search-backward comment-start-skip))
+      (push-mark (save-excursion (re-search-forward comment-end-skip)))))
+
+    (when point-mark-exchanged
+      (exchange-point-and-mark))
+    (setq mark-active t)))
 
 
 ;;; custom / widget

@@ -227,6 +227,15 @@ the directory part and without suffix. Thus for
   (re-search-forward "\\*/" )
   (setq mark-active t))
 
+(defun c-mark-whole-comment ()
+  "Marks the current or next comment"
+  (interactive)
+  (if mark-active (re-search-backward "/\\*\\*" ) )
+  (re-search-backward "/\\*\\*" )
+  (push-mark (point))
+  (re-search-forward "\\*/" )
+  (setq mark-active t))
+
 (defun c-mark-whole-statement ()
   (interactive)
   (c-beginning-of-statement-1)

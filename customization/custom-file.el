@@ -79,6 +79,7 @@
  '(doremi-down-keys (quote (down 14)))
  '(doremi-up-keys (quote (up 16)))
  '(doxym-break-section-line nil)
+ '(doxym-title-shift t)
  '(doxymacs-use-external-xml-parser t)
  '(ediff-default-filtering-regexp "\\.*\\.\\(cpp\\|h\\)")
  '(ediff-diff-options "-w ")
@@ -147,7 +148,7 @@
  '(ibuffer-expert t)
  '(ibuffer-formats (quote ((mark modified read-only " " (name 40 40 :left :elide) " " (mode 18 18 :center :elide) " " filename-and-process) (mark " " name))))
  '(ibuffer-marked-face (quote bold))
- '(ibuffer-saved-filter-groups (quote (("flori" ("info / help / man" (or (mode . Info-mode) (mode . help-mode) (mode . Man-mode) (mode . woman-mode))) ("custom" (mode . Custom-mode)) ("source controll" (name . "^\\*svn-")) ("dired" (mode . dired-mode)) ("ediff" (or (mode . ediff-meta-mode) (name . "^*Ediff File Group Differences"))) ("grep/compilation" (or (mode . grep-mode) (mode . compilation-mode))) (".emacs.d" (filename . "/.emacs.d/")) ("bin" (filename . "/bin/")) ("pc ppseqbaselib unittest" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/UnitTest")) ("pc ppseqbaselib" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/")) ("VSS pc ppseqbaselib~vss unittest VSS" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib~vss/UnitTest")) ("VSS pc ppseqbaselib~vss VSS" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib~vss/")) ("pc ppcalibmod" (filename . "/src/DieBonder/PC/PickPlace/PPCalibMod/")) ("rtos ppcalibmod" (filename . "/src/DieBonder/RTOS/PickPlace/PPCalibMod/")) ("guesel" (name . "^\\*.*\\*$"))))))
+ '(ibuffer-saved-filter-groups (quote (("flori" ("info / help / man" (or (mode . Info-mode) (mode . help-mode) (mode . Man-mode) (mode . woman-mode))) ("custom" (mode . Custom-mode)) ("source controll" (name . "^\\*svn-")) ("dired" (mode . dired-mode)) ("ediff" (or (mode . ediff-meta-mode) (name . "^*Ediff File Group Differences"))) ("grep/compilation" (or (mode . grep-mode) (mode . compilation-mode))) (".emacs.d" (filename . "/.emacs.d/")) ("bin" (filename . "/bin/")) ("pc ppseqbaselib unittest" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/UnitTest")) ("pc ppseqbaselib" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/")) ("VSS pc ppseqbaselib~vss unittest VSS" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib~vss/UnitTest")) ("VSS pc ppseqbaselib~vss VSS" (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib~vss/")) ("pc ppcalibmod" (filename . "/src/DieBonder/PC/PickPlace/PPCalibMod/")) ("rtos ppcalibmod" (filename . "/src/DieBonder/RTOS/PickPlace/PPCalibMod/")) ("nova" (filename . "/src/nova/")) ("guesel" (name . "^\\*.*\\*$"))))))
  '(ibuffer-saved-filters (quote (("pc ppseqbaselib" ((filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/"))) ("dired" ((used-mode . dired-mode))) ("myfilters" ((mode . c++-mode) (mode . idl-mode))) ("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
  '(ibuffer-show-empty-filter-groups nil)
  '(icicle-Completions-text-scale-decrease 0)
@@ -248,7 +249,8 @@ mouse-3: Remove current window from display")) #("%]" 0 2 (help-echo "Recursive 
  '(show-paren-priority 1000)
  '(show-paren-style (quote parenthesis))
  '(size-indication-mode nil)
- '(smerge-command-prefix "")
+ '(smerge-command-prefix "
+")
  '(ss-database-alist (("^W:/DieBonder/PC" . "\\\\swsources.esec.com\\VSSDB\\DB_Dragon\\PC Development") ("^W:/DieBonder/RTOS" . "\\\\swsources.esec.com\\VSSDB\\DB_Dragon\\RTOS Development")))
  '(ss-program "C:\\Program Files\\Microsoft Visual Studio\\Common\\VSS\\win32\\SS.EXE" t)
  '(ss-project-dirs (quote (("^W:/DieBonder/PC/PickPlace/PPCalibMod/" . "$/Pick Place/PPCalibMod/WORKING/Sources/"))) t)

@@ -17,7 +17,7 @@
 (defvar markerpen-current-pen 1)
 
 (global-set-key (kbd "M-C-,") 'markerpen-mark-region) ; Use this to apply a markerpen
-(global-set-key (kbd "M-C-'") 'markerpen-clear-all-marks)
+;(global-set-key (kbd "M-C-'") 'markerpen-clear-all-marks)
 
 (defconst markerpens '())
 

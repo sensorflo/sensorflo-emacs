@@ -37,7 +37,7 @@
 (defalias 'ckrs 'clipboard-kill-ring-save)
 (defalias 'fc 'finder-commentary)
 (defalias 'rvb 'revert-buffer)
-(defalias 'rnb 'rename-buffer)
+(defalias 'rnb 'rename-buffer-ext)
 (defalias 'rnu 'rename-uniquely)
 (defalias 'rp 'remove-parentheses)
 (defalias 'tw 'transpose-windows)

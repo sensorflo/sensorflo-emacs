@@ -588,4 +588,13 @@ I.e. a match extends to the left as far as possible."
       (backward-char))
     (point)))
 
+(defun rename-buffer-ext ()
+  "As `rename-buffer' but additionally does some magic in cerain cases."
+  (interactive)
+  (cond
+   ((string-match "\\*grep.*\\*" (buffer-name))
+    (rename-buffer (concat "*grep " (read-string "Rename buffer (to new name, base part): ") "*")))
+   (t
+    (call-interactively 'rename-buffer))))
+
 ;;; simple-ext.el ends here

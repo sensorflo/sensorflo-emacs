@@ -3,7 +3,8 @@
 ;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;; 
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; URL: https://sourceforge.net/projects/sensorflo-emacs/
+;; URL: https://github.com/sensorflo/sensorflo-emacs, then
+;;      misc/kmacro-ext.el
 ;; Created: 2009
 ;; Keywords: wp bbcode
 ;; 

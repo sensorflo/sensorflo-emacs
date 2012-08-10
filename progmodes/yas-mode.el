@@ -84,7 +84,7 @@
 ;;     st)
 ;;   "Syntax table used while in `yas-mode'.")
 
-(require 'meta-syntax-faces)
+(require 'meta-syntax-faces) ; https://github.com/sensorflo/sensorflo-emacs/, then progmodes/meta-syntax-faces.elo
 
 (defconst yas-mode-font-lock-keywords
   (list

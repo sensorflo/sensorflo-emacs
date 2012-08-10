@@ -3,7 +3,8 @@
 ;; Copyright 2011-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;; URL: https://github.com/sensorflo/sensorflo-emacs/, then
+;;      progmodes/meta-syntax-faces.el 
 ;; This file is not part of GNU Emacs.
 ;; 
 ;; This program is free software: you can redistribute it and/or modify

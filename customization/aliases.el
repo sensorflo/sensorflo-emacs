@@ -120,7 +120,7 @@
 (defalias 'mgm 'makefile-gmake-mode)
 (defalias 'gmm 'makefile-gmake-mode)
 (defalias 'dsm 'delete-selection-mode)
-(defalias 'bbcm 'bbcode-mode)
+(defalias 'bbcm 'bbcode)
 (defalias 'mwm 'mediawiki-mode)
 (defalias 'rstm 'rst-mode)
 (defalias 'rem 'rst-mode)

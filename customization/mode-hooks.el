@@ -741,7 +741,7 @@
 
 ;;; bbcode
 ;; -----------------------------------------------------------------------------
-(add-hook 'bbcode-mode-hook 'my-bbcode-hook)
+(add-hook 'bbcode-hook 'my-bbcode-hook)
 
 (defun my-bbcode-hook ()
   (buffer-face-mode t)

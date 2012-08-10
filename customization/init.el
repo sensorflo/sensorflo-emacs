@@ -99,7 +99,7 @@
 (require 'adoc-mode)
 ;(require 'mediawiki)
 (require 'doxym-mode)
-(require 'bbcode-mode)
+(require 'bbcode)
 (require 'latex-ext)
 ;(require 'yatex)
 ;(require 'tex)

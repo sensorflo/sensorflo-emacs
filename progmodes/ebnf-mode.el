@@ -29,15 +29,13 @@
 ;; 
 ;;; Code:
 (require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
-(require 'meta-syntax-faces) 
+(require 'meta-syntax-faces) ; https://github.com/sensorflo/sensorflo-emacs/, then progmodes/meta-syntax-faces.el
 
 (defvar ebnf-mode-hook nil)
 
 (defvar ebnf-mode-map nil "Keymap for ebnf-mode.")
 (unless ebnf-mode-map
   (setq ebnf-mode-map (make-sparse-keymap)))
-
-(require 'meta-syntax-faces)
 
 (defconst ebnf-mode-font-lock-keywords
   (list

@@ -3,7 +3,8 @@
 ;; Copyright 2010-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; URL: https://sourceforge.net/projects/sensorflo-emacs/
+;; URL: https://github.com/sensorflo/sensorflo-emacs, then
+;;      progmodes/stream-mode.el
 ;; Created: 2010
 ;; Keywords: languages
 ;; 

@@ -9,7 +9,7 @@
 (require 'sregex)
 (require 'find-file-ext)
 (require 'tempo-snippets)
-(require 'markup-faces)
+(require 'markup-faces) ; https://github.com/sensorflo/markup-faces
 (require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
 (defgroup nova-project nil ""

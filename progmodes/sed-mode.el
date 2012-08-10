@@ -26,11 +26,11 @@
 ;;; Commentary:
 ;;
 ;;; Code:
-;(require 'markup-faces)
+;(require 'markup-faces) ; https://github.com/sensorflo/markup-faces
 
-(require 'font-lock-ext) 
+(require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
-(defvar sed-mode-hook nil) ; https://github.com/sensorflo/font-lock-ext/
+(defvar sed-mode-hook nil)
 
 (defvar sed-mode-map nil "Keymap for sed-mode.")
 (unless sed-mode-map

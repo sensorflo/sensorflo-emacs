@@ -2,9 +2,9 @@
 	path = textmodes/adoc-mode
 	url = https://sensorflo@github.com/sensorflo/adoc-mode.git
   update = merge
-[submodule "textmodes/bbcode-mode"]
-	path = textmodes/bbcode-mode
-	url = https://sensorflo@github.com/sensorflo/bbcode-mode.git
+[submodule "textmodes/bbcode"]
+	path = textmodes/bbcode
+	url = https://sensorflo@github.com/sensorflo/bbcode.git
   update = merge
 [submodule "textmodes/markup-faces"]
 	path = textmodes/markup-faces

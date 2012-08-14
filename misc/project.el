@@ -1,10 +1,13 @@
-;;; project.el ---
+;;; project.el --- Files belonging together can share settings / behaviour
 ;; 
 ;; Copyright 2010-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;;; Commentary
+;;
+;; Is currently quite a clumsy attempt to solve the problem, but it currently
+;; fits my needs in daily work. 
 ;;
 ;; Mindstorming
 ;; ------------
@@ -484,5 +487,7 @@ e: : all el files"
       (backward-sexp)
       (setq name (buffer-substring-no-properties (point) end)))
     (project-grep-find-ext (concat "\\b" name "\\b") "" "")))
+
+(provide 'project)
 
 ;;; project.el ends here

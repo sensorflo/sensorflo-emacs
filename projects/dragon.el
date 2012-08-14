@@ -1,10 +1,13 @@
 ;;; dragon.el --- customizations specific to the dragon project
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
+;; URL: https://github.com/sensorflo/sensorflo-emacs/, then
+;;      projects/dragon.el 
 ;;
 ;;; Commentary:
 ;;
 ;;; Code:
+(require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
 (require 'tempo-ext) 	   ; https://gitorious.org/tempo-ext
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
 

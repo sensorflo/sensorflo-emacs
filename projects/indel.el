@@ -5,6 +5,8 @@
 ;;; Commentary:
 ;;
 ;;; Code:
+(require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
+
 (defun indel-c-mode-common-hook ()
   (when (eq (project-root-type) 'project-indel)
     (setq c-basic-offset 4)))

@@ -6,11 +6,12 @@
 ;; 
 
 ;;; Variables:
+(require 'project)        ; https://github.com/sensorflo/sensorflo-emacs/
 (require 'sregex)
 (require 'find-file-ext)
-(require 'tempo-snippets)
-(require 'markup-faces) ; https://github.com/sensorflo/markup-faces
-(require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
+(require 'tempo-snippets) 
+(require 'markup-faces)   ; https://github.com/sensorflo/markup-faces
+(require 'font-lock-ext)  ; https://github.com/sensorflo/font-lock-ext/
 
 (defgroup nova-project nil ""
   :group 'project)

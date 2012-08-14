@@ -38,3 +38,6 @@
 	path = misc/find-file-ext
 	url = https://sensorflo@git.gitorious.org/logfile-mode/find-file-ext.git
   update = merge
+[submodule "misc/icicles"]
+	path = misc/icicles
+	url = https://sensorflo@github.com/sensorflo/icicles.git

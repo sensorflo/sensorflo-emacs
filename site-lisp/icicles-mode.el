@@ -3138,7 +3138,7 @@ is unbound in all keymaps accessible from keymap MAP."
        (define-key map (icicle-kbd "C-)")         'icicle-candidate-set-save-more-selected) ; `C-)'
        (define-key map (icicle-kbd "C-M-)")          'icicle-candidate-set-save-selected) ; `C-M-)'
        (define-key map (icicle-kbd "C-M-<")          'icicle-candidate-set-retrieve) ; `C-M-<'
-       (define-key map (icicle-kbd "C-l")            'icicle-retrieve-previous-input) ; `C-l'
+       ;(define-key map (icicle-kbd "C-l")            'icicle-retrieve-previous-input) ; `C-l'
        (define-key map (icicle-kbd "C-a")            'icicle-beginning-of-line+) ; `C-a'
        (define-key map (icicle-kbd "C-e")            'icicle-end-of-line+) ; `C-e'
        ;; (suppress-keymap map) ; Inhibit character self-insertion.
@@ -3714,8 +3714,8 @@ complete)"))
   ;; Need `C-g', even if `minibuffer-local-completion-map' inherits from `minibuffer-local-map'.
   (define-key map (icicle-kbd "C-g")       'icicle-abort-recursive-edit) ; `C-g'
   (define-key map (icicle-kbd "M-q")       'icicle-dispatch-M-q) ; `M-q'
-  (define-key map (icicle-kbd "C-l")       'icicle-retrieve-previous-input) ; `C-l'
-  (define-key map (icicle-kbd "C-S-l")     'icicle-retrieve-next-input) ; `C-L' (`C-S-l')
+  ;; (define-key map (icicle-kbd "C-l")       'icicle-retrieve-previous-input) ; `C-l'
+  ;; (define-key map (icicle-kbd "C-S-l")     'icicle-retrieve-next-input) ; `C-L' (`C-S-l')
   (define-key map (icicle-kbd "M-$")       'icicle-candidate-set-truncate) ; `M-$'
   (define-key map (icicle-kbd "C-~")       'icicle-candidate-set-complement) ; `C-~'
   (define-key map (icicle-kbd "C--")       'icicle-candidate-set-difference) ; `C--'

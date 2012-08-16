@@ -281,6 +281,7 @@
     ("\\.tl[hi]\\'". c++-mode)
     ("\\.txt\\'" . adoc-mode)
     ("\\`[-0-9A-Z_]+\\'" . adoc-mode) ;; all upercase file name
+    ("\\.\\(text\\|mdwn\\|md\\|mdt\\)\\'" . markdown-mode)
     ("\\.lo[g0-9]\\'" . logfile-mode)
     ("personality.*\\.txt\\'" . pm-mode)
     ("swat\\.eu\\.besi\\..*\\.txt" . mediawiki-mode)

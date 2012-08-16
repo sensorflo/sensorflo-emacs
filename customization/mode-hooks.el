@@ -739,6 +739,20 @@
   (if (and (null buffer-file-name))  
       (setq buffer-offer-save t)))
 
+;;; markdown
+;; -----------------------------------------------------------------------------
+(add-hook 'markdown-mode-hook 'my-markdown-mode-hook)
+
+(defun my-markdown-mode-hook ()
+  (buffer-face-mode t)
+  (outline-minor-mode t)
+  (buffer-face-mode t)
+
+  (set (make-local-variable 'word-wrap) t)
+  (toggle-truncate-lines -1)
+  (require 'screen-lines) ; or is screenline.el better?
+  (screen-lines-mode 1))
+
 ;;; bbcode
 ;; -----------------------------------------------------------------------------
 (add-hook 'bbcode-hook 'my-bbcode-hook)

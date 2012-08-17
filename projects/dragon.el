@@ -153,10 +153,11 @@
 
 	  ;; -- declarations & specifications must have space between name and opening paranthesis
 	  ;; methods declared via macros are excluded
-	  (save-excursion
-	    (goto-char method-end)
-	    (setq warning-found (and (not (looking-back "^[A-Z0-9_]+"))
-				     (re-search-forward "\\=\\((\\|\\s-\\s-+(\\)" end t))))
+	  (when (not warning-found)
+	    (save-excursion
+	      (goto-char method-end)
+	      (setq warning-found (and (not (looking-back "^[A-Z0-9_]+"))
+				       (re-search-forward "\\=\\((\\|\\s-\\s-+(\\)" end t)))))
 
 	  ;; next iter
 	  (goto-char method-end))))

@@ -609,7 +609,7 @@
 (add-hook 'adoc-mode-hook 'my-adoc-mode-hook)
 
 (defun my-adoc-mode-hook ()
-;  (auto-fill-mode t)
+  ;; (auto-fill-mode t)
   (outline-minor-mode t)
   (buffer-face-mode t)
   ;; (if (< (buffer-size) 200000)
@@ -622,6 +622,17 @@
   (require 'screen-lines) ; or is screenline.el better?
   (screen-lines-mode 1)
 
+  (set (make-local-variable 'compile-command)
+       (concat "asciidoc "
+               (if (buffer-file-name)
+                   (file-name-nondirectory (buffer-file-name))
+                 (buffer-name))))
+
+  (my-adoc-bindings))
+
+(defun my-adoc-bindings ()
+  (require 'tempos-adoc) 
+
   (local-set-key [f8] 'adoc-browse-url-output)
   (local-set-key "\C-c\C-p" 'adoc-promote-title)
   (local-set-key "\C-c\C-t" 'adoc-toggle-title-type)
@@ -630,13 +641,10 @@
   ;; (local-set-key [(control ?\,)(f)(v)] 'tempo-template-latex-verbatim)
   (local-set-key [(control ?\,)(f)(c)] 'tempo-template-adoc-code)
   (local-set-key [?\+] 'tempo-template-adoc-code)
-  (local-set-key [(control ?\,)(f)(b)] 'tempo-template-adoc-bold)
-  (local-set-key [?\*] 'tempo-template-adoc-bold)
+  (local-set-key [(control ?\,)(f)(b)] 'tempo-template-adoc-strong)
+  (local-set-key [?\*] 'tempo-template-adoc-strong)
   (local-set-key [(control ?\,)(f)(e)] 'tempo-template-adoc-emph)
   (local-set-key [?\_] 'tempo-template-adoc-emph)
-
-  ;; (local-set-key [(control ?\,)(f)(m)] 'tempo-template-adoc-math)
-  ;; (local-set-key [(control ?\,)(f)(t)] 'tempo-template-adoc-text-in-math)
 
   (local-set-key [(control ?\,)(h)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(h)(?0)] 'tempo-template-adoc-title-0)
@@ -644,13 +652,8 @@
   (local-set-key [(control ?\,)(h)(?1)] 'tempo-template-adoc-title-1)
   (local-set-key [(control ?\,)(h)(?2)] 'tempo-template-adoc-title-2)
   (local-set-key [(control ?\,)(h)(?3)] 'tempo-template-adoc-title-3)
-  (local-set-key [(control ?\,)(h)(?4)] 'tempo-template-adoc-title-4)
+  (local-set-key [(control ?\,)(h)(?4)] 'tempo-template-adoc-title-4))
 
-  (set (make-local-variable 'compile-command)
-       (concat "asciidoc "
-               (if (buffer-file-name)
-                   (file-name-nondirectory (buffer-file-name))
-                 (buffer-name)))))
 
 ;;; doxym
 ;; --------------------------------------------------------------------------------

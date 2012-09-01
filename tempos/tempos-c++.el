@@ -1,6 +1,48 @@
 (require 'tempo-ext)
 
 
+;;; utility defuns / variables
+;; -----------------------------------------------------------------------------
+(defvar tempos-c++-open-brace-style 'behind-conditional
+  "'new-line or 'behind-conditional")
+
+(defvar tempos-c++-space-between-keyword-parenthesis t)
+
+(defun tempos-c++-open-brace ()
+  (indent-according-to-mode)
+  (cond
+   ((eq tempos-c++-open-brace-style 'new-line)
+    (insert "\n{")
+    (indent-for-tab-command) ;for some funny reason using (indent-according-to-mode) leads to infinite recursion
+    (insert "\n")
+    (indent-for-tab-command))
+   (t ; 'behind-conditional is the default
+    (insert " {\n"))))
+
+(defun tempos-c++-close-brace ()
+  (insert "}")
+  (indent-according-to-mode)
+  (if (not (or (eolp)
+	       (save-excursion
+		 (re-search-forward
+		  "\\=\\s-*$" nil t))))
+      (insert "\n")))
+
+(defun tempos-c++-between-keyword-parenthesis ()
+  (when tempos-c++-space-between-keyword-parenthesis    
+    (insert " ")))
+
+(defun tempos-c++-std (keyword &optional regex no-lws tag)
+  (tempo-define-template
+   (concat "c-" keyword)
+   `((progn (tempo-entry ,regex) "") ,(unless no-lws 'lws)
+     ,keyword (tempos-c++-between-keyword-parenthesis) "( " p " )"
+     (tempos-c++-open-brace)
+     r-or-blank-line>
+     (tempos-c++-close-brace))
+   tag))
+
+
 ;;; common structures
 ;; -----------------------------------------------------------------------------
 (tempo-define-template "c-block"
@@ -39,68 +81,50 @@
 ;;; flow controll
 ;; -----------------------------------------------------------------------------
 
+
+(tempos-c++-std "if" "\\bi\\(f\\sw*\\)?" nil "if")
+(tempos-c++-std "else if" nil t "elif")
+(tempos-c++-std "else" "\\bi\\(f\\sw*\\)?" t "else")
+(tempos-c++-std "while" "\\bw\\(i\\sw*\\)?" t "while")
+
 (tempo-define-template "c-for"
  '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
-   "for ( " p "; " p "; " p " ) {" >n
+   "for ( " p "; " p "; " p " )"
+   (tempos-c++-open-brace)
    r-or-blank-line>
-   "}" > % )
+   (tempos-c++-close-brace) )
  "for")
-
-;; (defun tempo-template-c-for-fuck()
-;;   (
-;;   ))
 
 (tempo-define-snippet "c-for-std"
  '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
     "for ( " (p "type" type) " " (p "name" name) " = 0; "
       (s name) " < " (p "max" max) " ; "
-      (s name) "++ ) {" >n
+      (s name) "++ )"
+    (tempos-c++-open-brace)
     r-or-blank-line>
-    "}" > %))
+    (tempos-c++-close-brace)))
 
 (tempo-define-template "c-for-std-2"
  '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
-   "for ( int i = 0 ; i < " p "; i++ ) {" >n
+   "for ( int i = 0 ; i < " p "; i++ )"
+   (tempos-c++-open-brace)
    r-or-blank-line>
-   "}" > %))
+   (tempos-c++-close-brace)))
 
 (tempo-define-template "c-for-iter"
   '( lws
      "for ( auto iter=" p ".begin() ; "
             "iter!=" p ".end() ; "
-            "++iter ) {" >n
-     r-or-blank-line>
-     "}" > %))
-
-;; if
-(tempo-define-template "c-if"
- '((progn (tempo-entry "\\bi\\(f\\sw*\\)?") "") lws
-   "if ( " p " ) {" >n
-   r-or-blank-line>
-    "}" > % )
- "if")
-
-;; else if
-(tempo-define-template "c-else-if"
- '((progn (tempo-entry) "") lws
-   "else if ( " p " ) {" >n
-   r-or-blank-line>
-    "}" > %)
- "elif")
-
-;; else
-(tempo-define-template "c-else"
- '((progn (tempo-entry "\\bi\\(f\\sw*\\)?") "") 
-   "else {" >n
-   r-or-blank-line>
-    "}" > %)
- "else")
+            "++iter )"
+      (tempos-c++-open-brace)
+      r-or-blank-line>
+      (tempos-c++-close-brace)))
 
 ;; switch
 (tempo-define-template "c-switch"
  '( lws
-    "switch ( " p " ) {" >n
-    > n>
+    "switch ( " p " )"
+    (tempos-c++-open-brace)
     "case " p ": " > n>
     p > n>
     "break;" > n>
@@ -112,7 +136,7 @@
     "default :" > n>
     p > n>
     "break;" > n>
-    "}" >)
+    (tempos-c++-close-brace))
  "switch")
 
 ;; case
@@ -131,39 +155,35 @@
     "break;" > )
  "default")
 
-;; while
-(tempo-define-template "c-while"
- '( lws
-    "while ( " p " ) {" >n
-    r-or-blank-line>
-    "}" > % )
- "while")
-
 ;; do
 (tempo-define-template "c-do"
  '( lws
-    "do {" >n
+    "do"
+    (tempos-c++-open-brace)
     r-or-blank-line>
-    "} while ( " p " );" > %)
+    (tempos-c++-close-brace) "while ( " p " );" > %)
  "do")
 
 ;; try
 (tempo-define-template "c-try"
  '( lws
-    "try {" >n
+    "try"
+    (tempos-c++-open-brace)
     r-or-blank-line>
-    "}" >n
-    "catch ( " p " ) {" >n
+    (tempos-c++-close-brace) n
+    "catch ( " p " )"
+    (tempos-c++-open-brace)
     p > n>
-    "}" > %)
+    (tempos-c++-close-brace))
  "try")
 
 ;; catch
 (tempo-define-template "c-catch"
  '( lws
-    "catch ( " p " ) {" >n
+    "catch ( " p " )"
+    (tempos-c++-open-brace)
     r-or-blank-line>
-    "}" > %)
+    (tempos-c++-close-brace))
  "catch")
 
 

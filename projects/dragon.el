@@ -22,12 +22,18 @@
     (set (make-local-variable 'grep-find-ext-regexp-function) 'dragon-grep-find-regexp)
     (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|idl\\)")
     (set (make-local-variable 'require-final-newline) nil)
+    (set (make-local-variable 'tempos-c++-open-brace-style) 'behind-conditional)
     (setq tab-width 2)
     (setq indent-tabs-mode nil)
     (setq c-basic-offset 2)
     (c-set-offset 'access-label '-)
     (c-set-offset 'inclass '++)
     (dragon-font-lock-add-keywords)
+
+    ;; MPS specific
+    (let ((actual-fn (or file-name (buffer-file-name) default-directory)))
+      (when (string-match "/DieCarrier/" actual-fn)
+	(set (make-local-variable 'tempos-c++-open-brace-style) 'new-line)))
 
     ;; todo: maybe its cleaner to make dragon-abbrev-table the
     ;; local-abbrev-table, and the ex local-abbrev-table a parent of it
@@ -143,7 +149,7 @@
 	    (save-excursion
 	      (let (is-getter is-const)
 		(goto-char method-start)
-		(setq is-getter (looking-at "\\(?:Is\\|Has\\|Get\\)\\(?:[A-Z_1-9]\\|\\b\\)"))
+		(setq is-getter (looking-at "i?\\(?:Is\\|Has\\|Get\\)\\(?:[A-Z_1-9]\\|\\b\\)"))
 		(goto-char method-end)
 		(forward-list 1)
 		(setq is-const (looking-at "\\s-*const\\b"))
@@ -554,6 +560,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 	"~/src/DieBonder/RTOS/PickPlace/PPPPickerMod"
 	"~/src/DieBonder/PC/PickPlace/PPPPickerShuttleMod"
 	"~/src/DieBonder/RTOS/PickPlace/PPPPickerShuttleMod"
+	"~/src/DieBonder/RTOS/DieCarrier/DCWaferHdlMod"
 	"~/drives/xpc/Program Files/Esec/DieBonder/Data/BuildVersion.txt"
 	"~/office/dragon/todo.txt"
 	))
@@ -603,6 +610,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 		("/DieBonder/PC/PickPlace/PPBBMod" dragon-ffe-pc-bh)
 		("/DieBonder/PC/PickPlace/PPForceMod" dragon-ffe-pc-force)
 		("/DieBonder/PC/PickPlace/PPSeqBaseLib" dragon-ffe-pc-seq)
+		("/DieBonder/RTOS/DieCarrier/DCWaferHdlMod" dragon-ffe-rtos-dcwaferhdlmod)
 		("/DieBonder/RTOS/PickPlace/PPCalibMod" dragon-ffe-rtos-calib)
 		("/DieBonder/RTOS/PickPlace/PPSequencer/Sources/SeqV2" dragon-ffe-rtos-seqv2)
 		("/DieBonder/RTOS/PickPlace/PPSequencer" dragon-ffe-rtos-seq)
@@ -972,6 +980,25 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 			       ("DebugPPCalibSrv" ("dppcs" "dpp"))
 			       ("DebugPPFCCalibSrv" ("dppfccs" "dfc"))
 			       ))
+
+(setq dragon-ffe-rtos-dcwaferhdlmod `(
+			      ("DCWaferHdlMod" ("m"))
+			      ("DCWaferHdlModIDs" ("mid" "id"))
+			      ("DCWHAxisPool" ("ap"))
+			      ("DCWHCalibData" ("cd"))
+			      ("DCWHCmds" ("c"))
+			      ("DCWHCollisionChecker" ("cc"))
+			      ("DCWHExpansion" ("e"))
+			      ("DCWHExpansionOneMot" ("eom"))
+			      ("DCWHExpansionSim" ("es"))
+			      ("DCWHExpansionSimOneMot" ("esom"))
+			      ("DCWHGripper" ("g"))
+			      ("DCWHGripperSim" ("gs"))
+			      ("DCWHModErrHdl" ("meh" "eh"))
+			      ("DCWHMoveCtrl" ("mc"))
+			      ("DCWHSimuBase" ("sb"))
+			      ("DCWHSubModBase" ("smb"))
+			      ("DCWHWaferTable" ("wt"))))
 
 (setq dragon-ffe-rtos-calib `(
 			      ("PPCalibModSeqIf" ("sif" "si" "s"))

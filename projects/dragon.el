@@ -134,7 +134,7 @@
 (defun dragon-method-warnings (end)
   (let ((method-start t)
 	(method-end t)
-	warning-found)
+	warning-found) ; t when a warning issue was found
     (while (and method-start
 		method-end
 		(not warning-found)
@@ -149,7 +149,7 @@
 	    (save-excursion
 	      (let (is-getter is-const)
 		(goto-char method-start)
-		(setq is-getter (looking-at "i?\\(?:Is\\|Has\\|Get\\)\\(?:[A-Z_1-9]\\|\\b\\)"))
+		(setq is-getter (looking-at "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\)\\(?:[A-Z_1-9]\\|\\b\\)"))
 		(goto-char method-end)
 		(forward-list 1)
 		(setq is-const (looking-at "\\s-*const\\b"))

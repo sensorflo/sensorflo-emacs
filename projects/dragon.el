@@ -31,9 +31,10 @@
     (dragon-font-lock-add-keywords)
 
     ;; MPS specific
-    (let ((actual-fn (or file-name (buffer-file-name) default-directory)))
+    (let ((actual-fn (or (buffer-file-name) default-directory)))
       (when (string-match "/DieCarrier/" actual-fn)
-	(set (make-local-variable 'tempos-c++-open-brace-style) 'new-line)))
+	(set (make-local-variable 'tempos-c++-open-brace-style) 'new-line)
+	(set (make-local-variable 'dragon-method-decl-empty-comment) t)))
 
     ;; todo: maybe its cleaner to make dragon-abbrev-table the
     ;; local-abbrev-table, and the ex local-abbrev-table a parent of it
@@ -44,6 +45,8 @@
     ;; 	  (setq local-abbrev-table (list local-abbrev-table dragon-abbrev-table))
     ;; 	(setq local-abbrev-table (list local-abbrev-table dragon-abbrev-table))))
     (dolist (x dragon-abbrev-table) 	
+      (when (nth 2 x)
+	(put (nth 2 x) 'no-self-insert t))
       (define-abbrev local-abbrev-table (nth 0 x) (nth 1 x) (nth 2 x)
 	:enable-function (dragon-create-abbrev-enable-function (nth 3 x))
 	:case-fixed t))
@@ -60,14 +63,10 @@
 (defun dragon-c-mode-common-bindings()
   ;; definitions
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
-  (local-set-key [(control ?\,)(d)(d)] 'tempo-template-dragon-method-def-std) ;d because its fast
-  (local-set-key [(control ?\,)(d)(D)] 'tempo-template-dragon-method-def)
-  (local-set-key [(control ?\,)(d)(m)] 'tempo-template-dragon-method-decl-std)
-  (local-set-key [(control ?\,)(d)(M)] 'tempo-template-dragon-method-decl)
+  (local-set-key [(control ?\,)(d)(d)] 'tempo-template-dragon-method-std) ;d because its fast
 
   ;; control flow
   (local-set-key [(control ?\,)(c)(t)] 'tempo-template-dragon-try-catch-std) 
-  (local-set-key [(control ?\,)(c)(f)(e)] 'tempo-template-dragon-for-each) 
 
   ;; statements
   (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
@@ -1107,23 +1106,35 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 
 ;;; tempos
 ;; todo: choose better prefix than 'c-'
+(defvar dragon-method-decl-empty-comment nil)
+
 (tempo-define-template
  "dragon-method-decl-std"
- '( &
-    "EHRESULT " p "(" p ");" > ))
+ '( lws
+    '(progn
+       (when dragon-method-decl-empty-comment
+	 (insert "/** */")
+	 (indent-according-to-mode)
+	 (insert "\n")))
+    "EHRESULT " p " (" p ");" > % ))
 
 (tempo-define-template
  "dragon-method-def-std"
- '( &
-    "/** */" > n>
-    "EHRESULT " '(insert-class-name) "::" p "()" > n>
-    "{" > n>
-    "EHRESULT ehr;" > n>
+ '( lws
+    "/** */" >n
+    "EHRESULT " '(insert-class-name) "::" p " ()" >n
+    "{" >n
+    "EHRESULT ehr;" >n
     p n>
     "ERETURN_IF_FAILED(ehr);" n>
     "return ehr;" n>
-    "}" > n>
-    > n>))
+    "}" > %))
+
+(defun tempo-template-dragon-method-std ()
+  (interactive)
+  (if (c-src-buffer-p)
+      (tempo-template-dragon-method-def-std)
+    (tempo-template-dragon-method-decl-std)))
 
 (tempo-define-template
  "dragon-early-return-std"
@@ -1132,13 +1143,11 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 
 (tempo-define-template
  "dragon-ethrow"
- '( &
-    "ETHROW_IF_FAILED(ehr);" > ))
+ '( lws "ETHROW_IF_FAILED(ehr);" > ))
 
 (tempo-define-template
  "dragon-return-std"
- '( &
-    "return ehr;" > ))
+ '( lws "return ehr;" > ))
 
 (tempo-define-template
  "dragon-wstring-literal"
@@ -1146,21 +1155,13 @@ Arg is the 3rd items of a dragon-abbrev-table item"
  "_T")
 
 (tempo-define-template
- "dragon-statement-common-ehr"
- '( lws
-    "ehr += " r ";" >n
-    "ERETURN_IF_FAILED(ehr);" > %))
-
-(tempo-define-template
  "dragon-statement-common"
- '( ;&
-   '(beginning-of-line) "ehr += " r '(when (not (looking-at "[ \t]*;")) (insert ";"))  > )
+ '( '(beginning-of-line) "ehr += " r '(when (not (looking-at "[ \t]*;")) (insert ";"))  > )
  "ehr")
 
 (tempo-define-template
  "dragon-trace-method-enter"
- '( lws
-    "ETRACE_LEVEL2(_T(\"" '(insert-class-and-defun-name)  ": " p "\"));" > %))
+ '( lws "ETRACE_LEVEL2(_T(\"" '(insert-class-and-defun-name)  ": " p "\"));" > %))
 
 (tempo-define-template
  "dragon-trace-error"
@@ -1189,17 +1190,11 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 (tempo-define-template
  "dragon-try-catch-std"
  '( lws
-    "try {" >n
+    "try"
+    (tempos-c++-open-brace)
     r-or-blank-line>
     "}" >n
     "ECATCH_COMPLETE_EHR(ehr);" > %))
-
-(tempo-define-template
- "dragon-for-each"
- '( lws
-    "for each (" p " in " p ") {" >n
-    r-or-blank-line>
-    "}" > %))
 
 (tempo-define-template
  "dragon-eassert"

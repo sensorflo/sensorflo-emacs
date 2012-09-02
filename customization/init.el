@@ -1,16 +1,17 @@
-;;; _emacs.el - sensorflo's Emacs init file
+;;; init.el - Sensorflo's Emacs init file
 ;;
+;; Author: Florian Kaufmann <sensorflo@gmail.com>
+;; URL: https://github.com/sensorflo/sensorflo-emacs then
+;;      customization/init.el
+;; 
 ;;; Commentary
 ;;
 ;; TODO
 ;; - Try to avoid require. Try to insert all into mode hooks.
 ;; - Work more with autoload
-;; - have a look at drew's init: site-lisp/emacs-init.el
+;; - have a look at Drew Adam's init: site-lisp/emacs-init.el
 ;;
 ;;; Code
-
-;; (eval-after-load "ispell"
-;;   '(progn (defun ispell-get-coding-system () 'utf-8)))
 
 
 ;;; stettings part 1 - before loading libraries
@@ -23,12 +24,12 @@
     (normal-top-level-add-subdirs-to-load-path))) 
 (dolist
     (x (append
-				'("site-lisp/"
-					"site-lisp/ecb-2.40/")
-				(if (not (and (>= emacs-major-version 23) (>= emacs-minor-version 2)))
-						(mapcar
-						 (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))
-						 '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
+	'("site-lisp/"
+	  "site-lisp/ecb-2.40/")
+	(if (not (and (>= emacs-major-version 23) (>= emacs-minor-version 2)))
+	    (mapcar
+	     (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))
+	     '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
   (add-to-list 'load-path (concat user-emacs-directory x)))
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
 
@@ -355,4 +356,4 @@
 (setq debug-on-error nil) ;; customized to nil, but for some reasons does not work
 
 
-;;; _emacs.el ends here
+;;; init.el ends here

@@ -172,8 +172,4 @@
     (local-set-key [(control f)(control ?.)] 'compilation-ext-next-file)))
 
 
-;;; temporary bindings 
-(global-set-key [(f5)] 'adoc-test-run)
-
-
 ;;; mybindings.el ends here

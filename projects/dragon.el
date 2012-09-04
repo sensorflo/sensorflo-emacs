@@ -455,7 +455,7 @@
 
   ;; C++ constructs
   ("if" "" tempo-template-c-if 'only-in-code)
-  ("for" "" tempo-template-c-for 'only-in-code)
+  ("for" "" tempo-template-doremi-c-for 'only-in-code)
   ("case" " " tempo-template-c-case 'only-in-code)
   ("default" " " tempo-template-c-default 'only-in-code)
   ("do" " " tempo-template-c-do 'only-in-code)

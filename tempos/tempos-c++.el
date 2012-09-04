@@ -120,6 +120,8 @@
       r-or-blank-line>
       (tempos-c++-close-brace)))
 
+(tempo-ext-define-group "c-for" ("" "-std-2" "-iter"))
+
 ;; switch
 (tempo-define-template "c-switch"
  '( lws

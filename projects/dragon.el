@@ -455,6 +455,10 @@
 
   ;; C++ constructs
   ("if" "" tempo-template-c-if 'only-in-code)
+  ("elif" "" tempo-template-c-else-if 'only-in-code)
+  ("elseif" "" tempo-template-c-else-if 'only-in-code)
+  ("ei" "" tempo-template-c-else-if 'only-in-code)
+  ("else" "" tempo-template-c-else 'only-in-code)
   ("for" "" tempo-template-doremi-c-for 'only-in-code)
   ("case" " " tempo-template-c-case 'only-in-code)
   ("default" " " tempo-template-c-default 'only-in-code)
@@ -742,6 +746,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("StdAfx" ("afx") "h")
   ("PPSeqDoxygen" ("doxy" "dox") "h")
   ("PPSeqMeth" ("m"))
+  ("PPSeqMethods" ("mo"))
   ("PPSeqStateHandlingMethods" ("shm"))
   ("IPPSeqStateHandlingMethods" ("ishm"))
   ("PPSeqRTOSModData" ("rmd"))
@@ -789,6 +794,8 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqWPPForceMod" ("wfm"))
   ("PPSeqWPPCalibMod" ("wcm" "wc"))
   ("PPSeqWDCDEMod" ("wdem" "wde"))
+  ("PPSeqWPPPTrftMod" ("wtrft" "wtable") )
+  ("PPSeqWPPPPickerMod" ("wpckh" "wpicker"))
   ("PPSeqWTeachSrv" ("wts"))
   ("PPSeqWPPPPickerMod" ("wpm" "wp"))
   ("PPSeqWVIBondVisionSeq" ("wbvis" "wbvi"))
@@ -1118,17 +1125,18 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 	 (insert "\n")))
     "EHRESULT " p " (" p ");" > % ))
 
+;; implement such that it can be called when point is at the beginning of an
+;; existing method and the insertation takes place nicely.
 (tempo-define-template
  "dragon-method-def-std"
- '( lws
-    "/** */" >n
+ '( "/** " p " */" >n
     "EHRESULT " '(insert-class-name) "::" p " ()" >n
     "{" >n
     "EHRESULT ehr;" >n
     p n>
     "ERETURN_IF_FAILED(ehr);" n>
     "return ehr;" n>
-    "}" > %))
+    "}" > % %))
 
 (defun tempo-template-dragon-method-std ()
   (interactive)

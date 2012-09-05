@@ -34,7 +34,7 @@
 
 (defun tempos-c++-std (keyword &optional regex no-lws tag)
   (tempo-define-template
-   (concat "c-" keyword)
+   (concat "c-" (replace-regexp-in-string " " "-" keyword))
    `((progn (tempo-entry ,regex) "") ,(unless no-lws 'lws)
      ,keyword (tempos-c++-between-keyword-parenthesis) "( " p " )"
      (tempos-c++-open-brace)
@@ -84,8 +84,15 @@
 
 (tempos-c++-std "if" "\\bi\\(f\\sw*\\)?" nil "if")
 (tempos-c++-std "else if" nil t "elif")
-(tempos-c++-std "else" "\\bi\\(f\\sw*\\)?" t "else")
 (tempos-c++-std "while" "\\bw\\(i\\sw*\\)?" t "while")
+
+(tempo-define-template "c-else"
+ '( (progn (tempo-entry "\\be\\(l\\(r\\sw*\\)?\\)?") "") 
+   "else"
+   (tempos-c++-open-brace)
+   r-or-blank-line>
+   (tempos-c++-close-brace) )
+ "else")
 
 (tempo-define-template "c-for"
  '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws

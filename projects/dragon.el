@@ -146,14 +146,21 @@
 	  ;; -- getters should be const
 	  (when (not warning-found)
 	    (save-excursion
-	      (let (is-getter is-const)
-		(goto-char method-start)
-		(setq is-getter (looking-at "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\)\\(?:[A-Z_1-9]\\|\\b\\)"))
-		(goto-char method-end)
-		(forward-list 1)
-		(setq is-const (looking-at "\\s-*const\\b"))
-		(when (and is-getter (not is-const))
-		  (looking-at "\\(\\s-*\\S-\\)")	;the point is to set match data for group 1
+	      (let ((is-getter
+		     (progn
+		       (goto-char method-start)
+		       (looking-at "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\)\\(?:[A-Z_1-9]\\|\\b\\)")))
+		    (is-const
+		     (progn
+		       (beginning-of-line)
+		       (looking-at "\\s-*static\\b")))
+		    (is-static
+		     (progn
+		       (goto-char method-end)
+		       (forward-list 1)
+		       (looking-at "\\s-*const\\b"))))
+		(when (and is-getter (not is-const) (not is-static))
+		  (looking-at "\\(.*\n?\\)") ; the point is to set match data for group 1
 		  (setq warning-found t)))))
 
 	  ;; -- declarations & specifications must have space between name and opening paranthesis

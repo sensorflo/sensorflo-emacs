@@ -754,6 +754,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqDoxygen" ("doxy" "dox") "h")
   ("PPSeqMeth" ("m"))
   ("PPSeqMethods" ("mo"))
+  ("IPPSeqMethods" ("imo") "h")
   ("PPSeqStateHandlingMethods" ("shm"))
   ("IPPSeqStateHandlingMethods" ("ishm"))
   ("PPSeqRTOSModData" ("rmd"))

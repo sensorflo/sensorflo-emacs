@@ -83,7 +83,7 @@
 
 
 ;;; add new bindings 
-;; (prexix-keymaps M-m / C-f were created above)
+;; (prefix-keymaps M-m / C-f were created above)
 (global-set-key [(control ?\')]           'mark-word)     ; by default on M-@
 (global-set-key [(control meta ?\')]      'mark-comment-dwim) 
 (global-set-key [(control f)(control f)]  'ffe-find-file)
@@ -92,7 +92,7 @@
 (global-set-key [(control f)(control r)]  'query-replace-regexp) 
 (global-set-key [(control f)(control k)]  'execute-extended-command) 
 (autoload 'doremi-buffers+ "doremi-cmd.el")
-(global-set-key [(control f)(control b)]  'doremi-buffers+) ; old next-buffer-ext / previous-buffer-ext
+(global-set-key [(control f)(control b)]  'doremi-buffers+) ; replaces next-buffer-ext / previous-buffer-ext
 (global-set-key [(control f)(control s)]  'grep-find-ext) 
 (global-set-key [(meta m)(meta m)]        'kmacro-start-stop-macro-ext)
 (global-set-key [(control meta y)]        'yank-push-ext) ; see also yank-pop above

@@ -635,13 +635,9 @@
   (local-set-key "\C-c\C-t" 'adoc-toggle-title-type)
 
   (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
-  ;; (local-set-key [(control ?\,)(f)(v)] 'tempo-template-latex-verbatim)
   (local-set-key [(control ?\,)(f)(c)] 'tempo-template-adoc-code)
-  (local-set-key [?\+] 'tempo-template-adoc-code)
   (local-set-key [(control ?\,)(f)(b)] 'tempo-template-adoc-strong)
-  (local-set-key [?\*] 'tempo-template-adoc-strong)
   (local-set-key [(control ?\,)(f)(e)] 'tempo-template-adoc-emph)
-  (local-set-key [?\_] 'tempo-template-adoc-emph)
 
   (local-set-key [(control ?\,)(h)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(h)(?0)] 'tempo-template-adoc-title-0)

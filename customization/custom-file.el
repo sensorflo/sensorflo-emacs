@@ -66,7 +66,6 @@
  '(cperl-pod-here-fontify t)
  '(cperl-ps-print-face-properties (quote ((font-lock-keyword-face nil nil bold shadow) (font-lock-variable-name-face nil nil bold) (font-lock-function-name-face nil nil bold italic box) (font-lock-constant-face nil "LightGray" bold) (cperl-array-face nil "LightGray" bold underline) (cperl-hash-face nil "LightGray" bold italic underline) (font-lock-comment-face nil "LightGray" italic) (font-lock-string-face nil nil italic underline) (cperl-nonoverridable-face nil nil italic underline) (font-lock-type-face nil nil) (font-lock-warning-face nil "LightGray" bold italic box) (underline nil "LightGray" strikeout))))
  '(cperl-under-as-char t)
- '(debug-on-error nil)
  '(default-gutter-position (quote bottom))
  '(default-major-mode (quote text-mode) t)
  '(delete-by-moving-to-trash t)

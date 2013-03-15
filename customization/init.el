@@ -353,7 +353,11 @@
 (require 'icicles)
 (icy-mode) ; icy-mode wants to be the last thing called 
 
-(setq debug-on-error nil) ;; customized to nil, but for some reasons does not work
+;; put here at the end of the startup instead within custom-file so starting up
+;; emacs with --debug-init has an effect. Else, modifying debug-on-error within
+;; custom-file, which is loaded rather early within startup, would override
+;; --debug-init.
+(setq debug-on-error nil) 
 
 
 ;;; init.el ends here

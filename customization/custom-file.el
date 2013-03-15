@@ -219,7 +219,7 @@ mouse-3: Remove current window from display")) #("%]" 0 2 (help-echo "Recursive 
  '(next-screen-context-lines 10)
  '(nova-compile-target "default")
  '(only-global-abbrevs nil)
- '(outline-minor-mode-prefix "")
+ '(outline-minor-mode-prefix "\C-c\C-o")
  '(paren-mode (quote paren) nil (paren))
  '(parse-sexp-ignore-comments t)
  '(progress-feedback-use-echo-area nil)
@@ -251,8 +251,6 @@ mouse-3: Remove current window from display")) #("%]" 0 2 (help-echo "Recursive 
  '(show-paren-priority 1000)
  '(show-paren-style (quote parenthesis))
  '(size-indication-mode nil)
- '(smerge-command-prefix "
-")
  '(ss-database-alist (("^W:/DieBonder/PC" . "\\\\swsources.esec.com\\VSSDB\\DB_Dragon\\PC Development") ("^W:/DieBonder/RTOS" . "\\\\swsources.esec.com\\VSSDB\\DB_Dragon\\RTOS Development")))
  '(ss-program "C:\\Program Files\\Microsoft Visual Studio\\Common\\VSS\\win32\\SS.EXE" t)
  '(ss-project-dirs (quote (("^W:/DieBonder/PC/PickPlace/PPCalibMod/" . "$/Pick Place/PPCalibMod/WORKING/Sources/"))) t)

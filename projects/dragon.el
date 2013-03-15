@@ -149,17 +149,22 @@
 	      (let ((is-getter
 		     (progn
 		       (goto-char method-start)
-		       (looking-at "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\)\\(?:[A-Z_1-9]\\|\\b\\)")))
-		    (is-const
+		       (looking-at "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\|Show\\|Display\\|Print\\|Trace\\|Log\\)\\(?:[A-Z_1-9]\\|\\b\\)")))
+		    (is-static
 		     (progn
 		       (beginning-of-line)
 		       (looking-at "\\s-*static\\b")))
-		    (is-static
+		    (is-const
 		     (progn
 		       (goto-char method-end)
 		       (forward-list 1)
-		       (looking-at "\\s-*const\\b"))))
-		(when (and is-getter (not is-const) (not is-static))
+		       (looking-at "\\s-*\\(?:=\\s-*0\\s-+\\)?const\\b")))
+		    (is-surpressed
+		     (progn
+		       (goto-char method-end)
+		       (forward-list 1)
+		       (looking-at "\\s-*\\(=\\s-*const\\s-*\\)?;?\\s-*\\(?://\\|/\\*+\\)\\s-*cppcheck-surpress"))))
+		(when (and is-getter (not is-const) (not is-static) (not is-surpressed))
 		  (looking-at "\\(.*\n?\\)") ; the point is to set match data for group 1
 		  (setq warning-found t)))))
 
@@ -180,7 +185,11 @@
    nil
    (list
     ;; 
-    (list 'dragon-method-warnings '(1 font-lock-warning-face))
+    (list 'dragon-method-warnings '(1 font-lock-warning-face append t)) 
+
+    ;; white space errors
+    (list "^[ ]*\t[ \t]*" '(0 font-lock-warning-face append t))
+    (list "[ \t]+$" '(0 font-lock-warning-face append t))
 
     ;; empty comments 
     (list "/\\*+\\s-*\\*+/\\|//+\\s-*$" '(0 font-lock-unimportant t)) 

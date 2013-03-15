@@ -52,7 +52,7 @@
 (global-set-key [remap open-line]               'open-line-above) 
 (global-set-key [remap capitalize-word]         'capitalize-dwim) 
 (global-set-key [remap capitalize-region]       'capitalize-dwim) 
-(global-set-key [remap downcase-word]           'downcase-dwim) 
+; (global-set-key [remap downcase-word]           'downcase-dwim) ; no use since covered by forward-word below
 (global-set-key [remap downcase-region]         'downcase-dwim) 
 (global-set-key [remap upcase-word]             'upcase-dwim) 
 (global-set-key [remap upcase-region]           'upcase-dwim) 

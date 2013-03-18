@@ -22,7 +22,11 @@
 ;;   * x for all files projects below node a, but .cpp's do y, and .el's do z.
 ;;   * x for all .cpp's, but projecttree a does y (for cpps)
 ;;
-
+;; Todo
+;; ----
+;; - Concrete projects should not have to edit this file. Instead, for example,
+;;   they should be given the opportunity to hook themselves into project.el.
+;; 
 
 ;; Store in distributable files: yes/no
 ;;

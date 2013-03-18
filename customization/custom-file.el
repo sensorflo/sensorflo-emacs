@@ -410,6 +410,7 @@ mouse-3: Remove current window from display")) #("%]" 0 2 (help-echo "Recursive 
  '(info-title-4 ((t (:inherit markup-title-4-face))))
  '(info-xref ((t (:inherit markup-reference-face))))
  '(info-xref-visited ((t (:inherit info-xref :foreground "purple3"))))
+ '(italic ((t (:underline nil :slant italic))) nil "Probably due to a bug (see http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12349), italic by default automatically has underlined=on applied. So I have to turn off underline explicitely. Meaning to now break occurences where another face explicitely wants to turn underline on.")
  '(linkd-command ((t (:inherit markup-reference-face))))
  '(linkd-generic-link ((t (:inherit markup-gen-face))))
  '(linkd-generic-link-name ((t (:inherit markup-reference-face))))

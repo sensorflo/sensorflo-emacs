@@ -218,7 +218,6 @@ mouse-3: Remove current window from display")) #("%]" 0 2 (help-echo "Recursive 
  '(next-screen-context-lines 10)
  '(nova-compile-target "default")
  '(only-global-abbrevs nil)
- '(outline-minor-mode-prefix "\C-c\C-o")
  '(paren-mode (quote paren) nil (paren))
  '(parse-sexp-ignore-comments t)
  '(progress-feedback-use-echo-area nil)

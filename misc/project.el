@@ -47,10 +47,10 @@ Returns nil if it is unknown."
         (case-fold-search t))
     (cond
      ((null actual-fn) nil)
+     ((string-match "/\\(inos\\|inco\\|lua\\)\\(/\\|$\\)" actual-fn) 'project-indel) ; before dragon, because it is contained within dragon
      ((string-match "/diebonder/pc\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
      ((string-match "/Common\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
      ((string-match "/diebonder/rtos\\(/\\|$\\)" actual-fn) 'project-diebonder-rtos)
-     ((string-match "/\\(inos\\|inco\\)\\(/\\|$\\)" actual-fn) 'project-indel)
      ((string-match "/prog\\w*/\\w+\\(/\\|$\\)" actual-fn) 'project-nova)
      ((string-match "/bib\\(/\\|$\\)" actual-fn) 'project-nova)
      ((directory-files (file-name-directory actual-fn) nil ".*\\.el$") 'project-el)

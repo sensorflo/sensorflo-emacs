@@ -199,6 +199,7 @@
 (require 'auto-complete)
 (require 'autopair)
 (require 'ace-jump-mode)
+(require 'package)
 (eval-after-load "outline" '(require 'foldout))
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t) ;; there's also a shell-mode-hook
 
@@ -325,6 +326,11 @@
 (dolist (x '(".html" ".htm" ".x" ".s" ".str" ".map" ".pj" ".mpd" ".603" ".bmp" ".jpg" ".jpeg" "_"))
   (add-to-list 'completion-ignored-extensions x))
 
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+	("marmalade" . "http://marmalade-repo.org/packages/")
+	("melpa" . "http://melpa.milkbox.net/packages/")))
+
 (load-library "mybindings")
 (load-library "mode-hooks")
 
@@ -340,6 +346,7 @@
 ;;; autostart
 ;; ----------
 (message "init file: autostart")
+(package-initialize)
 ;; manual says to call it for emacs' own menus (file, edit, ...), but it results
 ;; in an error
 ;;(update-power-keys t) 

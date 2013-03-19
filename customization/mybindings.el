@@ -42,7 +42,7 @@
 (require 'repeatable)
 
 
-;;; redifine with similar functionality
+;;; redifine existing binding with semtantically similar functionality
 (global-set-key [remap isearch-forward]         'isearch-forward-regexp) 
 (global-set-key [remap isearch-backward]        'isearch-backward-regexp)
 (global-set-key [remap list-buffers]            'ibuffer) 
@@ -70,11 +70,11 @@
 (global-set-key [remap indent-for-tab-command]  'indent-for-tab-command-ext)
 (global-set-key [remap indent-rigidly]          'indent-rigidly-ext)
 (global-set-key [remap fill-paragraph]          'fill-paragraph-dwim)
-(global-set-key "\C-y"                          'yank-ext)
-(global-set-key "\M-y"                          'yank-pop-ext) ;see also yank-push below
+(global-set-key [remap yank]                    'yank-ext)
+(global-set-key [remap yank-pop]                'yank-pop-ext) ;see also yank-push below
 
 
-;;; redefine existing bindings with new functionality           
+;;; redefine existing bindings with semantically different functionality           
 (global-set-key [(control l)]      'forward-char)         ; recenter-top-bottom     -> nowhere (use c-recenter-defun-or-region)
 (global-set-key [(meta l)]         'forward-word)         ; downcase-word           -> nowhere
 (global-set-key [(control meta l)] 'forward-sexp)         ; reposition-window       -> nowhere
@@ -123,7 +123,7 @@
 
 
 ;;; my-common-mode-bindings
-;; Maybe theres a function returning local key map, so a generic mehtod including
+;; Maybe theres a function returning local key map, so a generic method including
 ;; global map is possible
 ;; ------------------------------------------------------------------
 (defun my-common-mode-bindings ()

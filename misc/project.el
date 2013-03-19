@@ -210,7 +210,9 @@ Nil if there is none."
     (forward-line 2)
     (cond
      ((eq type 'project-diebonder-pc)
-      (setq found (re-search-forward "\\.idl$" nil t)))
+      (setq found (or
+		   (re-search-forward "\\.idl$" nil t)
+		   (re-search-forward "\\bSources\\b" nil t))))
      ((eq type 'project-diebonder-rtos)
       (setq found (or
                    (re-search-forward "\\bSources\\b" nil t)

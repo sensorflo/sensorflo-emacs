@@ -1161,6 +1161,15 @@
 (add-hook 'Custom-mode-hook 'my-Custom-mode-hook)
 
 
+;;; not really modes but other hooks 
+;;; ===================================================================
+
+(defun custom-file-before-save-hook ()
+  (when (string= (expand-file-name (buffer-file-name)) (expand-file-name custom-file))
+    (replace-cntrl-chars)))
+(add-hook 'before-save-hook 'custom-file-before-save-hook t)
+
+
 ;;; common (all, text, programming, ...)
 ;;; ===================================================================
 

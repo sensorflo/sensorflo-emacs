@@ -793,4 +793,32 @@ e eval an expression
 q terminate program bein debugged
 l list breaking functions"))
 
+(defun replace-cntrl-chars ()
+  "Replace all control chars across the current buffer.
+
+The goal is that file(1) and other tools treat the file as text,
+not as data/binary. `replace-cntrl-chars' is intended only for
+control characters appearing in strings representing a key
+sequence.
+
+The control characters are replaced with their C-... equivalent,
+_blindly assuming_ they are in a string meant to represent a key
+sequence."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char 0)
+      ;; To understand the following, looking at an ascii control code chart may
+      ;; help, e.g. http://en.wikipedia.org/wiki/Ascii#ASCII_control_code_chart
+      ;; 
+      ;; Search for \001-\037 but exclusive \011-\015. \011-\015 = \t \n \v \f \r
+      ;; = ^I - ^M are allowed to occur in a text (i.e. non-binary) file.
+      (while (re-search-forward "[\001-\010]\\|[\016-\037]" nil t)
+	(let* ((ctrl-char (string-to-char (match-string 0)))
+	       ;; map \001-\032 to a-z, and \033-037 to [ - _. This is like
+	       ;; mapping \001-\037 to A-_ however lowercase for the latin
+	       ;; characters
+	       (replacement (concat "\\C-" (char-to-string (downcase (+ ctrl-char (- ?A ?\1)))))))
+	  (replace-match replacement t t))))))
+
 ;;; misc-ext.el ends here

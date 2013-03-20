@@ -156,15 +156,6 @@
     (local-set-key [(control f)(control n)] 'tempo-forward-mark)
     (local-set-key [(control f)(control p)] 'tempo-backward-mark)
     
-    ;; maybe make it similar to C-x z; up/down only has this meanig after a
-    ;; certain prefix
-    (local-set-key [C-up]                  'unimportant-brighter)
-    (local-set-key [C-down]                'unimportant-darker)
-    (local-set-key [(control meta up)]     'semi-unimportant-brighter)
-    (local-set-key [(control meta down)]   'semi-unimportant-darker)
-  
-    ;; actions upon underlying file / external programs
-    
     ;; compilation/grep buffer
     (local-set-key [(control meta n)]        'next-error)
     (local-set-key [(control meta p)]        'previous-error)

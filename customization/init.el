@@ -274,6 +274,7 @@
 ;; 
 (let ((my-auto-mode-alist '(
     ("bash\\|profile" . shell-script-mode)
+    ("git-?flow\\(?:-\\w+\\)?\\'" . shell-script-mode)
     ("\\.env\\'" . shell-script-mode)
     ("\\.bas\\'" . visual-basic-mode)
     ("inputrc" . rl-mode)
@@ -282,7 +283,7 @@
     ("\\.tl[hi]\\'". c++-mode)
     ("\\.txt\\'" . adoc-mode)
     ("\\`[-0-9A-Z_]+\\'" . adoc-mode) ;; all upercase file name
-    ("\\.\\(text\\|mdwn\\|md\\|mdt\\)\\'" . markdown-mode)
+    ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
     ("\\.lo[g0-9]\\'" . logfile-mode)
     ("personality.*\\.txt\\'" . pm-mode)
     ("swat\\.eu\\.besi\\..*\\.txt" . mediawiki-mode)
@@ -296,8 +297,8 @@
     ("\\.stream\\'" . stream-mode)
     ("\\.m\\'" . matlab-mode)
     ("\\.xml\\'" . xml-mode)
-    ("\\.html?\\'" . nxhtml-mode)	; todo: nxhtml-mode is not always available
-    ("\\.svg\\'" . nxhtml-mode)		; todo: nxhtml-mode is not always available
+    ("\\.html?\\'" . (lambda () (if (require 'nxhtml-mode nil t) (nxhtml-mode) (sgml-mode))))
+    ("\\.svg\\'" . (lambda () (if (require 'nxhtml-mode nil t) (nxhtml-mode) (sgml-mode))))
     ("makefile" . makefile-gmake-mode)
     ("\\.make\\'" . makefile-gmake-mode)    
     (".*doxy\\(?:file\\|path\\).*\\'" . makefile-gmake-mode)    

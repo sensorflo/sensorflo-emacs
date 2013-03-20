@@ -41,3 +41,6 @@
 [submodule "misc/icicles"]
 	path = misc/icicles
 	url = https://sensorflo@github.com/sensorflo/icicles.git
+[submodule "misc/tempo"]
+	path = misc/tempo
+	url = https://sensorflo@github.com/sensorflo/tempo.git

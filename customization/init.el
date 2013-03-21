@@ -336,6 +336,7 @@
 (load-library "indel") 
 (load-library "bib") 
 (load-library "coma") 
+(load-library "misc-small-projects") 
 
 
 ;;; autostart

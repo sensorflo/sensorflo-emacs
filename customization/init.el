@@ -284,6 +284,7 @@
     ("\\.txt\\'" . adoc-mode)
     ("\\`[-0-9A-Z_]+\\'" . adoc-mode) ;; all upercase file name
     ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
+    ("\\.\\(py\\|python\\)\\'" . python-mode)
     ("\\.lo[g0-9]\\'" . logfile-mode)
     ("personality.*\\.txt\\'" . pm-mode)
     ("swat\\.eu\\.besi\\..*\\.txt" . mediawiki-mode)

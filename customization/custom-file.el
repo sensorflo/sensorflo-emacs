@@ -173,7 +173,7 @@
  '(ispell-alternate-dictionary "~/aspell/words")
  '(ispell-check-comments t)
  '(ispell-complete-word-dict "~/aspell/words")
- '(ispell-program-name "aspell")
+ '(ispell-program-name "aspell" t)
  '(ispell-silently-savep t)
  '(iswitchb-mode t)
  '(iswitchb-regexp t)

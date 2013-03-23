@@ -4,43 +4,28 @@
 ;;
 ;; See also elisp info manual Tips / Key Binding Conventions 
 ;;
-;; free:
+;; Free in vanilla Emacs
 ;; C-most punctuation of top + 2nd row
-;; C-'
-;; C-<
-;; C-,
-;; C-.
-;; C-/
+;; C-<  
+;; C-'  (now mark-word)
+;; C-,  (now prefix map)
+;; C-.  (now prefix map)
 ;;
-;; peudo free:
+;; Peudo free:
 ;; C-m, C-i, C-[  (maps to ret/tab/esc)
 ;; C-t only transpose-chars
 ;; C-z only iconify-or-deiconify-frame
-;; C-_ undo is already on C-x u
+;; C-_ C-/ undo is already on C-x u
 ;; C-\ toggle-input-method
 ;;
-;; emacs keybinding guidelines summary:
+;; Emacs keybinding guidelines summary:
 ;; C-c ctrlchar/digit/{ } < > : ;   : major modes
 ;; C-c other punct : minor modes
 ;; C-c letter and (without C-c) F5-F9 : the only keys free for users 
-;;
-;; todo:
-;; - C-f C-(y u i o): to asign stuff that is currently used a lot. Maybe the same as
-;;          the macro, it also has the same semantic (currently used)
-;;
-;; Distinguish
-;; - Commond commands as forward-(word|char|...) which I reposition. Other
-;;   modes then might substitute that command by a similar one
-;; - I myself want to substitue an existing command with a similar one of my
-;;   own
-;;
-;; require/autoload: thanks to autoload most commands need not to be loaded with
-;; require & co. However 
-;;
+
 
 ;;; Code
 (require 'repeatable)
-
 
 ;;; redifine existing binding with semtantically similar functionality
 (global-set-key [remap isearch-forward]         'isearch-forward-regexp) 

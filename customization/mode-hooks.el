@@ -103,6 +103,7 @@
 (defun my-python-mode-hook ()
   (hs-minor-mode t)
   (outline-minor-mode t)
+  (subword-mode t)
   (my-python-mode-bindings))
   
 (defun my-python-mode-bindings ()
@@ -163,7 +164,6 @@
      (list "\\_<char\\(?:16\\|32\\)_t\\_>" '(0 font-lock-type-face))
      ))
 
-  ;; TODO subword-mode shall be turned on globally 
   (if (< (+ (* 100 emacs-major-version) emacs-minor-version) 2302)
       (c-subword-mode t)
     (subword-mode t))

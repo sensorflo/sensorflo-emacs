@@ -29,6 +29,7 @@
     (c-set-offset 'access-label '-)
     (c-set-offset 'inclass '++)
     (dragon-font-lock-add-keywords)
+    (set (make-local-variable 'vc-handled-backends) nil)
 
     ;; MPS specific
     (let ((actual-fn (or (buffer-file-name) default-directory)))

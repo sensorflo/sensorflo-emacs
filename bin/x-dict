@@ -1,0 +1,532 @@
+#!/usr/bin/python
+
+# Created: 05.07.2000
+# Last checked: 24.02.2013
+
+# The script was formerly known as leo.py, it is now called x-dict
+
+# You can access the following dictionaries now:
+# command line switch  URL            language
+# --leo                dict.leo.org : english <-> german
+# --dict_cc            www.dict.cc  : english <-> german
+
+# Author: Stefan Reichoer, stefan@xsteve.at
+
+# TODO:
+# - implement useful cache handling - it is not used for dict.cc at the moment
+# - eventually revive the pymacs interface
+# - add more dictionaries
+
+# Please report, if the webpage of dict.leo.org changes
+# and this script does no longer work!
+
+# ----------------------------------------------------------------------------------------------------
+# Content of htmlTableParse
+
+'''\
+HTML Table Parser
+htmlTableParse.py
+jjk  01/13/1998  001  from CTtableParse.py 002b
+jjk  01/14/1998  002  use UserList
+jjk  02/03/1998  003  rename (was CThtmlTableParse), split out tests
+jjk  10/10/1998  004  add test() back in, add some utillities and improve docs
+jjk  01/05/1999  005  fix/improve RemoveTags() add ConvertSpecialCharacters()
+str  10/08/2001  006  Use module re instead of regex
+str  22/09/2008  007  Integrate in x-dict
+
+The ParsedDocument class breaks up an HTML string by tables, rows, and columns.
+(the HTML code must have openening and closing table TR and TD tags)
+
+The parsed data is retreived as a list of lists of lists, i.e.
+    table4 = aParsedDocument[3]
+    table4Row1 = aParsedDocument[3][0]
+    table4Row1Col3 = aParsedDocument[3][0][2]
+
+example usage:
+    import htmlTableParse
+    pd = htmlTableParse.ParsedDocument(htmlSourceString)
+    numberOfTables = len(pd)
+    contentsOfFithColumnOfThirdRowOfSecondTable = pd[1][2][4]
+
+some useful functions:
+    ParseOpenFile(fileStream)   #answer a ParsedDocument instance for contents of open file
+    ParseFile(fileName) #answer a ParsedDocument instance for contents of a file
+    ParseURL(url)       #answer a ParsedDocument instance for contents of a url
+    RemoveTags(htmlString)  #remove all html tags from a string
+    ConvertSpecialCharacters(htmlString)  #remove all special ampersand characters from a string
+
+see also test() function
+
+*** use this code at your own risk ***
+*** some code may have been borrowed from other python modules ***
+*** the programmer is a re newbie - this may not be the optimal solution :-) ***
+
+'''
+
+import re, string, sys, UserList, urllib
+
+TraceFlag = 0
+
+Re1 = '[Tt][Aa][Bb][Ll][Ee]'
+TableStart=re.compile('<[ \t]*'+Re1+'[^<]*>')
+TableEnd=re.compile('<[ \t]*/'+Re1+'[ \t]*>')
+Re2 = '[Tt][Rr]'
+RowStart=re.compile('<[ \t]*'+Re2+'[^<]*>')
+RowEnd=re.compile('<[ \t]*/'+Re2+'[ \t]*>')
+Re3 = '[Tt][Dd]'
+ColStart=re.compile('<[ \t]*'+Re3+'[^<]*>')
+ColEnd=re.compile('<[ \t]*/'+Re3+'[ \t]*>')
+TagRe=re.compile('<[^<]*>')
+
+AmpChars = [
+    (re.compile('&[Nn][Bb][Ss][Pp];'),' ')
+    ,(re.compile('&[Aa][Mm][Pp];'),'&')
+    ]
+
+
+class ParsedDocument(UserList.UserList):
+    '''jjk  01/14/98'''
+
+    def __init__(self, htmlSrc=''):
+        '''jjk  01/14/98'''
+        UserList.UserList.__init__(self)
+        self._parseContents(htmlSrc)
+
+    def report(self, outs, prefix=''):
+        '''jjk  01/13/98'''
+        i1 = 0
+        for item in self.data:
+            item.report(outs, prefix+str(i1)+'>')
+            i1 = i1 + 1
+
+    def reportStructure(self, outs, prefix=''):
+        '''jjk  10/10/98'''
+        outs.write('ParsedDocument: %d tables\n'%len(self))
+        for i1 in range(len(self)):
+            table = self[i1]
+            outs.write('\tTable #%d: %d rows\n'%(i1,len(table)))
+            for i2 in range(len(table)):
+                row = table[i2]
+                outs.write('\t\tRow #%d: %d columns\n'%(i2,len(row)))
+
+    def _parseParams(self):
+        '''jjk  01/13/98'''
+        return(TableStart, TableEnd, ParsedTable)
+
+    def _parseContents(self, htmlSrc):
+        '''jjk  01/13/98'''
+        startRegex, endRegex, contentClass = self._parseParams()
+        hs = htmlSrc
+        while (1):
+            p1 = startRegex.search(hs)
+            #print dir(p1),p1.start(),p1.end()
+            if (p1==None): break
+            p1=p1.start()
+            hs = hs[p1:]
+            p2 = endRegex.search(hs)
+            #if (p2<0): p2 = len(hs)+1
+            if (p2==None):
+                p2 = len(hs)+1
+            else:
+                p2 = p2.start()
+            self.append(contentClass(hs[:p2]))
+            hs = hs[p2:]
+
+    def tables(self):
+        '''jjk  01/13/98'''
+        return(self.data)
+
+class ParsedTable(ParsedDocument):
+    '''jjk  01/13/98'''
+
+    def _parseParams(self):
+        '''jjk  01/13/98'''
+        return(RowStart, RowEnd, ParsedRow)
+
+    def rows(self):
+        '''jjk  01/13/98'''
+        return(self.data)
+
+class ParsedRow(ParsedTable):
+    '''jjk  01/13/98'''
+
+    def _parseParams(self):
+        '''jjk  01/13/98'''
+        return(ColStart, ColEnd, ParsedColumn)
+
+    def columns(self):
+        '''jjk  01/13/98'''
+        return(self.data)
+
+class ParsedColumn:
+    '''jjk  01/13/98'''
+
+    def __init__(self, htmlSrc=''):
+        '''jjk  01/13/98'''
+        self.contents = ''
+        self._parseContents(htmlSrc)
+
+    def __repr__(self):
+        '''jjk  01/13/98'''
+        return(self.contents)
+
+    def _parseParams(self):
+        '''jjk  01/13/98'''
+        return(TableStart, ColEnd, ParsedTable)
+
+    def _parseContents(self, htmlSrc):
+        '''jjk  01/13/98'''
+        hs = htmlSrc
+        p1a = ColStart.search(hs)
+        if (p1a==None): return
+        p1a=p1a.start()
+        p1b = string.find(hs,'>',p1a)
+        #p1b=p1b.start()
+        hs = hs[p1b+1:]
+        p2 = ColEnd.search(hs)
+        #if (p2<0): p2 = len(hs)+1
+        if (p2==None):
+            p2 = len(hs)+1
+        else:
+            p2 = ps.start()
+        self.contents = string.strip(hs[:p2])
+
+    def report(self, outs, prefix=''):
+        '''jjk  01/13/98'''
+        outs.write(prefix+self.contents+'\n')
+
+def RemoveTags(htmlString):
+    '''remove all html tags from a string
+    jjk  01/05/99'''
+    hs = htmlString
+    while(1):
+        if TraceFlag:
+            print '~', hs
+        p1 = TagRegex.search(hs)
+        if (p1<0): break
+        p2 = p1 + TagRegex.match(hs[p1:])
+        if TraceFlag:
+            print '~~',p1, p2, hs[p1:p2]
+        hs = hs[:p1] + ' ' + hs[p2:]
+    if TraceFlag:
+        raw_input('z')
+    return(hs)
+
+def ConvertSpecialCharacters(htmlString):
+    '''remove all special ampersand characters from a string
+    jjk  01/05/99'''
+    hs = htmlString
+    for ac in AmpChars:
+        while(1):
+            if TraceFlag:
+                print '~', hs
+            p1 = ac[0].search(hs)
+            if (p1<0): break
+            p2 = p1 + ac[0].match(hs[p1:])
+            if TraceFlag:
+                print '~~',p1, p2, hs[p1:p2]
+            hs = hs[:p1] + ac[1] + hs[p2:]
+        if TraceFlag:
+            raw_input('z')
+    return(hs)
+
+def ParseOpenFile(fileStream=sys.stdin):
+    '''public: answer a ParsedDocument instance for contents of open file
+    jjk  10/10/98'''
+    fileData = fileStream.read()
+    parsedDocument = ParsedDocument(fileData)
+    return(parsedDocument)
+
+def ParseFile(fileName):
+    '''public: answer a ParsedDocument instance for contents of a file
+    jjk  10/10/98'''
+    fileStream = open(fileName)
+    parsedDocument = ParseOpenFile(fileStream)
+    fileStream.close()
+    return(parsedDocument)
+
+def ParseURL(url,proxy=None):
+    '''public: answer a ParsedDocument instance for contents of a url
+    jjk  10/10/98'''
+    if proxy:
+        import os
+        os.environ['http_proxy'] = proxy
+    fileName, msg = urllib.urlretrieve(url)
+    return(ParseFile(fileName))
+#
+# End of htmlTableParse.py
+# ----------------------------------------------------------------------------------------------------
+
+# begin of x-dict
+
+import os, time, cPickle, optparse
+
+XDICT_VERSION = "2013-02-24"
+
+DEBUG_ACTIVE = os.environ.has_key("INSIDE_EMACS")
+
+# --------------------------------------------------------------------------------
+# Command line processing
+# --------------------------------------------------------------------------------
+parser = optparse.OptionParser(usage="""usage: %prog [options] query""")
+parser.add_option("", "--leo", action="store_true", dest="dict_leo", default=False, help="Use leo.dict.org, the default")
+parser.add_option("", "--dict_cc", action="store_true", dest="dict_dict_cc", default=False, help="Use www.dict.cc")
+parser.add_option("", "--http_proxy", dest="http_proxy", default=None, help="A proxy server")
+parser.add_option("", "--coding", dest="coding", default=None, help="Use the given coding system")
+parser.add_option("", "--local-file", dest="local_file", default=None, help="Use a downloaded html file as input instead of contacting the server directly")
+parser.add_option("-c", "--use-cache", action="store_true", dest="use_cache", default=False, help="Cache the results on disk")
+parser.add_option("-w", "--column-width", dest="colwidth", type="int", default=50, help="The output column width")
+parser.add_option("-n", "--do-nothing", action="store_true", dest="do_nothing", default=False, help="Do nothing, used for debugging")
+parser.add_option("", "--version", action="store_true", dest="show_version", default=False, help="Show x-dict version info")
+
+if DEBUG_ACTIVE:
+    # sys.argv = ["x-dict", "car"]
+    # sys.argv = ["x-dict", "--local-file=~/tmp/leo2.html", "hello"]
+    sys.argv = ["x-dict", "--local-file=~/tmp/leo_Giraffe.html", "Giraffe"]
+    sys.argv = ["x-dict", "--local-file=~/tmp/leo_laufen.html", "laufen"]
+    # sys.argv = ["x-dict", "--local-file=~/tmp/leo.html", "hello"]
+(options, args) = parser.parse_args()
+
+if options.show_version:
+    print "x-dict v%s" % XDICT_VERSION
+    sys.exit()
+
+if len(args) != 1:
+    parser.print_help()
+    sys.exit()
+
+options.colwidth1 = options.colwidth
+options.colwidth2 = options.colwidth
+
+gLineFormatString = "%%-%ds%%-%ds" % (options.colwidth1, options.colwidth2)
+
+if not (options.dict_leo or options.dict_dict_cc):
+    options.dict_leo = True
+
+gCacheFilename = None
+
+def process_options():
+    global gCacheFilename
+    if options.use_cache:
+        gCacheFilename = os.getenv("HOME")+"/"+".xdict.cache"
+
+# --------------------------------------------------------------------------------
+
+def open_wcache():
+    if gCacheFilename:
+        global wcache
+        try:
+            wcache = cPickle.load(open(gCacheFilename,"r"))
+        except:
+            wcache = {}
+    #print "wcache:",wcache
+
+wcache = {}
+
+# Tell the server, that we are x-dict
+class XDictUrlOpener(urllib.FancyURLopener):
+    version = "x-dict/%s" % XDICT_VERSION
+urllib._urlopener = XDictUrlOpener()
+
+# --------------------------------------------------------------------------------
+# Common dictionary class
+# --------------------------------------------------------------------------------
+class Dict(object):
+    def __repr__(self):
+        return "<%s>" % self.__class__.__name__
+    def __getitem__(self, idx):
+        return self.pd[idx]
+    def wash(self, str):
+        str = repr(str)
+        # wash the bold face
+        str = string.replace(str,"<B>","")
+        str = string.replace(str,"</B>","")
+        str = string.replace(str,"<b>","")
+        str = string.replace(str,"</b>","")
+        # wash the italic face
+        str = string.replace(str,"<I>","")
+        str = string.replace(str,"</I>","")
+        # wash the italic face: they now use the small i tag also
+        str = string.replace(str,"<i>","")
+        str = string.replace(str,"</i>","")
+        # wash smaller fonts
+        str = string.replace(str,"<small>","")
+        str = string.replace(str,"</small>","")
+        # wash span
+        str = string.replace(str,"<span>","")
+        str = string.replace(str,"</span>","")
+        # wash kbd
+        str = string.replace(str,"<kbd>","")
+        str = string.replace(str,"</kbd>","")
+        # wash var
+        str = string.replace(str,"<var>","")
+        str = string.replace(str,"</var>","")
+        # wash sup
+        sup_re_start = re.compile("<sup>(.+?)</sup>",re.IGNORECASE)
+        str = sup_re_start.sub(" [\\1] ",str)
+        # wash the links
+        href_re_start = re.compile("<A HREF=.+?>",re.IGNORECASE)
+        str = href_re_start.sub("",str)
+        str = string.replace(str,"</A>","")
+        str = string.replace(str,"</a>","")
+        # wash links to images
+        str = re.sub("<IMG BORDER=.+?>","",str)
+        # wash <dfn onclick= ...> </dfn>
+        str = re.sub("<dfn .+onclick=.+?>","",str)
+        str = string.replace(str,"</dfn>","")
+        # wash <var title= ...>
+        str = re.sub('<var title=".+">',"",str)
+        # remove &nbsp
+        str = string.replace(str,"&nbsp;","")
+        # remove chr(A0)
+        str = string.replace(str, chr(0xA0),"")
+        # remove chr(C2)
+        str = string.replace(str, chr(0xC2),"")
+        # remove &#160;
+        str = string.replace(str,"&#160;","")
+        return str
+    def show(self, wl):
+        for eng, ger in wl:
+            str = (gLineFormatString % (eng, ger)).strip()
+            if options.coding:
+                str = str.decode(options.coding)
+            print str
+
+# --------------------------------------------------------------------------------
+# Support for dict.leo.org
+# --------------------------------------------------------------------------------
+class Dict_leo_org(Dict):
+    def search(self, query):
+        query = query.replace(" ","+")
+        global wcache
+        if wcache.has_key(query):
+            t,wl = wcache[query]
+            print "Using data from cache (%s)" % time.strftime("%c",time.localtime(t))
+        else:
+            if options.local_file is None:
+                pd = ParseURL('http://dict.leo.org/?search='+query,options.http_proxy)
+            else:
+                #noglob wget -O ~/tmp/leo.html http://dict.leo.org/?search=crucial
+                # pd = ParseFile(os.path.expanduser('~/tmp/leo.html'))
+                # x-dict --local-file ~/tmp/leo.html
+                pd = ParseFile(os.path.expanduser(options.local_file))
+            self.pd = pd
+            wl = self.parse_result(pd)
+
+            if gCacheFilename:
+                wcache[query] = (time.time(), wl)
+                cPickle.dump(wcache, open(gCacheFilename, "w"))
+        return wl
+
+    def parse_result(self, pd):
+        if len(pd[1]) == 1:
+            wl = self.parse_result_v1(pd)
+        else:
+            wl = self.parse_result_v2(pd)
+        # print "parse_result", len(pd[1]), wl
+        return wl
+
+    def parse_result_v1(self, pd):
+        wordlist = pd[7]
+
+        wl=[]
+
+        for i in range(2,len(wordlist)):
+            if len(wordlist[i]) > 3:
+                eng = self.wash(wordlist[i][1])
+                ger = self.wash(wordlist[i][3])
+                if len(eng) > 0 or len(ger) > 0:
+                    #print "%-40s%-39s"%(eng,ger)
+                    wl.append((eng,ger))
+        return wl
+
+    def parse_result_v2(self, pd):
+        # 19.02.2013: A new format that is sometimes delivered from leo.org
+        # new: Substantive eng=pd[4][1..len][4] vs. ger=pd[5][1..len][7]
+        # new: Weitere Treffer: Substantive eng=pd[5][1..len][4] vs. ger=pd[5][1..len][7]
+        # new: Weitere Treffer: Phrasen eng=pd[6][1..len][4] vs. ger=pd[6][1..len][7]
+        # new: Weitere Treffer: Phrasen eng=pd[7][1..len][4] vs. ger=pd[6][1..len][7]
+        wl = []
+        for idx in range(4,len(pd)-1):
+            wordlist = pd[idx]
+            for i in range(1, len(wordlist)):
+                # print "##", idx, i, len(wordlist)
+                if len(wordlist[i]) >= 7:
+                    eng = self.wash(wordlist[i][4])
+                    ger = self.wash(wordlist[i][7])
+                    # print idx, i, eng, ger
+                    wl.append((eng,ger))
+        return wl
+
+
+# --------------------------------------------------------------------------------
+# Support for www.dict.cc
+# --------------------------------------------------------------------------------
+class Dict_dict_cc(Dict):
+    def search(self,query):
+        query = query.replace(" ","+")
+        # noglob wget -O ~/tmp/di.html http://www.dict.cc/?s=crucial
+        # pd = ParseFile(os.path.expanduser('~/tmp/di.html'))
+
+        pd = ParseURL('http://www.dict.cc/?s='+query,options.http_proxy)
+        # print pd
+        self.pd = pd
+        wl = self.parse_result(pd)
+        return wl
+
+    def parse_result(self,pd):
+        wordlist = pd[2]
+
+        wl=[]
+
+        for i in range(1,len(wordlist)):
+            if len(wordlist[i]) > 1:
+                eng = self.wash(wordlist[i][1])
+                ger = self.wash(wordlist[i][2])
+                if len(eng) > 0 or len(ger) > 0:
+                    #print "%-40s%-39s"%(eng,ger)
+                    wl.append((eng,ger))
+        return wl
+
+if DEBUG_ACTIVE:
+    d = Dict_leo_org()
+    # d = Dict_dict_cc()
+    # d.search("")
+
+# --------------------------------------------------------------------------------
+# Emacs interface via pymacs ... not up to date at the moment
+# --------------------------------------------------------------------------------
+interactions = {}
+
+def wl_as_string(wl):
+    s = ""
+    for eng,ger in wl:
+        s += gLineFormatString%(eng,ger)+"\n"
+    return s
+
+def search(string):
+    return wl_as_string(search_internal_leo(string))
+interactions[search]="sSearch in dict.leo.org: "
+
+# --------------------------------------------------------------------------------
+# Lookup the word if called as script
+# --------------------------------------------------------------------------------
+if __name__ == "__main__":
+    process_options()
+    open_wcache()
+    if not options.do_nothing:
+        search_string = string.join(args)
+        #search_string = "Fahrrad"
+
+        if options.dict_leo:
+            d = Dict_leo_org()
+        elif options.dict_dict_cc:
+            d = Dict_dict_cc()
+        wl=d.search(search_string)
+        d.show(wl)
+
+# Local Variables:
+# mode: python
+# End:
+
+# arch-tag: 32c9c2f3-c41e-4062-a2be-71c0039e583d

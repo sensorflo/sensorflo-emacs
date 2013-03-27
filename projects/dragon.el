@@ -131,62 +131,78 @@
       (forward-char 1))
     found))
 
-(defun dragon-method-warnings (end)
-  (let ((method-start t)
-	(method-end t)
-	warning-found) ; t when a warning issue was found
-    (while (and method-start
-		method-end
-		(not warning-found)
+(defun dragon-looking-at-method-issues (end)
+  "Returns t if between point and END is an issue concerning a method.
+Additionaly match data is set to mark the culprit by match group 1."
+  (let ((method-start-pos t)
+	(method-end-pos t)
+	an-issue-found) 
+    ;; iterate over methods and search for issues in each method
+    (while (and method-start-pos
+		method-end-pos
+		(not an-issue-found)
     		(< (point) (1- end)))
-      (setq method-start (text-property-any (point) end 'face 'font-lock-function-name-face))
-      (when method-start
-	(setq method-end (text-property-not-all method-start end 'face 'font-lock-function-name-face))
-	(when method-end
+      (setq method-start-pos
+	    (text-property-any (point) end 'face 'font-lock-function-name-face))
+      (when method-start-pos
+	(setq method-end-pos
+	      (text-property-not-all method-start-pos end 'face
+				     'font-lock-function-name-face)))
+      (when (and method-start-pos method-end-pos)
 
-	  ;; -- getters should be const
-	  (when (not warning-found)
-	    (save-excursion
-	      (let ((is-getter
-		     (progn
-		       (goto-char method-start)
-		       (looking-at "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\|Show\\|Display\\|Print\\|Trace\\|Log\\)\\(?:[A-Z_1-9]\\|\\b\\)")))
-		    (is-static
-		     (progn
-		       (beginning-of-line)
-		       (looking-at "\\s-*static\\b")))
-		    (is-const
-		     (progn
-		       (goto-char method-end)
-		       (forward-list 1)
-		       (looking-at "\\s-*\\(?:=\\s-*0\\s-+\\)?const\\b")))
-		    (is-surpressed
-		     (progn
-		       (goto-char method-end)
-		       (forward-list 1)
-		       (looking-at "\\s-*\\(=\\s-*const\\s-*\\)?;?\\s-*\\(?://\\|/\\*+\\)\\s-*cppcheck-surpress"))))
-		(when (and is-getter (not is-const) (not is-static) (not is-surpressed))
-		  (looking-at "\\(.*\n?\\)") ; the point is to set match data for group 1
-		  (setq warning-found t)))))
+	;; -- getters should be const
+	(when (not an-issue-found)
+	  (save-excursion
+	    (let ((is-getter
+		   (progn
+		     (goto-char method-start-pos)
+		     (looking-at (concat "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\|"
+					 "Show\\|Display\\|Print\\|Trace\\|"
+					 "Log\\)\\(?:[A-Z_1-9]\\|\\b\\)"))))
+		  (is-static
+		   (progn
+		     (beginning-of-line)
+		     (looking-at "\\s-*static\\b")))
+		  (is-const
+		   (progn
+		     (goto-char method-end-pos)
+		     (forward-list 1)
+		     (looking-at "\\s-*\\(?:=\\s-*0\\s-+\\)?const\\b")))
+		  (is-surpressed
+		   (progn
+		     (goto-char method-end-pos)
+		     (forward-list 1)
+		     (looking-at (concat "\\s-*\\(=\\s-*const\\s-*\\)?;"
+					 "?\\s-*\\(?://\\|/\\*+\\)\\s-*"
+					 "cppcheck-surpress")))))
+	      (when (and is-getter (not is-const)
+			 (not is-static) (not is-surpressed))
+		;; set match data for group 1 beginning at closing paranthesis
+		;; of argument list
+		(goto-char method-end-pos)
+		(forward-list 1)
+		(looking-at "\\(.*\n?\\)") ; set match data for group 1
+		(setq an-issue-found t)))))
 
-	  ;; -- declarations & specifications must have space between name and opening paranthesis
-	  ;; methods declared via macros are excluded
-	  (when (not warning-found)
-	    (save-excursion
-	      (goto-char method-end)
-	      (setq warning-found (and (not (looking-back "^[A-Z0-9_]+"))
-				       (re-search-forward "\\=\\((\\|\\s-\\s-+(\\)" end t)))))
+	;; -- declarations & specifications must have space between name and
+	;;    opening paranthesis. methods declared via macros are excluded
+	(when (not an-issue-found)
+	  (save-excursion
+	    (goto-char method-end-pos)
+	    (setq an-issue-found
+		  (and (not (looking-back "^[A-Z0-9_]+"))
+		       (re-search-forward "\\=\\((\\|\\s-\\s-+(\\)" end t)))))
 
-	  ;; next iter
-	  (goto-char method-end))))
-    warning-found))
+	;; next iter
+	(goto-char method-end-pos)))
+    an-issue-found))
 
 (defun dragon-font-lock-add-keywords ()
   (font-lock-add-keywords
    nil
    (list
     ;; 
-    (list 'dragon-method-warnings '(1 font-lock-warning-face append t)) 
+    (list 'dragon-looking-at-method-issues '(1 font-lock-warning-face append t)) 
 
     ;; white space errors
     (list "^[ ]*\t[ \t]*" '(0 font-lock-warning-face append t))

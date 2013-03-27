@@ -1252,9 +1252,20 @@ It's value is irelevant.")
   (column-marker-1 (1+ fill-column)))
 
 (dolist (x '(c-mode-common-hook
+             idl-mode-hook
              java-mode-hook
              cperl-mode-hook
-	     php-mode-hook))
+             ruby-mode-hook
+             python-mode-hook
+             sh-mode-hook
+             shell-script-mode
+             visual-basic-mode
+             rl-mode
+             matlab-mode
+             vbnet-mode
+             makefile-gmake-mode
+             php-mode-hook
+             emacs-lisp-mode-hook))
   (add-hook x 'my-programming-common-hook))
 
 ;;; mode-hooks.el ends here

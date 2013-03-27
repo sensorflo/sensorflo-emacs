@@ -4,14 +4,14 @@
 ;; URL: https://github.com/sensorflo/sensorflo-emacs then
 ;;      customization/init.el
 ;; 
-;;; Commentary
+;;; Commentary:
 ;;
 ;; TODO
 ;; - Try to avoid require. Try to insert all into mode hooks.
 ;; - Work more with autoload
 ;; - have a look at Drew Adam's init: site-lisp/emacs-init.el
 ;;
-;;; Code
+;;; Code:
 
 
 ;;; stettings part 1 - before loading libraries

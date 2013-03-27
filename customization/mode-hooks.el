@@ -1247,7 +1247,9 @@ It's value is irelevant.")
 (defun my-programming-common-hook ()
   ;; icicles has problems because 2C-command from two-column.el already uses f2
   ;(local-set-key [f2] 'gud-ext-mode)
-  )
+  ;; +1 to avoid a false positive marker in whitespace-mode for lines which are
+  ;; just fill-column chars long
+  (column-marker-1 (1+ fill-column)))
 
 (dolist (x '(c-mode-common-hook
              java-mode-hook

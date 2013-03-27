@@ -164,7 +164,7 @@
  '(ido-everywhere t)
  '(ido-mode (quote buffer) nil (ido))
  '(image-dired-dir "~/.emacs.d/.image-dired/")
- '(indent-tabs-mode t)
+ '(indent-tabs-mode nil)
  '(indicate-buffer-boundaries (quote left))
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)

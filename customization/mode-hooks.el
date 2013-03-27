@@ -422,7 +422,7 @@
 ;;; conf mode 
 ;; ----------------------------------------------
 (defun my-conf-mode-hook()
-  (setq indent-tabs-mode nil))
+  )
 
 (add-hook 'conf-mode-hook 'my-conf-mode-hook)
 

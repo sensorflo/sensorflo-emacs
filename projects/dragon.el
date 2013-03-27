@@ -181,7 +181,8 @@ Additionaly match data is set to mark the culprit by match group 1."
 		;; of argument list
 		(goto-char method-end-pos)
 		(forward-list 1)
-		(looking-at "\\(.*\n?\\)") ; set match data for group 1
+		(re-search-backward ")")
+		(looking-at "\\()\\(?:[ \t]*;\\)?[ \t]*\\)") 
 		(setq an-issue-found t)))))
 
 	;; -- declarations & specifications must have space between name and

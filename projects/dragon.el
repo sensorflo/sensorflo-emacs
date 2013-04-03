@@ -54,7 +54,7 @@
     (abbrev-table-put local-abbrev-table :regexp "\\(\\(?:^\\|#\\|\\_<\\)\\(?:\\s_\\|\\sw\\)+\\)")
 
     (when (and (dragon-file-p) (not (dragon-coding-system-p)))
-      (message "%s: encoding system is %S which is not dragons's encoding system (windows-1252-dos undecided-dos)"
+      (message "%s: encoding system is %S which is not dragons's encoding system (iso-8859-1 windows-1252-dos undecided-dos utf-8-dos)"
                (buffer-name) buffer-file-coding-system)
       (shell-command (concat "notify-send -t 1000 '" (buffer-name) " ist scheisse!!'")))
     (dragon-c-mode-common-bindings)))
@@ -323,7 +323,7 @@ Additionaly match data is set to mark the culprit by match group 1."
 (add-hook 'common-mode-hook 'dragon-common-mode-hook t)
 
 (defun dragon-coding-system-p ()
-  (member buffer-file-coding-system '(windows-1252-dos undecided-dos utf-8-dos))) ; undecided
+  (member buffer-file-coding-system '(iso-8859-1 windows-1252-dos undecided-dos utf-8-dos))) ; undecided
 
 ;; note that this should somehow belong to the
 (defun dragon-file-p ()

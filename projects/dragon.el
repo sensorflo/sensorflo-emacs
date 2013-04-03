@@ -323,7 +323,18 @@ Additionaly match data is set to mark the culprit by match group 1."
 (add-hook 'common-mode-hook 'dragon-common-mode-hook t)
 
 (defun dragon-coding-system-p ()
-  (member buffer-file-coding-system '(iso-8859-1 windows-1252-dos undecided-dos utf-8-dos))) ; undecided
+  "t if the buffer's coding system is allowed in Dragon.
+
+Unfortunatly the dragon projecty does not really define its valid
+coding systems. So I have to assume things, and I am not quite
+sure what the good decisions are."
+  ;; Note (sumary from list-coding-systems):
+  ;; - iso-8859-1 and latin-1 are aliases to iso-latin-1
+  ;; - Difference windows-1252 to iso-8859-1 (from wikipedia on Windows-1252):
+  ;;   ... This encoding is a superset of ISO 8859-1, but differs from the IANA's
+  ;;   ISO-8859-1 by using displayable characters rather than control characters
+  ;;   in the 80 to 9F (hex) range...
+  (member buffer-file-coding-system '(iso-8859-1 windows-1252-dos undecided-dos utf-8-dos)))
 
 ;; note that this should somehow belong to the
 (defun dragon-file-p ()

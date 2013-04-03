@@ -51,12 +51,16 @@
       (define-abbrev local-abbrev-table (nth 0 x) (nth 1 x) (nth 2 x)
 	:enable-function (dragon-create-abbrev-enable-function (nth 3 x))
 	:case-fixed t))
-    (abbrev-table-put local-abbrev-table :regexp "\\(\\(?:^\\|#\\|\\_<\\)\\(?:\\s_\\|\\sw\\)+\\)")
+    (abbrev-table-put local-abbrev-table
+                      :regexp "\\(\\(?:^\\|#\\|\\_<\\)\\(?:\\s_\\|\\sw\\)+\\)")
 
     (when (and (dragon-file-p) (not (dragon-coding-system-p)))
-      (message "%s: encoding system is %S which is not dragons's encoding system (iso-8859-1 windows-1252-dos undecided-dos utf-8-dos)"
+      (message (concat "%s: encoding system is %S which is not dragons's "
+                       "encoding system (iso-8859-1 windows-1252-dos "
+                       "undecided-dos utf-8-dos)")
                (buffer-name) buffer-file-coding-system)
-      (shell-command (concat "notify-send -t 1000 '" (buffer-name) " ist scheisse!!'")))
+      (shell-command (concat "notify-send -t 1000 "
+                             "'" (buffer-name) " has invalid encoding system!'")))
     (dragon-c-mode-common-bindings)))
 
 (add-hook 'c-mode-common-hook 'dragon-c-mode-common-hook t)
@@ -334,7 +338,8 @@ sure what the good decisions are."
   ;;   ... This encoding is a superset of ISO 8859-1, but differs from the IANA's
   ;;   ISO-8859-1 by using displayable characters rather than control characters
   ;;   in the 80 to 9F (hex) range...
-  (member buffer-file-coding-system '(iso-8859-1 windows-1252-dos undecided-dos utf-8-dos)))
+  (member buffer-file-coding-system
+          '(iso-8859-1 windows-1252-dos undecided-dos utf-8-dos)))
 
 ;; note that this should somehow belong to the
 (defun dragon-file-p ()

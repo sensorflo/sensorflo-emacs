@@ -354,7 +354,7 @@
 ;; (when (require 'srecode-mode nil t)
 ;;   (global-srecode-minor-mode 1))
 (require 'icicles)
-(icy-mode) ; icy-mode wants to be the last thing called 
+;(icy-mode) ; icy-mode wants to be the last thing called 
 
 ;; put here at the end of the startup instead within custom-file so starting up
 ;; emacs with --debug-init has an effect. Else, modifying debug-on-error within

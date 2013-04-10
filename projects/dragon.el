@@ -55,9 +55,8 @@
                       :regexp "\\(\\(?:^\\|#\\|\\_<\\)\\(?:\\s_\\|\\sw\\)+\\)")
 
     (when (and (dragon-file-p) (not (dragon-coding-system-p)))
-      (message (concat "%s: encoding system is %S which is not dragons's "
-                       "encoding system (iso-latin-1-dos windows-1252-dos "
-                       "undecided-dos utf-8-dos)")
+      (message (concat "%s: encoding system is %S which is not one of Dragons's "
+                       "encoding systems, see dragon-coding-system-p")
                (buffer-name) buffer-file-coding-system)
       (shell-command (concat "notify-send -t 1000 "
                              "'" (buffer-name) " has invalid encoding system!'")))
@@ -191,7 +190,8 @@ Additionaly match data is set to mark the culprit by match group 1."
 
 	;; -- declarations & specifications must have space between name and
 	;;    opening paranthesis. methods declared via macros are excluded
-	(when (not an-issue-found)
+	(when (and (not an-issue-found)
+                   (not (string-match "/Dispenser/" buffer-file-name)))
 	  (save-excursion
 	    (goto-char method-end-pos)
 	    (setq an-issue-found
@@ -251,6 +251,8 @@ Additionaly match data is set to mark the culprit by match group 1."
    t))
 
 (add-to-list 'auto-mode-alist '("PPSeqDoxygen\\.h" . doxym-mode))
+
+(add-to-list 'auto-mode-alist '("cppcheck[^.]*" . compilation-mode))
 
 ;;; functions
 
@@ -364,7 +366,7 @@ sure what the good decisions are."
 
 (defun dragon-grep-find-command(&optional regexp)
   (concat
-   "find . UnitTest -maxdepth 1 -not \\( -type d -iname '*~*' -prune \\) \\\n"
+   "find ../Sources ../UnitTest -maxdepth 1 -not \\( -type d -iname '*~*' -prune \\) \\\n"
    "-regextype posix-egrep \\\n"
    "-type f \\\n"
    "-iregex '.*\\.(idl|h|cpp)'  \\\n"

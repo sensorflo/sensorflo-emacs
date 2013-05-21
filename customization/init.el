@@ -265,7 +265,8 @@
   (add-to-list 'interpreter-mode-alist x))
 
 ;; magic-mode-alist 
-(dolist (x '(("\\s-*/\\*[*!][ \t]*$" . doxym-mode)))
+(dolist (x '(("\\s-*/\\*[*!][ \t]*$" . doxym-mode)
+             ("\\(\\s-*\\(//.*\\)?\n\\)*\\([.*]\s-*\n\\)?\\(=+ \\w\\)" . adoc-mode)))
   (add-to-list 'magic-mode-alist x))
 
 ;; auto-mode-alist

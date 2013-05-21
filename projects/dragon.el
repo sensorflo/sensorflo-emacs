@@ -372,7 +372,7 @@ sure what the good decisions are."
 
 (defun dragon-grep-find-command(&optional regexp)
   (concat
-   "find ../Sources ../UnitTest -maxdepth 1 -not \\( -type d -iname '*~*' -prune \\) \\\n"
+   "find ../Sources ../UnitTest ../UnitTest2 -maxdepth 1 -not \\( -type d -iname '*~*' -prune \\) \\\n"
    "-regextype posix-egrep \\\n"
    "-type f \\\n"
    "-iregex '.*\\.(idl|h|cpp)'  \\\n"

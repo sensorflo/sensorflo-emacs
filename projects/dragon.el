@@ -635,6 +635,11 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   "~/src/DieBonder/PC/PickPlace/PPPPickerShuttleMod"
   "~/src/DieBonder/RTOS/PickPlace/PPPPickerShuttleMod"
   "~/src/DieBonder/RTOS/DieCarrier/DCWaferHdlMod"
+  "~/src/DieBonder/RTOS/Dispenser"
+  "~/src/DieBonder/PC/Dispenser"
+  "~/src/DieBonder/PC/Dispenser/DIDispenserSeq"
+  "~/src/DieBonder/PC/Dispenser/DIDispenserMod"
+  "~/src/DieBonder/pc/SubstrateHandler/SHSTHModule"
   "~/drives/xpc/Program Files/Esec/DieBonder/Data/BuildVersion.txt"
   "~/office/dragon/todo.txt" ))
 
@@ -675,7 +680,13 @@ Arg is the 3rd items of a dragon-abbrev-table item"
     ("PPSequencer/Sources" ("s"))))))
 
 (let ((mylist '(
+		("/UST/PersistentContainer/PstCnt" ust-ffe-pstcnt)
 		("/DieBonder/PC/Services/CalibrationServices/CalibrationService" dragon-ffe-pc-calibsrv)
+		("/DieBonder/PC/Services/GlobalServices" dragon-ffe-pc-globalservices)
+		("/DieBonder/PC/SubstrateHandler/SHSTHModule" dragon-ffe-pc-sh-sth-mod)
+		("/DieBonder/PC/SubstrateHandler/SHSTHSequencer" dragon-ffe-pc-sh-sth-seq)
+		("/DieBonder/PC/Dispenser/DIDispenserMod" dragon-ffe-pc-di-mod)
+		("/DieBonder/PC/Dispenser/DIDispenserSeq" dragon-ffe-pc-di-seq)
 		("/DieBonder/PC/PickPlace/PpcalibMod" dragon-ffe-pc-calib)
 		("/DieBonder/PC/PickPlace/DCDEMod" dragon-ffe-pc-de)
 		("/DieBonder/PC/PickPlace/PPBAMod" dragon-ffe-pc-ba)
@@ -692,6 +703,87 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 		("/DieBonder/RTOS/PickPlace/PPModProxy" dragon-ffe-rtos-proxy))))
   (dolist (elt mylist) 
     (add-to-list 'ffe-map-map elt)))
+
+(setq ust-ffe-pstcnt `(
+  ("PstContainerElementBase" ("pceb" "eb"))))
+
+(setq dragon-ffe-pc-globalservices `(
+  ("PstContainerElementBase2" ("ceb"))
+  ("IExtendedIndelItemType" ("ieiit"))
+  ("ExtendedIndelItemType2" ("eiit"))
+  ("IExtendedItemType" ("ieit"))
+  ("ExtendedItemType2" ("eit"))
+  ("IItemFactory" ("iif") "h")
+  ("ExtendedItemTypeFactory" ("eitf"))))
+
+(setq dragon-ffe-pc-sh-sth-mod `(
+  ("SHSTHP1ModDebugActiveZ" ("p1mdaz" "1az"))
+  ("SHSTHP2ModDebugActiveZ" ("p2mdaz" "2az"))
+  ("SHSTHP1ModRunIn" ("p1mri" "1mri" "1mr"))
+  ("SHSTHP2ModRunIn" ("p2mri" "2mri" "2mr"))
+  ("SHSTHP1ModCommon" ("p1mc" "1mc"))
+  ("SHSTHP2ModCommon" ("p2mc" "2mc"))
+  ("SHSTHIModRunIn" ("mri" "ri"))
+  ("SHSTHMod" ("mod" "m"))
+  ("SHSTHModAO" ("ao"))
+  ("SHSTHItemIDs" ("ii") "h")
+  ("SHSTHRTOSStrings" ("rs") "h")
+  ("stdafx" ("afx") "h")))
+
+(setq dragon-ffe-pc-sh-sth-seq `(
+  ("SHSTHSequencer" ("idl") "idl")
+  ("SHSTHSeq" ("seq"))
+  ("SHSTHAO" ("ao"))
+  ("CSHSTHSeqRTOSCommon" ("rc" "rb"));rb=rtosbase
+  ("SHSTHInterfaceContainer" ("ifc"))
+  ("SHForeignItemIDs" ("fii") "h")
+  ("SHSTHItemIDs" ("ii") "h")
+  ("SHGeneralRTOSStrings" ("grs" "rs") "h")
+  ("stdafx" ("afx") "h")
+
+  ("SHSTHCapabilityBase" ("cb"))
+  ("SHSTHCapabilityP1ActiveZ" ("cp1az" "caz1"))
+  ("SHSTHCapabilityActiveZ" ("caz" "cp2az" "caz2"))
+
+  ("SHSTHTeachClientF_3_10_ProductionSettings" ("f310" "ps"))
+  ("SHSTHTeachServiceF_3_23_MountDispenseProcessInsert" ("f323" "mdpi"))
+  ("SHSTHTeachClientF_3_1_FunctionSelection" ("f31" "fs"));fs=function selection. It is the most important func sel in sh
+  ("SHSTHTeachClientF_3_9_VerifyStripTeaching" ("f39" "vst"))))
+
+(setq dragon-ffe-pc-di-seq `(
+  ("stdafx" ("afx") "h")
+  ("ItemIDsSeq" ("ii") "h")
+  ("DIDispenserSeqRTOSString" ("rs") "h")
+  ("DIDispenserSeq" ("seq"))
+  ("DIDispenserSeqIFContainer" ("ifc"))
+  ("DIDispenserSequencer" ("idl") "idl")
+  ("DIDispenserSeqAO" ("ao"))
+
+  ("DIDispenserSeqCommon" ("c"))
+  ("DICommandHandler" ("ch"))
+  ("DITimeHelper" ("th"))
+  ("DIOptGroup" ("og"))
+  ("DIMountableTool" ("mt"))
+
+  ("DIPatternDecisionParams" ("pdp"))
+  ("DIDispenseProlog" ("dpl"))
+  ("DIDispensePrologSingleDot" ("dplsd"))
+  ("DIDispenseEpilog" ("del"))
+  ("DIDispensePulseWrite" ("dpw"))
+  ("DIDispensePulseSingleDot" ("dpsd"))
+  ("DIDispensePulse" ("dp"))
+  ("DIPatternWriteWindow" ("pww"))
+  ("DIPatternWrite" ("pw"))
+  ("DIPatternSingleDot" ("psd"))
+  ("DIPattern" ("p"))
+  ("IDIPattern" ("ip") "h")
+  ("DIPatternControl" ("pc"))
+  ("DIPatternScaleCorrection" ("psc"))
+  ("DINode" ("n"))
+  ("DINodeList" ("nl"))))
+
+(setq dragon-ffe-pc-di-mod `(
+  ("stdafx" ("afx") "h")))
 
 (setq dragon-ffe-pc-calib `(
   ("PPCalibMod" ("mod"))
@@ -1018,10 +1110,11 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ;; ----------------------------
   ("PPSeqFeaturePickUpToolOffset" ("fputo" "fput" "fpu"))
   ("PPSeqFeaturePickerToolOffset" ("fpto" "fpt" "fp"))
-  ("PPSeqFeatureTableToolOffset" ("ftto" "ft" "ft"))))
+  ("PPSeqFeatureTableToolOffset" ("ftto" "ft" "ft"))
+  ("PPSeqFeatureTransferTableCooling" ("fttc"))
+  ("PPSeqFeaturePickUpToolCleaning" ("fputc"))))
 
 (setq dragon-ffe-pc-calibsrv `(
-  common
   ("CalibrationService" ("idl") "idl" )
   ("CalibrationSrv" ("cs" "srv"))
   ("CalibSrvAO" ("ao"))

@@ -103,9 +103,10 @@
 (defun my-python-mode-hook ()
   (hs-minor-mode t)
   (outline-minor-mode t)
-  (subword-mode t)
+  (if (featurep 'subword)
+      (subword-mode t))
   (my-python-mode-bindings))
-  
+
 (defun my-python-mode-bindings ()
   (require 'tempos-python)
 
@@ -164,9 +165,9 @@
      (list "\\_<char\\(?:16\\|32\\)_t\\_>" '(0 font-lock-type-face))
      ))
 
-  (if (< (+ (* 100 emacs-major-version) emacs-minor-version) 2302)
-      (c-subword-mode t)
-    (subword-mode t))
+  (if (featurep 'subword)
+      (subword-mode t)
+    (c-subword-mode t))
 
   (setq c-basic-offset 2)
   ;; (set (make-local-variable 'compilation-error-regexp-alist)

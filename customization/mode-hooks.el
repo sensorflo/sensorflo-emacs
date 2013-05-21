@@ -228,8 +228,6 @@
    (t 5)))
 
 (defun my-c-mode-common-bindings ()
-  (require 'tempos-c++)
-
   ;; overide existing bindings with similar functionality
   (local-set-key [remap newline] 'c-context-line-break)
   (local-set-key [remap narrow-to-defun] 'c-narrow-to-function-incl-comment)
@@ -259,6 +257,7 @@
 
 ;; remember that dragon.el, nova.el etc will add further bindings
 (defun my-c-mode-common-bindings-tempo ()
+  (require 'tempos-c++)
 
   ;; flow control
   (let ((map (make-sparse-keymap)))

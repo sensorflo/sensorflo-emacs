@@ -9,6 +9,7 @@
 ;;; Code:
 (require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
 (require 'tempo-ext) 	   ; https://gitorious.org/tempo-ext
+(require 'tempo-snippets)  ; http://nschum.de/src/emacs/tempo-snippets/
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
 
 ;;; misc settings
@@ -80,6 +81,12 @@
   (local-set-key [(control ?\,)(s)(a)(n)] 'tempo-template-dragon-eassert-new)
   (local-set-key [(control ?\,)(s)(a)(p)] 'tempo-template-dragon-eassert-pointer)
   (local-set-key [(control ?\,)(s)(s)] 'tempo-template-dragon-statement-common)
+
+  ;; comments
+  (local-set-key [(control ?\,)(k)(u)] 'tempo-template-dragon-utf-dwim)
+
+  ;; definitions / declarations
+  (local-set-key [(control ?\,)(d)(c)] 'tempo-template-dragon-class-dwim)
 
   ;; misc
   (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
@@ -1283,6 +1290,69 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 ;; todo: choose better prefix than 'c-'
 (defvar dragon-method-decl-empty-comment nil)
 
+(defun dragon-new-class (class-base-name)
+  (interactive "sClass base name: ")
+  (let ((class-name (concat "C" class-base-name)))
+    (find-file (concat class-base-name ".h"))
+    (insert
+     "#pragma once\n"
+     "\n"
+     "/** */\n"
+     "class " class-name "\n"
+     "{\n"
+     "  public:\n"
+     "    " class-name " ();\n"
+     "    virtual ~" class-name " ();\n"
+     "\n"
+     "  private:\n"
+     "};\n")
+    (find-file (concat class-base-name ".cpp"))
+    (insert
+     "//..begin \"UTF:Includes\"\n"
+     "#include \"stdafx.h\"\n"
+     "#include \"" class-base-name ".h\"\n"
+     "//..end \"UTF:Includes\"\n"
+     "\n"
+     class-name "::" class-name " ()\n"
+     "{\n"
+     "}\n"
+     "\n"
+     class-name "::~" class-name " ()\n"
+     "{\n"
+     "}\n"
+     "\n"
+     )))
+
+(tempo-define-snippet "dragon-class-decl"
+  '( lws
+     "/** */" >n
+     "class " (p "class-name" name) >n
+     "{" >n
+     "public:" >n
+     (s name) " ();" >n
+     "virtual ~" (s name) " ();" >n
+     "" >n
+     "private:" >n
+     "}" >n))
+
+(tempo-define-snippet "dragon-class-def"
+  '( lws
+     "/** */" >n
+     (s name) ":" (s name) " ()">n
+     "{" >n
+     "}" >n
+     "" >n
+     "/** */" >n
+     (s name) ":~" (s name) " ()">n
+     "{" >n
+     "}" >n))
+
+(defun tempo-template-dragon-class-dwim(&optional arg)
+  (interactive "*P")
+  (if (c-src-buffer-p)
+      (tempo-template-dragon-class-def arg)
+    (tempo-template-dragon-class-decl arg)))
+
 (tempo-define-template
  "dragon-method-decl-std"
  '( lws
@@ -1401,15 +1471,27 @@ Arg is the 3rd items of a dragon-abbrev-table item"
 (tempo-define-template
  "dragon-utf-forwards"
  '( lws
-    "//..begin \"UTF:Forwards\"" n>
+    "//..begin \"UTF:Forwards\"" >n
     r-or-blank-line>
-    "//..end \"UTF:Forwards\"" >))
+    "//..end \"UTF:Forwards\"" >n))
 
 (tempo-define-template
  "dragon-utf-includes"
  '( lws
-    "//..begin \"UTF:Includes\"" n>
+    "//..begin \"UTF:Includes\"" >n
     r-or-blank-line>
-    "//..end \"UTF:Includes\"" >))
+    "//..end \"UTF:Includes\"" >n))
+
+(defun tempo-template-dragon-utf-dwim(&optional arg)
+  (interactive "*P")
+  (cond
+   ((not mark-active)
+    (tempo-template-dragon-utf-block arg))
+   ((looking-at "#\\(include\\|import\\)\\b")
+    (tempo-template-dragon-utf-includes arg))
+   ((looking-at "\\(class\\|struct\\)\\b")
+    (tempo-template-dragon-utf-forwards arg))
+   (t
+    (tempo-template-dragon-utf-block arg))))
 
 ;;; dragon.el ends here

@@ -450,6 +450,59 @@ sure what the good decisions are."
 	(delete-region (point) (match-end 1))
 	(insert replacement))))))
 
+(defun dragon-replace-unreferenced-parameter-macro()
+  "Replaces UNREFERENCED_PARAMETER by commenting arg name.
+
+Replaces the UNREFERENCED_PARAMETER macro on the current line by
+deleting this line and commenting out the associated argumen name
+in the methods signature. For example:
+
+void foo(int i) {
+  UNREFERENCED_PARAMETER(i);
+  ...
+}
+
+becomes:
+
+void foo(int /*i*/) {
+  ...
+}"
+  (interactive)
+  (let ((argument "") argument-pos)
+
+    (beginning-of-line)
+    (re-search-forward "UNREFERENCED_PARAMETER\\s-*(\\s-*")
+    (setq argument-pos (point))
+    (forward-sexp)
+    (setq argument (buffer-substring-no-properties argument-pos (point)))
+
+    (c-beginning-of-defun-body)
+    (backward-up-list)
+    (let ((case-fold-search)
+          (method-end (save-excursion (forward-sexp) (point))))
+      (while (re-search-forward (concat "\\_<" (regexp-quote argument) "\\_>") method-end t)
+        (when (not (equal (match-beginning 0) argument-pos))
+          (error "%s _is_ referenced in this method" argument))))
+
+    (c-forward-defun-name)
+    (forward-sexp)
+    (let ((case-fold-search))
+      (when (not (re-search-forward (concat "\\_<" (regexp-quote argument) "\\_>")
+                                    (save-excursion (forward-sexp) (point))
+                                    t))
+        (goto-char argument-pos)
+        (error "%s is not an argument to this method" argument)))
+    (unless (save-match-data (looking-at "\\s-*\\*+/"))
+        (insert "*/"))
+    (goto-char (match-beginning 0))
+    (unless (looking-back "/\\*+\\s-*")
+      (insert "/*"))
+        
+    (goto-char argument-pos)
+    (delete-region (line-beginning-position)
+                   (progn (forward-line) (point)))))
+
+
 ;;; abbrevs
 ;; (setq dragon-abbrev-table (make-abbrev-table)) ;props are added in mode hook
 (setq dragon-abbrev-table '(

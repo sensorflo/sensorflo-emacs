@@ -238,6 +238,12 @@ Additionaly match data is set to mark the culprit by match group 1."
     
     (list "\\w+_cast\\s-*<[^>\n]*>" '(0 font-lock-semi-unimportant t))
     
+    ;; googletest / googlemock
+    (list "^\\s-*TEST\\(?:_F\\)?\\s-*(\\s-*\\(DISABLED_\\)?[^,]*,\\s-*\\(DISABLED_\\)?"
+          '(1 font-lock-warning-face append t)
+          '(2 font-lock-warning-face append t))
+    (list "MAKE_\\(DISABLED_\\)?TEST_NAME" '(1 font-lock-warning-face append t))
+
     ;; --- real garbage ---
     (list "^\\s-*//\\.+\\s-*\\(begin\\|end\\)\\b.*\n" '(0 font-lock-unimportant t))
     (list "^\\s-*\\(#define\\s-*\\)?_\\(START\\|STOP\\)_SKIP.*" '(0 font-lock-unimportant t))

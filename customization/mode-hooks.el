@@ -230,21 +230,16 @@
 (defun my-c-mode-common-bindings ()
   (require 'tempos-c++)
 
-  ;; similar functionality
-  (define-key c-mode-base-map [(tab)] 'c-indent-line-or-region)
-  (define-key c-mode-base-map [(return)] 'c-context-line-break)
-  (substitute-key-definition 'narrow-to-defun 'c-narrow-to-function-incl-comment c-mode-base-map)
-  (substitute-key-definition 'yank 'yank-and-indent c-mode-base-map)
-  (define-key c-mode-base-map [(control meta h)] 'c-mark-function-incl-comment)
-  (substitute-key-definition 'mark-page 'c-mark-block c-mode-base-map)
-  (define-key c-mode-base-map [f5] 'c-copy-param-list)
-  (define-key c-mode-base-map [f6] 'c-move-comment-dec-to-def-buffer)
-  (define-key c-mode-base-map [f5] 'c-copy-param-list)
-  (define-key c-mode-base-map [f6] 'c-move-comment-dec-to-def-buffer)
+  ;; overide existing bindings with similar functionality
+  (local-set-key [remap newline] 'c-context-line-break)
+  (local-set-key [remap narrow-to-defun] 'c-narrow-to-function-incl-comment)
+  (local-set-key [remap yank] 'yank-and-indent)
+  (local-set-key [remap c-mark-function] 'c-mark-function-incl-comment)
+  (local-set-key [remap mark-pagee] 'c-mark-block)
+  (local-set-key [remap c-beginning-of-defun] 'c-beginning-of-defun-ext) 
+  (local-set-key [remap c-end-of-defun] 'c-end-of-defun-ext)
 
   ;; jump
-  (substitute-key-definition 'c-beginning-of-defun 'c-beginning-of-defun-ext c-mode-base-map) 
-  (substitute-key-definition 'c-end-of-defun 'c-end-of-defun-ext c-mode-base-map)
   (local-set-key [(control ?\.)(o)] 'c-goto-other-defun)
   (local-set-key [(control ?\.)(d)] 'c-goto-declaration)
   (local-set-key [(control ?\.)(D)] 'c-goto-specific-defun-name) 
@@ -260,8 +255,7 @@
   (local-set-key [(f10)] 'c-copy-signature)
   (local-set-key [(control x)(n)(b)] 'c-narrow-to-block)
 
-  (my-c-mode-common-bindings-tempo)
-  )
+  (my-c-mode-common-bindings-tempo))
 
 ;; remember that dragon.el, nova.el etc will add further bindings
 (defun my-c-mode-common-bindings-tempo ()

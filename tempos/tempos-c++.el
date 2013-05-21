@@ -88,6 +88,13 @@ qt: /*! ... */"
 
 (defun tempos-c++-block-comment-start ()
   (cond
+   ((when mark-active
+      (save-excursion
+        (when (> (point) (mark)) (exchange-point-and-mark))
+        (or (not (looking-back "^\\s-*"))
+            (progn (exchange-point-and-mark)
+                   (not (looking-at "\\s-*$"))))))
+    "/*")
    ((eq tempos-c++-block-comment-style 'plain-c++) "/*")
    ((eq tempos-c++-block-comment-style 'java-doc) "/**")
    ((eq tempos-c++-block-comment-style 'qt) "/*!")
@@ -252,9 +259,7 @@ qt: /*! ... */"
 
 ;; comment block
 (tempo-define-template "c-comment-block"
- '( &    
-    (tempos-c++-block-comment-start) " " r> p "*/" > )
- "/**")
+ '( (tempos-c++-block-comment-start) " " r> p " */" > ))
 
 ;; doxygen group
 (tempo-define-template "c-member-group-named"

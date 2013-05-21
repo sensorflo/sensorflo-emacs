@@ -356,19 +356,29 @@ sure what the good decisions are."
 
 (defun dragon-create-tags-table()
   (interactive)
-  ;;(shell-command "find . UnitTest ~/src/Common/INC ~/src/DieBonder/PC/INC ~/src/DieBonder/RTOSExport '/home/emp8118035/drives/xpc/Program Files/Microsoft Visual Studio 10.0/VC/include/' -iname '*.cpp' -o -iname '*.h' -o -iname '*.tlh' -print0 | xargs -0 etags")
-  ;;(shell-command "find . UnitTest ~/src/Common/INC ~/src/DieBonder/PC/INC ~/src/DieBonder/RTOSExport  \\( -iname '*.cpp' -o -iname '*.h' \\) -print0 | xargs -0 etags")
   (shell-command
    (concat
     "find "
-    default-directory " "
-    default-directory "UnitTest "
-    "~/src/Common/INC "
-    "~/src/DieBonder/PC/INC "
-    "~/src/DieBonder/RTOSExport "
-    ;; "'/home/emp8118035/drives/xpc/Program Files/Microsoft Visual Studio 10.0/VC/include/' "
-    ;; '.*\\.\\(c\\|cpp\\|h\\|tlh\\)'
-    "\\( -iname '*.h' -o -iname '*.cpp' -o -iname '*.tlh' \\) -print0 | xargs -0 etags")))
+    (if (eq (project-root-type) 'project-diebonder-pc)
+        (concat 
+         default-directory "../Sources "
+         default-directory "../UnitTest "
+         default-directory "../UnitTest2 "
+         "~/src/DieBonder/MatpackLib/Include "
+         "~/src/DieBonder/PC/INC "
+         "~/src/Common/INC "
+         "~/drives/xpc/Program\\ Files/ACE_Wrappers/Inc "
+         "~/src/DieBonder/RTOSExport "
+         "~/drives/xpc/Program\\ Files/Microsoft\\ Visual\\ Studio\\ 10.0/VC/include/ ")
+      (concat
+       default-directory "../Sources "
+       default-directory "../UnitTest "
+       default-directory "../UnitTest2 "
+       "~/src/DieBonder/rtos/Inc "
+       "~/src/DieBonder/RTOSExport "
+       "~/src/DieBonder/RTOS/_IndelBase/os/inos/inc "
+       "~/src/DieBonder/RTOS/_IndelBase/os/inco/inc " ))
+    "-iregex '.*\\.\\(cpp\\|cc\\|c\\|h\\|tlh\\)$' -print0 | xargs -0 etags -f ../TAGS")))
 
 (defun dragon-grep-find-command(&optional regexp)
   (concat

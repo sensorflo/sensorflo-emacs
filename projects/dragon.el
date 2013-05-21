@@ -91,6 +91,7 @@
   ;; misc
   (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(m)(t)] 'tempo-template-dragon-todo) ; todo
+  (local-set-key [(control f)(control o)] 'dragon-find-other-file)
 
   ;; traces & text/string literals
   (local-set-key [(control ?\,)(t)] (make-sparse-keymap))
@@ -449,6 +450,32 @@ sure what the good decisions are."
 	(goto-char (match-beginning 1))
 	(delete-region (point) (match-end 1))
 	(insert replacement))))))
+
+;; types
+;; - interface
+;; - implementation
+;; - test case
+;; - test helpers
+;; - associated data/bussiness-logic class
+;; 
+;; ortoghonal to type
+;; - header file
+;; - source file
+(defun dragon-find-other-file()
+  (interactive)
+  (let ((case-fold-search nil))
+    (cond
+     ((string-match "\\(.*?\\)/Sources/\\(.*?\\)\\.\\(cpp\\|h\\)$" buffer-file-name)
+      (let* ((fn (replace-match "\\1/UnitTest2/\\2Test.\\3" t nil buffer-file-name)))
+        (if (file-exists-p fn)
+          (find-file-existing fn)
+          (message "File %S does not exist" fn))))
+      ((string-match "\\(.*?\\)/UnitTest2/\\(.*?\\)Test\\.\\(cpp\\|h\\)$" buffer-file-name)
+       (let* ((fn (replace-match "\\1/Sources/\\2.\\3" t nil buffer-file-name)))
+         (if (file-exists-p fn)
+             (find-file-existing fn)
+           (message "File %S does not exist" fn))))
+      (t (error "No 'other' file for the current file")))))
 
 (defun dragon-replace-unreferenced-parameter-macro()
   "Replaces UNREFERENCED_PARAMETER by commenting arg name.

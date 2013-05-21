@@ -340,6 +340,13 @@ macro recording."
   (interactive)
   (setq mark-active nil))
 
+(defun toggle-mark(&optional arg)
+  "Similar to `set-mark-command', but toggles"
+  (interactive "P")
+  (if (and mark-active (not arg)) 
+      (setq mark-active nil)
+    (call-interactively 'set-mark-command)))
+
 (defun capitalize-dwim ()
   "Capitalize current word/region.
 

@@ -44,6 +44,7 @@
 (global-set-key [remap down-list]               'down-list-ext) 
 (global-set-key [remap backward-up-list]        'backward-up-list-ext) 
 (global-set-key [remap mark-sexp]               'mark-sexp-ext) 
+(global-set-key [remap set-mark-command]        'toggle-mark) 
 (global-set-key [remap transpose-sexps]         'transpose-sexps-ext) 
 (global-set-key [remap shell-command-on-region] 'shell-command-on-region-ext)
 (global-set-key [remap shell-command]           'shell-command-ext)

@@ -55,11 +55,11 @@ Called with one argument: the regexp to be searched for.")
   (replace-regexp-in-string "<R>" (replace-regexp-in-string "'" "'\"'\"'" (replace-regexp-in-string "\\\\" "\\\\\\\\" regexp)) grep-find-command))
 
 (defun grep-find-ext(arg)
-  "As `grep-find', however dynamicly determines default.
+  "As `grep-find', however dynamically determines default.
 
 `grep-find-ext-regexp-function' is used to determine the regexp
 searched for. `grep-find-ext-command-function' is used to
-detremine the whole shell command used to search."
+determine the whole shell command used to search."
   (interactive "P")
   (let* ((regexp (cond ((equal arg '(16)) "")
 		       (mark-active (regexp-quote (buffer-substring-no-properties (point) (mark))))

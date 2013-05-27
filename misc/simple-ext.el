@@ -596,11 +596,18 @@ I.e. a match extends to the left as far as possible."
     (point)))
 
 (defun rename-buffer-ext ()
-  "As `rename-buffer' but additionally does some magic in cerain cases."
+  "As `rename-buffer' but additionally does some magic in certain cases."
   (interactive)
   (cond
    ((string-match "\\*grep.*\\*" (buffer-name))
-    (rename-buffer (concat "*grep " (read-string "Rename buffer (to new name, base part): ") "*")))
+    (let* ((default (save-excursion
+                      (goto-char (point-min))
+                      (re-search-forward "^-i?e\\s-+'\\(.*?\\)'\\s-*$")
+                      (match-string-no-properties 1)))
+           (new-name (read-string
+                      (concat "Rename buffer (to new name, only base part. Default: " default "): ")
+                      nil nil default)))
+      (rename-buffer (concat "*grep " new-name "*"))))
    (t
     (call-interactively 'rename-buffer))))
 

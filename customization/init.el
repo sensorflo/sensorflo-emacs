@@ -18,6 +18,12 @@
 ;; ==================================================
 (message "init file: settings part 1")
 
+;; set the config variable
+(let ((file "site-config.el"))
+  (if (file-readable-p file)
+      (load-file file)
+    (setq config nil)))
+
 ;; load-path
 (dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
   (let ((default-directory (concat user-emacs-directory x)))

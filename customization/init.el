@@ -106,6 +106,7 @@
 (require 'doxym-mode)
 (require 'bbcode)
 (require 'latex-ext)
+(require 'mediawiki)
 
 
 ;;; programming / config-file  modes
@@ -258,7 +259,7 @@
     ("\\.\\(py\\|python\\)\\'" . python-mode)
     ("\\.lo[g0-9]\\'" . logfile-mode)
     ("personality.*\\.txt\\'" . pm-mode)
-    ("swat\\.eu\\.besi\\..*\\.txt" . mediawiki-mode)
+    ("\\.wiki\\'" . mediawiki-mode)
     ("\\.env\\'" . conf-mode)
     ("\\.git\\(config\\|modules\\)\\'" . conf-mode)
     ("\\.typ\\'" . gtypist-mode)

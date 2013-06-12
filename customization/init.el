@@ -18,6 +18,7 @@
 ;; ==================================================
 (message "init file: settings part 1")
 
+;; load-path
 (dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
   (let ((default-directory (concat user-emacs-directory x)))
 		(add-to-list 'load-path default-directory)
@@ -33,11 +34,7 @@
   (add-to-list 'load-path (concat user-emacs-directory x)))
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
 
-;; (setq generated-autoload-file (concat "~/.emacs.d/my-loaddefs.el"))
-;; (load-file generated-autoload-file)
-
-;; 
-(setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
+;; find-function-C-source-directory
 (setq find-function-C-source-directory
       (concat (getenv "HOME") "/src/emacs-"
 	      (progn
@@ -45,6 +42,7 @@
 		(match-string 0 emacs-version))
 	      "/src/"))
 
+;; environment
 (when (eq config 'office-xp)
   (add-to-list 'Info-default-directory-list "D:/cygwin/usr/share/info")
   (add-to-list 'exec-path "D:/cygwin/bin")
@@ -57,10 +55,13 @@
   (setenv "SHELL" "D:/cygwin/bin/bash.exe")
   (setenv "ESHELL" "D:/cygwin/bin/bash.exe"))
 
+;; custom-file
 ;; some modes initialize stuff using their custom variables while loading, thus
 ;; load custom file before loading modes
+(setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
 (load custom-file) 
 
+;; aliases
 (load-library "aliases") 
 
 
@@ -84,8 +85,6 @@
 (require 'ido)  
 (load-library "find-file")
 (require 'window-numbering)
-;(require 'bs)
-;(require 'dired-sort-menu)  
 
 ;;; text/markup modes
 ;; --------------------------------------------------
@@ -98,13 +97,10 @@
   (load-library "nxhtml/autostart.el"))
 (require 'yas-mode)
 (require 'adoc-mode)
-;(require 'mediawiki)
 (require 'doxym-mode)
 (require 'bbcode)
 (require 'latex-ext)
-;(require 'yatex)
-;(require 'tex)
-; on hold: auctex mode
+
 
 ;;; programming / config-file  modes
 ;; --------------------------------------------------
@@ -122,8 +118,7 @@
 (require 'dt2-mode)
 (require 'rl-mode)
 (require 'vbnet-mode)
-;(require 'apt-sources)
-;jdee for java
+
 
 ;;; external tools
 ;; --------------------------------------------------
@@ -136,12 +131,6 @@
 (require 'psvn) 
 (require 'mks) 
 (require 'speedbar)
-
-;(load-file (concat emacs-dir "/site-lisp/cedet-1.0pre7/common/cedet.el"))
-;(require 'xcscope)
-;(require 'gdb-highlight)
-;(require 'vc-ediff) vc+ already has an own vc-ediff command defined
-; cedet, oo-browser, ede, semantic
 
 
 ;;; misc major modes
@@ -158,26 +147,20 @@
 ;(require 'palette) ; info won't work in emacs 23 anymore
 (require 'cus-edit)
 (require 'logfile-mode)
-;(require 'help+20)  
-;(require 'igrep)
-;(require 'color-grep)
-;(require 'help-mode+)  
-;(require 'ehelp)
-;(require 'no-word)
+
 
 ;;; markup helper functionality 
 ;; --------------------------------------------------
 
+
 ;;; programming helper functionality 
 ;; --------------------------------------------------
-;; (load-library "cedet-1.0pre7/common/cedet.el")
-;; (require 'ecb)
+
 
 ;;; misc helper functionality 
 ;; --------------------------------------------------
 (message "init file: required libraries: misc helper functionality")
 
-;; (require 'globalff)
 (require 'server)
 (require 'x-dict)  
 (require 'column-marker)
@@ -213,37 +196,19 @@
 (load-library "project") 
 (load-library "kmacro-ext") 
 (load-library "find-file-ext") 
-;(load-library "subr-patch") 
-
-;; on hold 
-; predictive mode
-;(require 'highlight) ; emacs's 23 info won't work
-;(require 'menu-bar+) ; emacs's 23 info won't work
-;(require 'icicles) ; emacs's 23 info won't work
-;(require 'tmm)
-;(require 'highlight-symbol)
-;(require 'facemenu+)
-;(require 'flyspell-timer) ;; keybindings !!
-;(require 'yasnippet)
-;(require 'dropdown-list)
-;(require 'pi-tempo-abbrev)
-;(require 'sidebrain)
-;(require 'planner)
 
 
 
 ;;; settings part 2
 ;; =======================================================
-;; note that there are more in custom.el
 (message "init file: settings part 2")
 
-;; notable variables defined with custom:
+;; notable variables defined with custom, i.e. they don't need to be set
+;; elsewhere:
 ;; - global-auto-revert-mode
 ;; - global-hi-lock-mode
 ;; - global-font-lock-mode
 ;; - indent-tabs-mode, standard-indent
-;;
-;; 
 ;; - require-final-newline, mode-require-final-newline, c-require-final-newline
 
 (put 'upcase-region 'disabled nil)   
@@ -254,7 +219,7 @@
 (put 'scroll-left 'disabled nil)
 (setq minibuffer-max-depth nil)
 (setq find-dired-default-fn (lambda() "" "-iname ''"))
-(setq resize-mini-windows t)		; needs truncate-lines == nil in minibuffer
+(setq resize-mini-windows t) ; needs truncate-lines == nil in minibuffer
 (when (require 'speedbar nil t)
   ;; not customizeable, but maybe put it in a hook?
   (speedbar-enable-update))
@@ -271,8 +236,7 @@
 
 ;; auto-mode-alist
 ;;
-;; see also python.el how it does add itself using autoload
-;; 
+;; See also how python.el does it to add itself (it's something with autoload)
 (let ((my-auto-mode-alist '(
     ("bash\\|profile" . shell-script-mode)
     ("git-?flow\\(?:-\\w+\\)?\\'" . shell-script-mode)
@@ -283,7 +247,7 @@
     ("\\.h\\'" . c++-mode)
     ("\\.tl[hi]\\'". c++-mode)
     ("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode)
-    ("\\`[-0-9A-Z_]+\\'" . adoc-mode) ;; all upercase file name
+    ("\\`[-0-9A-Z_]+\\'" . adoc-mode)
     ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
     ("\\.\\(py\\|python\\)\\'" . python-mode)
     ("\\.lo[g0-9]\\'" . logfile-mode)
@@ -343,19 +307,6 @@
 ;;; autostart
 ;; ----------
 (message "init file: autostart")
-;; manual says to call it for emacs' own menus (file, edit, ...), but it results
-;; in an error
-;;(update-power-keys t) 
-;; (when (require 'ede nil t)
-;;   (global-ede-mode 1))
-;; (when (require 'semantic nil t)
-;;   (semantic-load-enable-minimum-features)
-;;   (semantic-load-enable-code-helpers)
-;;   (semantic-load-enable-gaudy-code-helpers))
-;; (when (require 'srecode-mode nil t)
-;;   (global-srecode-minor-mode 1))
-(require 'icicles)
-;(icy-mode) ; icy-mode wants to be the last thing called 
 
 ;; put here at the end of the startup instead within custom-file so starting up
 ;; emacs with --debug-init has an effect. Else, modifying debug-on-error within

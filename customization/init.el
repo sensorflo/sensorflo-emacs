@@ -281,7 +281,7 @@
     ("\\.bat\\'" . batch-mode)
     ("\\.h\\'" . c++-mode)
     ("\\.tl[hi]\\'". c++-mode)
-    ("\\.txt\\'" . adoc-mode)
+    ("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode)
     ("\\`[-0-9A-Z_]+\\'" . adoc-mode) ;; all upercase file name
     ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
     ("\\.\\(py\\|python\\)\\'" . python-mode)

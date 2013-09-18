@@ -269,7 +269,7 @@ mouse-3: Remove current window from display")) #("%]" 0 2 (help-echo "Recursive 
  '(tempo-snippets-grow-in-front t)
  '(text-mode-hook (quote (text-mode-hook-identify)))
  '(tool-bar-mode t nil nil "due to an Emacs bug, in current Ubuntu Emacs' window shrinks to 1 text line if tool-bar-mode is set to nil")
- '(tramp-mode nil)
+ '(tramp-mode t)
  '(tramp-temp-name-prefix ".tramp.")
  '(tramp-verbose 10)
  '(truncate-lines t)

@@ -5,6 +5,7 @@
 session.*
 auto-save-list/
 TAGS
+tramp
 abbrev_defs
 customization/site-config.el
 #*#

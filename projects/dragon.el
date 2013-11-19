@@ -390,12 +390,13 @@ sure what the good decisions are."
 
 (defun dragon-grep-find-command(&optional regexp)
   (concat
-   "find ../Sources ../UnitTest ../UnitTest2 -maxdepth 1 -not \\( -type d -iname '*~*' -prune \\) \\\n"
+   "find \\\n"
+   "$( find .. -maxdepth 1 -iregex '.*/\\(Sources\\|UnitTest2?\\)$' ) -maxdepth 1 \\\n"
    "-regextype posix-egrep \\\n"
    "-type f \\\n"
    "-iregex '.*\\.(idl|h|cpp)'  \\\n"
-   "-print0 | xargs -0 grep --color=always \\\n"
-   "-nIPie '" regexp "'"))
+   "-print0 | xargs -0 grep --color=always -nIP \\\n"
+   "-ie '" regexp "'"))
 
 (defvar dragon-well-known-types
   (concat

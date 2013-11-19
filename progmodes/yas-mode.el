@@ -92,9 +92,9 @@
    ;;(cons "\\(%%.*\\)$" 'font-lock-unimportant-face)
    
    ;; comment / semantic
-   (list "\\(#[_^]?\\)\\(\\(\\w\\|_\\)+\\)" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) )
-   (list "\\(##\\s-*\\)\\(.*\\)$" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) )
-   (list "\\(#\\*\\s-*\\)\\(\\(.\\|\n\\)*?\\)\\(\\*#\\)" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) '(4 font-lock-comment-delimiter-face))
+   (list "\\(?:^\\|[^`'\"]\\)\\(#[_^]?\\)\\(\\(\\w\\|_\\)+\\)" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) )
+   (list "\\(?:^\\|[^`'\"]\\)\\(##\\s-*\\)\\(.*\\)$" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) )
+   (list "\\(?:^\\|[^`'\"]\\)\\(#\\*\\s-*\\)\\(\\(.\\|\n\\)*?\\)\\(\\*#\\)" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) '(4 font-lock-comment-delimiter-face))
    
    ;; string / terminal
    (list "\\('\\)\\(\\(\\w\\|_\\)+\\)" '(1 meta-syntax-hide-delimiter-face) '(2 meta-syntax-literal-face) )
@@ -114,9 +114,9 @@
    (cons "%\\w+" 'font-lock-keyword-face)
 
    ;; grammar
-   (cons "^\\s-*\\(\\w+\\)\\s-*=" (list 1 'font-lock-variable-name-face))
-   (cons "^\\s-*\\(\\w+\\)\\s-*%=" (list 1 'font-lock-function-name-face))
-   (cons "^\\s-*\\(\\w+\\)\\s-*<.*?>\\s-*=" (list 1 'font-lock-function-name-face))
+   (cons "^\\s-*\\(\\(?:\\w\\|_\\)+\\)\\s-*=" (list 1 'font-lock-variable-name-face))
+   (cons "^\\s-*\\(\\(?:\\w\\|_\\)+\\)\\s-*%=" (list 1 'font-lock-function-name-face))
+   (cons "^\\s-*\\(\\(?:\\w\\|_\\)+\\)\\s-*<.*?>\\s-*=" (list 1 'font-lock-function-name-face))
    ))
 
 (defun yas-beginning-of-defun ()

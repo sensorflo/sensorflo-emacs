@@ -93,17 +93,18 @@ Nil if there is none."
      dir-whole-list)
     dir-stripped-list))
     
-(defun project-root-dir (file-name &optional relative-p)
+(defun project-root-dir (&optional file-name relative-p)
   "Returns the path to the root directory of the project the given file is a member of."
-
+  (when (null file-name)
+    (setq file-name (buffer-file-name)))
   (let (abspath
         (type (project-root-type file-name)))
     (setq abs-path
           (cond
            ((eq type 'project-diebonder-pc)
-            (replace-regexp-in-string "\\(/UnitTest\\)?/[^/]*$" "/" file-name))
+            (replace-regexp-in-string "\\(/UnitTest2?\\)?/[^/]*$" "/" file-name))
            ((eq type 'project-diebonder-rtos)
-            (replace-regexp-in-string "\\(/sources\\|/unittest\\)?/[^/]*$" "/" file-name))
+            (replace-regexp-in-string "\\(/sources\\|/unittest2?\\)?/[^/]*$" "/" file-name))
            ((eq type 'project-nova)
             (replace-regexp-in-string "\\(/source\\|/include\\|/testing\\)?/[^/]*$" "/" file-name))
            (t

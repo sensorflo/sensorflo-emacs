@@ -108,13 +108,19 @@
   (local-set-key [(control ?\,)(t)(m)] 'tempo-template-dragon-trace-method-enter))
 
 (defun dragon-before-save-hook ()
-  (when (or (eq (project-root-type) 'project-diebonder-pc)
-            (eq (project-root-type) 'project-diebonder-rtos))
-    (when (and (dragon-file-p) (not (dragon-coding-system-p)))
+  (when (and (or (eq (project-root-type) 'project-diebonder-pc)
+                 (eq (project-root-type) 'project-diebonder-rtos))
+             (dragon-file-p))
+
+    ;; ensure character encoding is windows-1252, and end-of-line char is DOS
+    ;; style
+    (when (not (dragon-coding-system-p))
       (if (y-or-n-p (format "%s: change coding system from %S to windows-1252-dos? "
 			    (buffer-name) buffer-file-coding-system))
           (setq buffer-file-coding-system 'windows-1252-dos)
         (if (y-or-n-p "abort saving? ") (error "user aborted abort aving"))))
+
+    ;; autocorrect whitespace erros
     (when (member major-mode '(c++-mode idl-mode dt2-mode stream-mode doxym-mode))
       (save-restriction
 	(widen)

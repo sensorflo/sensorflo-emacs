@@ -129,6 +129,25 @@
 
 (add-hook 'before-save-hook 'dragon-before-save-hook t)
 
+(defun dragon-after-save-hook ()
+  ;; dt2 files are redundantely safed in multiple places. When writing to one
+  ;; file, also write to all its redundant copies.
+  (when (and (equal major-mode 'dt2-mode)
+             (let ((case-fold-search t))
+               (string-match ".*/\\(?:CfgPool2\\|Config\\|ConfigBasic\\)\\(/.*\\)$" buffer-file-name)))
+    (dolist (prefix '("/home/emp8118035/drives/xpc/Program Files (x86)/Esec/DieBonder/RTSys/CfgPool2"
+                      "/home/emp8118035/drives/xpc/Program Files (x86)/Esec/DieBonder/RTSys/Config"
+                      "/home/emp8118035/drives/xpc/Program Files (x86)/Esec/DieBonder/RTSys/ConfigBasic"
+                      "/home/emp8118035/src/DieBonder/RTOS/CfgPool2"))
+      (let* ((file-to-write (concat prefix (match-string 1 buffer-file-name)))
+             (must-always-exist (save-match-data (string-match "/CfgPool2/" file-to-write)))
+             (does-already-exist (file-exists-p file-to-write)))
+        (when (and (not (equal buffer-file-name file-to-write))
+                   (or must-always-exist does-already-exist))
+          (write-region nil nil file-to-write))))))
+
+(add-hook 'after-save-hook 'dragon-after-save-hook)
+
 (defun dragon-find-file-hook()
   (when (and buffer-file-name (string-match "/drives/builds/" buffer-file-name))
     (toggle-read-only 1)

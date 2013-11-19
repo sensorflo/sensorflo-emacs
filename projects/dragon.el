@@ -8,6 +8,7 @@
 ;;
 ;;; Code:
 (require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
+(require 're)              ; https://github.com/sensorflo/sensorflo-emacs/
 (require 'tempo-ext) 	   ; https://gitorious.org/tempo-ext
 (require 'tempo-snippets)  ; http://nschum.de/src/emacs/tempo-snippets/
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
@@ -188,16 +189,17 @@ Additionaly match data is set to mark the culprit by match group 1."
 	      (text-property-not-all method-start-pos end 'face
 				     'font-lock-function-name-face)))
       (when (and method-start-pos method-end-pos)
-
 	;; -- getters should be const
 	(when (not an-issue-found)
 	  (save-excursion
-	    (let ((is-getter
+	    (let (
+                  (is-getter
 		   (progn
 		     (goto-char method-start-pos)
-		     (looking-at (concat "i?\\(?:Is\\|Has\\|Get\\|Was\\|Had\\|"
-					 "Show\\|Display\\|Print\\|Trace\\|"
-					 "Log\\)\\(?:[A-Z_1-9]\\|\\b\\)"))))
+		     (or (looking-at (concat "i?\\(?:Get\\|Show\\|Display\\|Print\\|Trace\\|Log\\)"
+                                             "\\(?:[A-Z_0-9]\\|\\b\\)"))
+                         (looking-at (concat "[a-zA-Z_0-9]*\\(?:Is\\|Has\\|Was\\|Had\\|Contains\\)"
+                                             "\\(?:[A-Z_0-9]\\|\\b\\)")))))
 		  (is-static
 		   (progn
 		     (beginning-of-line)
@@ -212,8 +214,8 @@ Additionaly match data is set to mark the culprit by match group 1."
 		     (goto-char method-end-pos)
 		     (forward-list 1)
 		     (looking-at (concat "\\s-*\\(=\\s-*const\\s-*\\)?;"
-					 "?\\s-*\\(?://\\|/\\*+\\)\\s-*"
-					 "cppcheck-surpress")))))
+		        		 "?\\s-*\\(?://\\|/\\*+\\)\\s-*"
+		        		 "cppcheck-suppress")))))
 	      (when (and is-getter (not is-const)
 			 (not is-static) (not is-surpressed))
 		;; set match data for group 1 beginning at closing paranthesis
@@ -227,7 +229,7 @@ Additionaly match data is set to mark the culprit by match group 1."
 	;; -- declarations & specifications must have space between name and
 	;;    opening paranthesis. methods declared via macros are excluded
 	(when (and (not an-issue-found)
-                   (not (string-match "/Dispenser/" buffer-file-name)))
+                   (not (string-match "/Dispenser/" (or buffer-file-name ""))))
 	  (save-excursion
 	    (goto-char method-end-pos)
 	    (setq an-issue-found
@@ -261,24 +263,63 @@ Additionaly match data is set to mark the culprit by match group 1."
     (list "^\\s-*EHRESULT\\s-+ehr\\s-*[;=]" '(0 font-lock-semi-unimportant t))
     (list "^\\s-*ehr\\s-*\\+=" '(0 font-lock-semi-unimportant t))
     ;; dont gray out CPPUNIT_ASSERT, thus EASSERT instead ASSERT
-    (list "^\\s-*[a-zA-Z0-9_]*\\(STOP\\|RETURN\\|EASSERT\\|THROW\\)[a-zA-Z0-9_]*\\s-*(.*" '(0 font-lock-semi-unimportant t))
+    (list "^\\s-*[A-Z0-9_]*\\(STOP\\|RETURN\\|EASSERT\\|THROW\\).*" '(0 font-lock-semi-unimportant t))
+    (list "^\\s-*E\\(GET\\|RETURN\\THROW\\)_FROM_COM.*" '(0 font-lock-semi-unimportant t))
     (list "\\(?:^\\|}\\)\\s-*\\([a-zA-Z0-9_]*CATCH[a-zA-Z0-9_]*\\s-*(.*\\)" '(1 font-lock-semi-unimportant t))
     (list "^\\s-*\\(return\\s-*ehr\\s-*;\\)\\s-*\n}" '(1 font-lock-semi-unimportant t))
     (list "^\\s-*E\\(END\\|BEGIN\\)_COM_METHOD.*" '(0 font-lock-semi-unimportant t))
 
     (list "\\be[PBDE]VIGraphicalObject" '(0 font-lock-semi-unimportant t))
-    (list "\\bscIID_\\(sSI\\|sMS\\)[a-zA-Z0-9]*_\\([a-zA-Z0-9]+_\\)?" '(0 font-lock-semi-unimportant t))
+    (list "\\bscIID_\\(\\(sSI\\|sMS\\)[a-zA-Z0-9]*_\\([a-zA-Z0-9]+_\\)?\\)?" '(0 font-lock-semi-unimportant t))
+    (list "\\beMCACSetup" '(0 font-lock-semi-unimportant t))
     
     (list "^\\s-*ETRACE[a-zA-Z0-9_]+.*" '(0 font-lock-semi-unimportant t))
-    (list "^\\s-*UNREFERENCED_PARAMETER.*" '(0 font-lock-semi-unimportant t))
+    (list "^\\s-*UNREFERENCED_PARAMETER.*" '(0 font-lock-warning-face t))
     
     (list "\\w+_cast\\s-*<[^>\n]*>" '(0 font-lock-semi-unimportant t))
     
-    ;; googletest / googlemock
-    (list "^\\s-*TEST\\(?:_F\\)?\\s-*(\\s-*\\(DISABLED_\\)?[^,]*,\\s-*\\(DISABLED_\\)?"
-          '(1 font-lock-warning-face append t)
-          '(2 font-lock-warning-face append t))
-    (list "MAKE_\\(DISABLED_\\)?TEST_NAME" '(1 font-lock-warning-face append t))
+    ;; object names
+    ;; collections object names are nouns in plural, i.e. ending in s
+    (list (lambda (end) 
+            (when (re-search-forward
+                   (concat "\\b\\(?:list\\|map\\|vector\\|map\\|array\\|stack"
+                           "\\|deque\\|queue\\|set\\|unordered_set\\|unordered_map\\)"
+                           "\\s-*" (re-balanced "<>")
+                           "\\s-*[A-Za-z0-9_]+?\\([A-RT-Za-rt-z0-9_]\\)\\b")
+                   end t)
+              (save-excursion
+                (save-match-data
+                  (beginning-of-line)
+                  (not (looking-at "\\s-*typedef\\b"))))))
+          '(1 font-lock-warning-face t))
+
+    ;; testing
+    (list "\\b\\(TEST\\(?:_F\\)?\\)[ \t\n]*([ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*,\\(?:[ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*)\\)?"
+          '(1 font-lock-keyword-face t)
+          '(2 font-lock-variable-name-face t)
+          '(3 font-lock-function-name-face t t))
+    (list (concat "\\(\\bMAKE_\\(?:DISABLED_\\)?\\(?:CHARACTERIZATION_\\)?TEST_NAME1\\)[ \t\n]*("
+                  "[ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*)")
+          '(1 font-lock-unimportant t)
+          '(2 font-lock-function-name-face t))
+    (list (concat "\\b\\(MAKE_\\(?:DISABLED_\\)?\\(?:CHARACTERIZATION_\\)?TEST_NAME2\\)[ \t\n]*("
+                  "[ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*,"
+                  "[ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*)")
+          '(1 font-lock-unimportant t)
+          '(2 font-lock-function-name-face t)
+          '(3 font-lock-function-name-face t))
+    (list (concat "\\b\\(MAKE_\\(?:DISABLED_\\)?\\(?:CHARACTERIZATION_\\)?TEST_NAME3?\\)[ \t\n]*("
+                  "[ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*,"
+                  "[ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*,"
+                  "[ \t\n]*\\([A-Za-z0-9_]+\\)[ \t\n]*)")
+          '(1 font-lock-unimportant t)
+          '(2 font-lock-function-name-face t)
+          '(3 font-lock-function-name-face t)
+          '(4 font-lock-function-name-face t))
+    (list "\\bMAKE_\\(DISABLED_\\)?\\(?:CHARACTERIZATION_\\)?TEST_NAME[123]?\\b"
+          '(1 font-lock-warning-face append t t))
+    (list "\\bTEST\\(?:_F\\)?[ \t\n]*([ \t\n]*[A-Za-z0-9_]+[ \t\n]*,[ \t\n]*\\(Disabled\\)"
+          '(1 font-lock-warning-face append t))
 
     ;; --- real garbage ---
     (list "^\\s-*//\\.+\\s-*\\(begin\\|end\\)\\b.*\n" '(0 font-lock-unimportant t))
@@ -286,7 +327,7 @@ Additionaly match data is set to mark the culprit by match group 1."
     ;; eol DCID info
     (list "//\\(\\s-*DC\\w+\\s-*=\\)?\\s-*0[xX][0-9a-fA-F]\\{8\\};?\\s-*\n" '(0 font-lock-unimportant t)) 
     ;; "} // end if"  bullshit
-    (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\)\\s-*\\(\n\\|\\*/\\)" '(0 font-lock-unimportant t)) 
+    (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\|switch\\|case\\|default\\|catch\\)\\s-*\\(\n\\|\\*/\\)" '(0 font-lock-unimportant t)) 
     ;; 
     ;; (list 'dragon-font-lock-method '(2 font-lock-warning-face t))
     )

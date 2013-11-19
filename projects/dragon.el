@@ -66,6 +66,9 @@
 (add-hook 'c-mode-common-hook 'dragon-c-mode-common-hook t)
 
 (defun dragon-c-mode-common-bindings()
+  ;;
+  (local-set-key [f6] 'dragon-checkall)
+
   ;; definitions
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(d)(d)] 'tempo-template-dragon-method-std) ;d because its fast
@@ -302,6 +305,14 @@ Additionaly match data is set to mark the culprit by match group 1."
         ((eq (project-root-type) 'project-diebonder-rtos)
          (compile "C:/Progra~1/doxygen/bin/doxygen.exe C:\\Progra~1\\doxygen\\DoxygenConfig\\DoxyDragonRTOSProject.ini"))
         (t (error "Not a pc or rtos project"))))
+
+(defun dragon-checkall(&optional path)
+  "Run the dragoncheckall tool"
+  (interactive (list (let ((default (file-name-directory (directory-file-name (project-root-dir)))))
+                       (read-string
+                        (concat "Working directory (Default: " default "): ")
+                        nil nil default))))
+  (compile (combine-and-quote-strings (list "dragoncheckall" path))))
 
 (defun st2grep(arg)
   "Runs the content of the current buffer through st2grep and

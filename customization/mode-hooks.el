@@ -163,7 +163,23 @@
      "\\_<static_assert\\_>" "\\_<alignas\\_>" "\\_<alignof\\_>" "\\_<decltype\\_>" "\\_<constexpr\\_>"
      "\\_<noexcept\\_>" "\\_<nullptr\\_>" "\\_<thread_local\\_>"
      (list "\\_<char\\(?:16\\|32\\)_t\\_>" '(0 font-lock-type-face))
-     ))
+     
+     ;; MS visual studio
+     "\\_<__abstract\\_>" "\\_<__alignof\\_>" "\\_<__asm\\_>" "\\_<__assume\\_>"
+     "\\_<__based\\_>" "\\_<__box\\_>" "\\_<__cdecl\\_>" "\\_<__declspec\\_>"
+     "\\_<__delegate\\_>" "\\_<__event\\_>" "\\_<__except\\_>"
+     "\\_<__fastcall\\_>" "\\_<__finally\\_>" "\\_<__forceinline\\_>"
+     "\\_<__gc\\_>" "\\_<__hook\\_>" "\\_<__identifier\\_>" "\\_<__if_exists\\_>"
+     "\\_<__if_not_exists\\_>" "\\_<__inline\\_>" "\\_<__int8\\_>"
+     "\\_<__int16\\_>" "\\_<__int32\\_>" "\\_<__int64\\_>" "\\_<__interface\\_>"
+     "\\_<__leave\\_>" "\\_<__m64\\_>" "\\_<__m128\\_>" "\\_<__m128d\\_>"
+     "\\_<__m128i\\_>" "\\_<__multiple_inheritance\\_>" "\\_<__nogc\\_>"
+     "\\_<__noop\\_>" "\\_<__pin\\_>" "\\_<__property\\_>" "\\_<__raise\\_>"
+     "\\_<__sealed\\_>" "\\_<__single_inheritance\\_>" "\\_<__stdcall\\_>"
+     "\\_<__super\\_>" "\\_<__try\\_>" "\\_<__except\\_>" "\\_<__try\\_>"
+     "\\_<__finally\\_>" "\\_<__try_cast\\_>" "\\_<__unaligned\\_>"
+     "\\_<__unhook\\_>" "\\_<__uuidof\\_>" "\\_<__value\\_>"
+     "\\_<__virtual_inheritance\\_>" "\\_<__w64\\_>" "\\_<__wchar_t\\_>"))
 
   (if (featurep 'subword)
       (subword-mode t)

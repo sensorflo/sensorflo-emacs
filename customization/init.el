@@ -126,6 +126,7 @@
 (require 'dt2-mode)
 (require 'rl-mode)
 (require 'vbnet-mode)
+(require 'autoexp-mode)
 
 
 ;;; external tools
@@ -278,6 +279,7 @@
     ("\\.make\\'" . makefile-gmake-mode)    
     (".*doxy\\(?:file\\|path\\).*\\'" . makefile-gmake-mode)    
     ("\\.\\(frm\\|bas\\|cls\\|vb\\)$" . vbnet-mode)    
+    ("\\b[Aa]utoexp\\.dat\\'" . autoexp-mode)    
     )))
   (dolist (x my-auto-mode-alist) 
     (add-to-list 'auto-mode-alist x)))

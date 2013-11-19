@@ -44,3 +44,6 @@
 [submodule "misc/tempo"]
 	path = misc/tempo
 	url = https://sensorflo@github.com/sensorflo/tempo.git
+[submodule "progmodes/autoexp-mode"]
+	path = progmodes/autoexp-mode
+	url = https://github.com/sensorflo/autoexp-mode.git

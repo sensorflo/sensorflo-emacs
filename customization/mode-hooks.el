@@ -464,6 +464,23 @@
   (local-set-key [(control ?\,)(k)(s)] 'tempo-template-xml-doc-summary) 
   (local-set-key [(control ?\,)(k)(p)] 'tempo-template-xml-doc-param))
   
+;;; autoexp
+;; ----------------------------------------------
+(add-hook 'autoexp-mode-hook 'my-autoexp-mode-hook)
+(defun my-autoexp-mode-hook ()
+  (outline-minor-mode t)
+  (setq indent-tabs-mode t))
+
+(add-hook 'before-save-hook 'my-autoexp-before-save-hook t)
+(defun my-autoexp-before-save-hook ()
+  (when (eq major-mode 'autoexp-mode)
+    (save-restriction
+      (widen)
+      (if indent-tabs-mode
+          (tabify (point-min) (point-max))
+        (untabify (point-min) (point-max)))
+      (delete-trailing-whitespace))))
+
 
 ;;; text modes 
 ;;; ===================================================================

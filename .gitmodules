@@ -47,3 +47,6 @@
 [submodule "progmodes/autoexp-mode"]
 	path = progmodes/autoexp-mode
 	url = https://github.com/sensorflo/autoexp-mode.git
+[submodule "progmodes/sln-mode"]
+	path = progmodes/sln-mode
+	url = https://github.com/sensorflo/sln-mode.git

@@ -319,7 +319,7 @@ Nil if there is none."
 
     ;; unkown project type
     ;; ----------------------------------------------------------------------
-    (t (error "Unknown project"))))
+    (t (call-interactively 'compile))))
 
   
 ; grep - exension for project

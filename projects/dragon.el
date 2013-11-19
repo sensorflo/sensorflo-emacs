@@ -607,6 +607,107 @@ void foo(int /*i*/) {
     (delete-region (line-beginning-position)
                    (progn (forward-line) (point)))))
 
+(defun dragon-fix-all ()
+  (interactive)
+  ;; todo: fix character encoding to windows-1252
+  ;; todo: fix end of line character to DOS
+  (dragon-fix-file-general-comments)
+  (dragon-fix-whites))
+
+(defun dragon-dired-do-query-replace-regexp (arg1 arg2)
+  (goto-char (point-min))
+  (condition-case nil
+      (dired-do-query-replace-regexp arg1 arg2)))
+
+(defun dragon-fix-doxygen ()
+  (interactive)
+  ;; canonicalize Doxygen comment start delimiter to java style (/**)
+  (dragon-dired-do-query-replace-regexp "/\\*!" "/**")
+
+  ;; canonicalize Doxygen keywords to \mykeyword 
+  ;; TODO: search for '@\w' (perl regexp) and inspect findings
+  (dragon-dired-do-query-replace-regexp "@\\(param\\|return\\|pre\\|post\\|warning\\|bug\\|note\\|caution\\|name\\)\\b" "\\\\\\1")
+
+  ;; canonicalize to '\param id decription' (also note exactly one space before & after id)
+  ;; i.e. no '\param [in] id description' or '\param id: description' 
+  (dragon-dired-do-query-replace-regexp "\\([\\@]param\\s-*\\)\\[.*?\\]" "\\1")
+  (dragon-dired-do-query-replace-regexp "\\([\\@]param\\s-+[a-zA-Z0-9_]+\\)\\s-*:\\s-*" "\\1 ")
+  (dragon-dired-do-query-replace-regexp "\\([\\@]param\\s-+[a-zA-Z0-9_]+\\)\\s-*[oi]f\\s-+type\\s-+\\S-+\\s-*\\(?::\\s-*\\)" "\\1 ")
+  (dragon-dired-do-query-replace-regexp "\\([\\@]param\\)\\s-+\\([a-zA-Z0-9_]+\\)\\s-+" "\\1 \\2 ")
+  (dragon-dired-do-query-replace-regexp "\\([\\@]param\\)\\s-+\\(?:bool\\|EHRESULT\\|u?int\\(?:64\\|32\\|16\\|8\\)\\|real\\(?:64\\|32\\)\\)\\s-+" "\\1 ")
+  ;; todo: remove '\param i_bProcessPointP2 of type bool :'
+
+  ;; remove \brief / \class keywords since they are implicit
+  (dragon-dired-do-query-replace-regexp "\\s-*[\\@]brief\\s-*" " ")
+  (dragon-dired-do-query-replace-regexp "\\s-*[\\@]class\\b.*\n\\s-*" " ")
+
+  ;; remove unnecessairy phrases
+  (dragon-dired-do-query-replace-regexp "\\(/\\*[*!]\\)\\s-*The operation [a-zA-Z0-9_]+::[a-zA-Z0-9_]+\\s-*" "\\1 ")
+
+  ;; remove non-information return paragraphs
+  (dragon-dired-do-query-replace-regexp "^\\s-*[\\@]return\\s-*\\(?:[:.]\\s-*\\)?\\(?:bool\\|EHRESULT\\|u?int\\(?:64\\|32\\|16\\|8\\)\\|real\\(?:64\\|32\\)\\)\\s-*\\([:.]\\s-*\\)?*\n" "")
+  ;; remove type information from return paragraphs
+  (dragon-dired-do-query-replace-regexp "^\\(\\s-*[\\@]return\\)\\s-*\\(?:[:.]\\s-*\\)?\\(?:bool\\|EHRESULT\\|u?int\\(?:64\\|32\\|16\\|8\\)\\|real\\(?:64\\|32\\)\\)\\s-*\\(?:[:.]\\s-*\\)?\\(\\S-\\)" "\\1 \\2")
+  ;; remove empty return paragraphs
+  (dragon-dired-do-query-replace-regexp "^\\(\\s-*[\\@]return\\)\\s-*\\([:.]\\s-*\\)?\n" "")
+
+  (dragon-dired-do-query-replace-regexp "\\(?:[ \t]*\n\\)+[ \t]*\\(\\*+/\\)[ \t]*$" " \\1")
+  (dragon-dired-do-query-replace-regexp "/\\*+\\(?:[ \t]*\n\\)*[ \t]*\\*+/" "/** */")
+
+  ;; remove empty method comments in headers
+  (dragon-dired-do-query-replace-regexp "^[ \t]*/\\*+\\(?:[ \t]*\n\\)*[ \t]*\\*+/[ \t]*\n" "")
+
+  ;; todo:
+  ;; move/merge method comments in headers into source
+
+  )
+
+(defun dragon-fix-whites ()
+  (interactive)
+  ;; remove trailing blanks
+  (dired-do-query-replace-regexp "[ \t]+$" "")
+  ;; removing blank lines at beginning/end of file
+  (dired-do-query-replace-regexp "\\`\\(?:[ \t]*\n\\)+" "")
+  (dired-do-query-replace-regexp "^\\(?:[ \t]*\n\\)+\\'" "")
+  ;; canonicalize blanks between methods to 1 blank line
+  (dired-do-query-replace-regexp "^}\\s-*\n\\([ \t]*\n\\)\\{2,\\}" "}\n\n") ;only in .cpp files
+  ;; canonicalize empty method body
+  (dired-do-query-replace-regexp "^{[ \t]*\n\\([ \t]*\n\\)+}" "{\n}")) ; only in .cpp files
+
+(defun dragon-fix-file-general-comments ()
+  (interactive)
+  (dired-do-query-replace-regexp
+   ;; file banner
+   (concat
+    "^[ \t\n]*"
+    "//\\.\\.begin *\"File Description\""
+    "\\(.*\\|\n\\)*?"
+    "//\\.\\.end *\"File Description\""
+    "[ \t\n]*")
+   "")
+  ;; file banner, another style
+  (dired-do-query-replace-regexp
+   (concat
+    "^[ \t\n]*"
+    "\\([ \t]*/\\{5,\\}[ \t]*\n\\)?"
+    "[ \t]*// *\\(\\sw\\|_\\)+\\.\\(cpp\\|h\\):.*\n"
+    "\\([ \t]*//.*\n\\)*?"
+    "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
+    "[ \t\n]*")
+   "")
+  (dired-do-query-replace-regexp
+   "^\\s-*//\\s-*\\.\\.\\s-*\\(begin\\|end\\)\\s-*\"UTF.*\n"
+   "")
+  ;; ;; banners surrounded by ///// lines
+  ;; (dired-do-query-replace-regexp
+  ;;  (concat
+  ;;   "^[ \t\n]*"
+  ;;   "\\([ \t]*/\\{5,\\}[ \t]*\n\\)?"
+  ;;   "\\([ \t]*//.*\n\\)*?"
+  ;;   "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
+  ;;   "[ \t\n]*")
+  ;;  "\n")
+  )
 
 ;;; abbrevs
 ;; (setq dragon-abbrev-table (make-abbrev-table)) ;props are added in mode hook

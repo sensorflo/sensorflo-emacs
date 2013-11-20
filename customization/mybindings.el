@@ -66,6 +66,8 @@
 (global-set-key [(control meta l)] 'forward-sexp)         ; reposition-window       -> nowhere
 (global-set-key [(meta m)]          (make-sparse-keymap)) ; back-to-indentation     -> nowhere (use beginning-of-line-dwim)
 (global-set-key [(control f)]       (make-sparse-keymap)) ; forward-char            -> C-l
+(global-set-key [C-M-left] 'move-text-backward)
+(global-set-key [C-M-right] 'move-text-forward)
 
 
 ;;; add new bindings 

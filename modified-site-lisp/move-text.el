@@ -1,13 +1,14 @@
-;;; move-text.el --- Move current line or region with M-up or M-down.
+;;; move-text.el --- Move current line or region
 
 ;; Filename: move-text.el
-;; Description: Move current line or region with M-up or M-down.
+;; Description: Move current line or region
 ;; Author: Jason M <jasonm23@gmail.com>
 ;; Extracted from basic-edit-toolkit.el by Andy Stewart.
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Keywords: edit
 ;; Compatibility: GNU Emacs 23.0.60.1
-;; Version: 1.0
+;; Version: 20130506.1826
+;; X-Original-Version: 1.0
 ;;
 ;;; This file is NOT part of GNU Emacs
 
@@ -30,9 +31,9 @@
 
 ;;; Commentary:
 ;;
-;; MoveText is extracted from Basic edit toolkit.
-;; It allows you to move the current line using M-up / M-down
-;; if a region is marked, it will move the region instead.
+;; MoveText is extracted from Basic edit toolkit. It allows you to move the
+;; region up / down / forward / backward. If no region is marked, the current
+;; line can be moved up / down.
 ;;
 
 ;;; Installation:
@@ -55,14 +56,16 @@
 
 ;;; Code:
 
-(defun move-text-internal (arg)
+(defun move-text-internal (&optional lines columns)
+  (unless lines (setq lines 1))
+  (unless columns (setq columns 1))
   (cond
    ((and mark-active transient-mark-mode)
     (if (> (point) (mark))
         (exchange-point-and-mark))
-    (let ((column (current-column))
+    (let ((column (+ (current-column) columns))
           (text (delete-and-extract-region (point) (mark))))
-      (forward-line arg)
+      (forward-line lines)
       (move-to-column column t)
       (set-mark (point))
       (insert text)
@@ -71,16 +74,16 @@
    (t
     (let ((column (current-column)))
       (beginning-of-line)
-      (when (or (> arg 0) (not (bobp)))
+      (when (or (> lines 0) (not (bobp)))
         (forward-line)
-        (when (or (< arg 0) (not (eobp)))
-          (transpose-lines arg)
+        (when (or (< lines 0) (not (eobp)))
+          (transpose-lines lines)
           ;; Account for changes to transpose-lines in Emacs 24.3
           (when (and (eval-when-compile
                        (not (version-list-<
                              (version-to-list emacs-version)
                              '(24 3 50 0))))
-                     (< arg 0))
+                     (< lines 0))
             (forward-line -1)))
         (forward-line -1))
       (move-to-column column t)))))
@@ -88,22 +91,36 @@
 ;;;###autoload
 (defun move-text-down (arg)
   "Move region (transient-mark-mode active) or current line
-  arg lines down."
+  ARG lines down."
   (interactive "*p")
-  (move-text-internal arg))
+  (move-text-internal arg 0))
+
+;;;###autoload
+(defun move-text-forward (arg)
+  "Move region (transient-mark-mode active) ARG columns forward."
+  (interactive "*p")
+  (move-text-internal 0 arg))
 
 ;;;###autoload
 (defun move-text-up (arg)
   "Move region (transient-mark-mode active) or current line
-  arg lines up."
+  ARG lines up."
   (interactive "*p")
-  (move-text-internal (- arg)))
+  (move-text-internal (- arg) 0))
+
+;;;###autoload
+(defun move-text-backward (arg)
+  "Move region (transient-mark-mode active) ARG columns backward."
+  (interactive "*p")
+  (move-text-internal 0 (- arg)))
 
 ;;;###autoload
 (defun move-text-default-bindings ()
   "Bind `move-text-up' and `move-text-down' to M-up and M-down."
   (global-set-key [M-up] 'move-text-up)
-  (global-set-key [M-down] 'move-text-down))
+  (global-set-key [M-right] 'move-text-forward)
+  (global-set-key [M-down] 'move-text-down)
+  (global-set-key [M-left] 'move-text-backward))
 
 
 (provide 'move-text)

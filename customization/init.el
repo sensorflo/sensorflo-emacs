@@ -259,7 +259,7 @@
     ("\\.h\\'" . c++-mode)
     ("\\.tl[hi]\\'". c++-mode)
     ("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode)
-    ("\\`[-0-9A-Z_]+\\'" . adoc-mode)
+    ("\\(\\`\\|/\\)[-0-9A-Z_]+\\'" . adoc-mode)
     ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
     ("\\.\\(py\\|python\\)\\'" . python-mode)
     ("\\.lo[g0-9]\\'" . logfile-mode)

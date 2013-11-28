@@ -1,8 +1,8 @@
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(Info-fit-frame-flag nil)
  '(Info-refill-paragraphs t)
  '(Man-circular-pages-flag nil)
@@ -301,10 +301,10 @@ mouse-3: Remove current window from display")) #("%]" 0 2 (help-echo "Recursive 
  '(x-select-enable-clipboard t)
  '(x-stretch-cursor nil))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "unknown" :family "Ubuntu Mono"))))
  '(YaTeX-font-lock-bold-face ((t (:inherit markup-strong-face))))
  '(YaTeX-font-lock-declaration-face ((((class color) (background light)) (:inherit markup-delimiter-face))))

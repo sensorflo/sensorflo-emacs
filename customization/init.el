@@ -198,6 +198,7 @@
 (eval-after-load "outline" '(require 'foldout))
 (require 'ansi-color)
 (require 'fill-column-indicator)
+(require 'filecache)
 
 ;; I need load-library-ext; using autoload it should work, but currently it
 ;; doesn't, so for now I load load-library-ext viawith load-library.
@@ -292,12 +293,10 @@
   (dolist (x my-auto-mode-alist) 
     (add-to-list 'auto-mode-alist x)))
 
-(mapcar 'file-cache-add-file
-        '("~/.emacs.d"
-          "~/.emacs.d/_emacs.el"
-          "~/.emacs.d/site-lisp"
-          "~/.emacs.d/modified-lisp"
-          "/usr/share/doc/asciidoc/doc/asciidoc.txt.gz"))
+(file-cache-add-file-list
+ '("~/.emacs.d"
+   "~/.emacs.d/site-lisp"
+   "~/.emacs.d/modified-lisp"))
 
 ;; 1) note the "", that is if an empty extension was given, i.e. the abbrev "ao."
 (setq ffe-ext-map '(

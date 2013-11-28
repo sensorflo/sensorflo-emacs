@@ -560,35 +560,35 @@
     ;; schmarrn
     ("didi". "~~idriver_workerdi_dev/interface/include/idriver_workerdi.h")))
 
-(mapcar 'file-cache-add-file 
-        '("~/prog/nova"
-          "~/prog/nova/nova.env"
-          "~/prog/nova/drivers_dev"
-          "~/prog/nova/drivers_dev/substratecamera"
-          "~/prog/nova/drivers_dev/dispensehandling"
-          "~/prog/nova/drivers_dev/highspeedhandling"
-          "~/prog/nova/base_dev/rtosbase"
-          "~/prog/nova/rtos/sam_config"
-          "~/prog/nova/nfw_dev"
-          "~/prog/nova/nfw_dev/calibration"
-          "~/prog/nova/nfw_dev/interpreter"
-          "~/prog/nova/nfw_dev/mcmodel"
-          "~/prog/nova/nfw_dev/interpreter/ipsgui"
-          "~/prog/nova/base_dev/docoverall"
-          "~/prog/nova/base_dev/errorhandling"
-          
-          "~/datacon/sd0/datacon/log"
+(file-cache-add-file-list
+ '("~/prog/nova"
+   "~/prog/nova/nova.env"
+   "~/prog/nova/drivers_dev"
+   "~/prog/nova/drivers_dev/substratecamera"
+   "~/prog/nova/drivers_dev/dispensehandling"
+   "~/prog/nova/drivers_dev/highspeedhandling"
+   "~/prog/nova/base_dev/rtosbase"
+   "~/prog/nova/rtos/sam_config"
+   "~/prog/nova/nfw_dev"
+   "~/prog/nova/nfw_dev/calibration"
+   "~/prog/nova/nfw_dev/interpreter"
+   "~/prog/nova/nfw_dev/mcmodel"
+   "~/prog/nova/nfw_dev/interpreter/ipsgui"
+   "~/prog/nova/base_dev/docoverall"
+   "~/prog/nova/base_dev/errorhandling"
+   
+   "~/datacon/sd0/datacon/log"
 
-          "~/bib/release/zorro"
-          "~/bib/release/zorro/base/muesli"
-          "~/bib/release/zorro/base/ipu/vipu"
+   "~/bib/release/zorro"
+   "~/bib/release/zorro/base/muesli"
+   "~/bib/release/zorro/base/ipu/vipu"
 
-          "~/office/nova"
-          "~/office/nova/todo_qanda.txt"
-          "~/office/nova/misc.txt"
-          "~/office/nova/calib"
+   "~/office/nova"
+   "~/office/nova/todo_qanda.txt"
+   "~/office/nova/misc.txt"
+   "~/office/nova/calib"
 
-          "~/src/oma6rtos/os/inos"))
+   "~/src/oma6rtos/os/inos"))
 
 (let ((mylist '(
   ("/dispensehandling/source" nova-ffe-dispensehandling)

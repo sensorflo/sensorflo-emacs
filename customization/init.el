@@ -157,6 +157,7 @@
 ;(require 'palette) ; info won't work in emacs 23 anymore
 (require 'cus-edit)
 (require 'logfile-mode)
+(require 'git-irb-mode)
 
 
 ;;; markup helper functionality 
@@ -282,6 +283,7 @@
     (".*doxy\\(?:file\\|path\\).*\\'" . makefile-gmake-mode)    
     ("\\.\\(frm\\|bas\\|cls\\|vb\\)$" . vbnet-mode)    
     ("\\.sln\\'" . sln-mode)    
+    ("\\(\\`\\|/\\)git-rebase-todo" . git-irb-mode)    
     ("\\b[Aa]utoexp\\.dat\\'" . autoexp-mode)    
     )))
   (dolist (x my-auto-mode-alist) 

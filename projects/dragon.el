@@ -623,13 +623,24 @@ void foo(int /*i*/) {
 
 (defun dragon-fix-doxygen ()
   (interactive)
+  ;; -- syntax
   ;; canonicalize Doxygen comment start delimiter to java style (/**)
   (dragon-dired-do-query-replace-regexp "/\\*!" "/**")
-
   ;; canonicalize Doxygen keywords to \mykeyword 
   ;; TODO: search for '@\w' (perl regexp) and inspect findings
   (dragon-dired-do-query-replace-regexp "@\\(param\\|return\\|pre\\|post\\|warning\\|bug\\|note\\|caution\\|name\\)\\b" "\\\\\\1")
 
+  ;; -- brief paragraph
+  ;; remove \brief / \class keywords since they are implicit
+  (dragon-dired-do-query-replace-regexp "\\s-*[\\@]brief\\s-*" " ")
+  (dragon-dired-do-query-replace-regexp "\\s-*[\\@]class\\b.*\n\\s-*" " ")
+  ;; remove unnecessairy phrases / repetition of method name
+  (dragon-dired-do-query-replace-regexp "\\(/\\*[*!]\\)\\s-*The operation [a-zA-Z0-9_]+::[a-zA-Z0-9_]+\\s-*" "\\1 ")
+  (dragon-dired-do-query-replace-regexp "\\(/\\*[*!]\\)\\s-*The operation [a-zA-Z0-9_]+::[a-zA-Z0-9_]+\\s-*" "\\1 ")
+  (dragon-dired-do-query-replace-regexp "\\(/\\*[*!]\\)\\s-*\\([a-zA-Z0-9_]+::\\)*[a-zA-Z0-9_]+\\s-*:\\s-*" "\\1 ")
+
+
+  ;; -- param paragraph
   ;; canonicalize to '\param id decription' (also note exactly one space before & after id)
   ;; i.e. no '\param [in] id description' or '\param id: description' 
   (dragon-dired-do-query-replace-regexp "\\([\\@]param\\s-*\\)\\[.*?\\]" "\\1")
@@ -639,32 +650,52 @@ void foo(int /*i*/) {
   (dragon-dired-do-query-replace-regexp "\\([\\@]param\\)\\s-+\\(?:bool\\|EHRESULT\\|u?int\\(?:64\\|32\\|16\\|8\\)\\|real\\(?:64\\|32\\)\\)\\s-+" "\\1 ")
   ;; todo: remove '\param i_bProcessPointP2 of type bool :'
 
-  ;; remove \brief / \class keywords since they are implicit
-  (dragon-dired-do-query-replace-regexp "\\s-*[\\@]brief\\s-*" " ")
-  (dragon-dired-do-query-replace-regexp "\\s-*[\\@]class\\b.*\n\\s-*" " ")
-
-  ;; remove unnecessairy phrases
-  (dragon-dired-do-query-replace-regexp "\\(/\\*[*!]\\)\\s-*The operation [a-zA-Z0-9_]+::[a-zA-Z0-9_]+\\s-*" "\\1 ")
-
+  ;; -- return paragraph
   ;; remove non-information return paragraphs
   (dragon-dired-do-query-replace-regexp "^\\s-*[\\@]return\\s-*\\(?:[:.]\\s-*\\)?\\(?:bool\\|EHRESULT\\|u?int\\(?:64\\|32\\|16\\|8\\)\\|real\\(?:64\\|32\\)\\)\\s-*\\([:.]\\s-*\\)?*\n" "")
   ;; remove type information from return paragraphs
   (dragon-dired-do-query-replace-regexp "^\\(\\s-*[\\@]return\\)\\s-*\\(?:[:.]\\s-*\\)?\\(?:bool\\|EHRESULT\\|u?int\\(?:64\\|32\\|16\\|8\\)\\|real\\(?:64\\|32\\)\\)\\s-*\\(?:[:.]\\s-*\\)?\\(\\S-\\)" "\\1 \\2")
-  ;; remove empty return paragraphs
-  (dragon-dired-do-query-replace-regexp "^\\(\\s-*[\\@]return\\)\\s-*\\([:.]\\s-*\\)?\n" "")
+  ;; remove return paragraphs with bullshit information content (clean up resulting white errors later)
+  (dragon-dired-do-query-replace-regexp "^\\(?:\\s-*[\\@]return\\)\\s-[Nn][Oo][Nn][Ee]\\s-*\\(\n\\|\\*+/\\)" "\\1")
+  ;; remove empty \return paragraphs (clean up resulting white errors later)
+  (dragon-dired-do-query-replace-regexp "^\\(?:\\s-*[\\@]return\\)\\s-*\\(?:[:.]\\s-*\\)?\\(\n\\|\\*+/\\)" "\\1")
 
-  (dragon-dired-do-query-replace-regexp "\\(?:[ \t]*\n\\)+[ \t]*\\(\\*+/\\)[ \t]*$" " \\1")
-  (dragon-dired-do-query-replace-regexp "/\\*+\\(?:[ \t]*\n\\)*[ \t]*\\*+/" "/** */")
+  (dragon-dired-do-query-replace-regexp
+   (concat
+    "^\\s-*[\\@]par\\s-+[rR]esponsibilities\\s-*:\\s-*\n"
+    "\\(?:.*\n\\)*?"
+    "\\s-*[\\@]par\\s-+[cC]ollaborations\\s-*:\\s-*\n"
+    "\\(?:.*\n\\)*?.*?"
+    "\\(\\s-*[\\@]ingroup\\b\\|\\*+/\\)")
+   "\\1")
+  (dragon-dired-do-query-replace-regexp
+   (concat
+    "^\\s-*[\\@]par\\s-+[rR]esponsibilities\\s-*:\\s-*\n"
+    "\\(?:.*\n\\)*?"
+    "\\s-*[\\@]par\\s-+[cC]ollaborations\\s-*:\\s-*\n"
+    "\\(?:.*\n\\)*?.*?"
+    "\\(\\s-*[\\@]ingroup\\b\\|\\*+/\\)")
+   "\\1")
 
-  ;; remove empty method comments in headers
-  (dragon-dired-do-query-replace-regexp "^[ \t]*/\\*+\\(?:[ \t]*\n\\)*[ \t]*\\*+/[ \t]*\n" "")
+  ;; todo: Ensure:
+  ;; \ingroup PC_DIDispenserModule
+
+  ;; -- whites / empty comments
+  ;; replace 2+ whites before and/or after id in '\param id ....' by exactly one space
+  (dragon-dired-do-query-replace-regexp
+   (concat
+    "\\([\\@]param\\)\\(?:"
+    "\\s-\\{2,\\}\\(\\S-+\\)\\s-+\\|"
+    "\\s-\\(\\S-+\\)\\s-\\{2,\\}\\)")
+   "\\1 \\2 ")
 
   ;; todo:
   ;; move/merge method comments in headers into source
-
   )
 
 (defun dragon-fix-whites ()
+  ;; whites in the context of comments are _not_ handled here
+
   (interactive)
   ;; remove trailing blanks
   (dired-do-query-replace-regexp "[ \t]+$" "")
@@ -674,20 +705,26 @@ void foo(int /*i*/) {
   ;; canonicalize blanks between methods to 1 blank line
   (dired-do-query-replace-regexp "^}\\s-*\n\\([ \t]*\n\\)\\{2,\\}" "}\n\n") ;only in .cpp files
   ;; canonicalize empty method body
-  (dired-do-query-replace-regexp "^{[ \t]*\n\\([ \t]*\n\\)+}" "{\n}")) ; only in .cpp files
+  (dired-do-query-replace-regexp "^{[ \t]*\n\\([ \t]*\n\\)+}" "{\n}"); only in .cpp files
+
+  ;; no blank lines between #includes/#imports/forward declarations
+  ;; todo
+  ) 
 
 (defun dragon-fix-file-general-comments ()
   (interactive)
   (dired-do-query-replace-regexp
-   ;; file banner
+   ;; file banners, different styles
+   ;; 
+   ;; ! The found matches can also be section comments instead truly only file
+   ;; banners !
    (concat
     "^[ \t\n]*"
     "//\\.\\.begin *\"File Description\""
     "\\(.*\\|\n\\)*?"
     "//\\.\\.end *\"File Description\""
     "[ \t\n]*")
-   "")
-  ;; file banner, another style
+   "\n")
   (dired-do-query-replace-regexp
    (concat
     "^[ \t\n]*"
@@ -696,19 +733,69 @@ void foo(int /*i*/) {
     "\\([ \t]*//.*\n\\)*?"
     "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
     "[ \t\n]*")
-   "")
+   "\n")
+  (dired-do-query-replace-regexp
+   (concat
+    ;; leading blank lines
+    "^\\([ \t]*\n\\)*"
+    ;; full === line starts the comment
+    "\\s-*//+\\s-*=+\\s-*\n"
+    ;; banner can only end with an full === line. Note that it also can contain
+    ;; full === lines. It also can contain blank lines.
+    "\\("
+      "\\("
+        "\\([ \t]*\n\\)*"
+      "\\|"
+        "\\(\\s-*//.*\n\\)"
+      "\\)*?"
+      "\\s-*//+\\s-*=+\\s-*\n"
+    "\\)*"
+    ;; trailing blank lines
+    "\\([ \t]*\n\\)*")
+   "\n")
+
+  ;; banners surrounded by ///// lines
+  (dired-do-query-replace-regexp
+   (concat
+    ;; leading blank lines
+    "^\\([ \t]*\n\\)*"
+    ;; (leading and trailing) or (only trailing)
+    "\\("
+      "\\([ \t]*/\\{5,\\}[ \t]*\n\\)?"
+      "\\([ \t]*//.*\n\\)+"
+      "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
+    ;; only leading
+    "\\|"  
+      "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
+      "\\([ \t]*//.*\n\\)+"
+    "\\)"
+    ;; trailing blank lines
+    "\\([ \t\n]*\n\\)*")
+   "\n")
+
+  ;; ObjectiF related comments: begin.. "UTF...",  _START_SKIP
   (dired-do-query-replace-regexp
    "^\\s-*//\\s-*\\.\\.\\s-*\\(begin\\|end\\)\\s-*\"UTF.*\n"
    "")
-  ;; ;; banners surrounded by ///// lines
-  ;; (dired-do-query-replace-regexp
-  ;;  (concat
-  ;;   "^[ \t\n]*"
-  ;;   "\\([ \t]*/\\{5,\\}[ \t]*\n\\)?"
-  ;;   "\\([ \t]*//.*\n\\)*?"
-  ;;   "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
-  ;;   "[ \t\n]*")
-  ;;  "\n")
+  (dired-do-query-replace-regexp
+   "^\\s-*\\(#\\s-*define\\s-+\\)?\\(_START_SKIP\\|_STOP_SKIP\\)\\s-*\n"
+   "")
+
+  ;; remove bullshit comments
+  (dired-do-query-replace-regexp
+   "^\\s-*//\\s-*Put your code here\\s-*\n"
+   "")
+
+  ;; -- whites in comments
+  ;; remove empty comment
+  (dragon-dired-do-query-replace-regexp "^\\s-*/\\*[*!]*\\(\\s-*\n\\)*\\s-*\\*/\\s-*\n" "")
+  ;; The trailing whites after /** and leading whites before */ is exactly one
+  ;; space
+  (dragon-dired-do-query-replace-regexp "\\(/\\*[*@]+\\)\\(?:\\(?:[ \t]*\n\\)+[ \t]*\\|[ \t]\\{2,\\}\\)" "\\1 ")
+  (dragon-dired-do-query-replace-regexp "\\(?:\\(?:[ \t]*\n\\)+[ \t]*\\|[ \t]\\{2,\\}\\)\\(\\*+/\\)" " \\1")
+  ;; [ensure an empty comment has only exactly one space]
+  ;; obsolete since empty comments are removed altogether
+  ;; (dragon-dired-do-query-replace-regexp "/\\*+[ \t\n]\\{2,\\}\\*+/" "/** */")
   )
 
 ;;; abbrevs

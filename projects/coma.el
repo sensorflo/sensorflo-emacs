@@ -7,7 +7,7 @@
 
 ;;; Variables:
 (require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
-(require 'sregex)
+(require 'rx)
 (require 'find-file-ext)
 (require 'tempo-snippets)
 

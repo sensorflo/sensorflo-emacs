@@ -7,7 +7,7 @@
 
 ;;; Variables:
 (require 'project)        ; https://github.com/sensorflo/sensorflo-emacs/
-(require 'sregex)
+(require 'rx)
 (require 'find-file-ext)
 (require 'tempo-snippets) 
 (require 'markup-faces)   ; https://github.com/sensorflo/markup-faces
@@ -216,13 +216,13 @@
      (list "\\_<\\(\\(?:static\\|const\\|dynamic\\|reinterpret\\)_cast\\s-*<[^>]*>\\s-*\\)" '(1 font-lock-semi-unimportant))
      (list (concat "\\("
 		     "\\(?:->\\|\\.\\)[ \t]*"
-		     (sregexq (or "getm" "getm_s" "getm_s2" "getm_s3" "gets" "getkg" "getN" "getPa" "getK" "getrad" "getdegree" "getPas" "getCentipoise" "getm2" "getm3" "getrad_s" "getrad_s2" "getrad_s3" "getdegree_s" "getdegree_s2" "getdegree_s3"))
+		     (rx (or "getm" "getm_s" "getm_s2" "getm_s3" "gets" "getkg" "getN" "getPa" "getK" "getrad" "getdegree" "getPas" "getCentipoise" "getm2" "getm3" "getrad_s" "getrad_s2" "getrad_s3" "getdegree_s" "getdegree_s2" "getdegree_s3"))
 		     "[ \t]*"
 		     "([ \t]*)"
 		   "\\)")
 	   '(1 font-lock-semi-unimportant t))
      (list (concat "\\_<\\("
-		   (sregexq (or "meter" "sec" "kilogramm" "kelvin" "radian" "meter_sec" "meter_sec2" "newton" "pascal" "meter_sec3" "Pas" "meter2" "meter3" "radian_sec" "radian_sec2" "radian_sec3" "millimeter" "mikrometer" "millisec" "gramm" "centipoise" "degree" "degree_sec" "degree_sec2" "degree_sec3" "celsius" "sec"))
+		   (rx (or "meter" "sec" "kilogramm" "kelvin" "radian" "meter_sec" "meter_sec2" "newton" "pascal" "meter_sec3" "Pas" "meter2" "meter3" "radian_sec" "radian_sec2" "radian_sec3" "millimeter" "mikrometer" "millisec" "gramm" "centipoise" "degree" "degree_sec" "degree_sec2" "degree_sec3" "celsius" "sec"))
 		   "\\)[ \t]*\\(?:\\((\\)[ \t]*[^()\n]*[ \t]*\\()\\)\\|(\\)")
 	   '(1 font-lock-semi-unimportant t)
 	   '(2 font-lock-semi-unimportant t t)
@@ -234,10 +234,10 @@
      ;; trace/log/assert/result
      (list "\\_<Result[ \t]+res[ \t]*\\(?:=[ \t]*Result::Ok[ \t]*\\)?;" '(0 font-lock-semi-unimportant t))
      (cons "\\_<res[ \t]*[|&]?=" 'font-lock-semi-unimportant)
-     (list (sregexq (group              
-                     (regex "\\_<")
-                     (or "ASSERT" "ASSERT_ALWAYS" "TESTOMA_MESSAGE" (regex "\\(?:LOG\\|RETURN_\\)\\(?:\\w\\|_\\)*"))
-                     (regex "\\s-*([^;]*)\\s-*;"))) 
+     (list (rx (group              
+                (regex "\\_<")
+                (or "ASSERT" "ASSERT_ALWAYS" "TESTOMA_MESSAGE" (regex "\\(?:LOG\\|RETURN_\\)\\(?:\\w\\|_\\)*"))
+                (regex "\\s-*([^;]*)\\s-*;"))) 
            '(0 font-lock-semi-unimportant t))
      (list "\\bResult::failed[ \t]*\\((.*?\\(?:\n.*?\\)*?)\\)[ \t]*;" 
            '(1 font-lock-semi-unimportant t))

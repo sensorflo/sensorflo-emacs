@@ -888,28 +888,22 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("rpr". "~~DieBonder/RTOS/PickPlace/PPModProxy/sources/")
   ("rtd". "~~DieBonder/RTOS/PickPlace/PPTeachDataMgr/sources/")))
 
-(mapc 'file-cache-add-file '(
-  "~/office/dragon"
-  "~/src/DieBonder"
-  "~/src/DieBonder/RTOS"
-  "~/src/DieBonder/PC"
-  "~/src/DieBonder/RTOS/PickPlace"
-  "~/src/DieBonder/PC/PickPlace"
-  "~/src/DieBonder/PC/PickPlace/PPSeqBaseLib"
-  "~/src/DieBonder/PC/PickPlace/PPCalibMod"
-  "~/src/DieBonder/RTOS/PickPlace/PPCalibMod"
-  "~/src/DieBonder/PC/PickPlace/PPPPickerMod"
-  "~/src/DieBonder/RTOS/PickPlace/PPPPickerMod"
-  "~/src/DieBonder/PC/PickPlace/PPPPickerShuttleMod"
-  "~/src/DieBonder/RTOS/PickPlace/PPPPickerShuttleMod"
-  "~/src/DieBonder/RTOS/DieCarrier/DCWaferHdlMod"
-  "~/src/DieBonder/RTOS/Dispenser"
-  "~/src/DieBonder/PC/Dispenser"
-  "~/src/DieBonder/PC/Dispenser/DIDispenserSeq"
-  "~/src/DieBonder/PC/Dispenser/DIDispenserMod"
-  "~/src/DieBonder/pc/SubstrateHandler/SHSTHModule"
-  "~/drives/xpc/Program Files/Esec/DieBonder/Data/BuildVersion.txt"
-  "~/office/dragon/todo.txt" ))
+(file-cache-add-file-list
+ '("~/office/dragon"
+   "~/src/DieBonder"
+   "~/src/DieBonder/RTOS"
+   "~/src/DieBonder/PC"
+   "~/src/DieBonder/RTOS/PickPlace"
+   "~/src/DieBonder/PC/PickPlace"
+   "~/src/DieBonder/PC/PickPlace/PPSeqBaseLib"
+   "~/src/DieBonder/PC/PickPlace/PPCalibMod"
+   "~/src/DieBonder/RTOS/PickPlace/PPCalibMod"
+   "~/src/DieBonder/RTOS/Dispenser"
+   "~/src/DieBonder/PC/Dispenser"
+   "~/src/DieBonder/PC/Dispenser/DIDispenserSeq"
+   "~/src/DieBonder/PC/Dispenser/DIDispenserMod"
+   "~/drives/xpc/Program Files (x86)/Esec/DieBonder/Data/BuildVersion.txt"
+   "~/office/dragon/todo.txt"))
 
 (setq ffe-dir-map-map '(
   ;; ROOT
@@ -1051,7 +1045,47 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("DINodeList" ("nl"))))
 
 (setq dragon-ffe-pc-di-mod `(
-  ("stdafx" ("afx") "h")))
+  ("stdafx" ("afx") "h")
+  ("DIDispenserModule" ("idl") "idl")
+  ("DIDispenserMod" ("mod" "m"))
+  ("DIModImpl" ("impl" "i"))
+  ("DIModCommon" ("com"))
+  ("DIModCalib" ("c"))
+  ("DIModDebug" ("deb" "dbg"))
+  ("DIModDefinitions" ("def") "h")
+  ("DIModKeys" ("k") "h")
+  ("DIModRunIn" ("ri"))
+  ("DIModAO" ("ao"))
+  ("DIModIfc" ("ifc"))
+  ("DIModDiagCond" ("dc" "dcm") "h")
+  ("DIModItemIDs" ("ii" "iim") "h")
+  ("DIModForeignItemIDs" ("eii" "iie" "iiem") "h")
+  ("DIModCalibJobListMgr" ("cjlm" "jlm"))
+
+  ("DIModTimer" ("t"))
+  ("DIModUnitTest" ("ut"))
+
+  ("DIModCalibJobList" ("cjl" "jl"))
+  ("DICalibModJob" ("cj"))
+  ("DIModJob" ("j"))
+  ("DIModCommandHandler" ("ch"))
+
+  ("DIModStepMotorsCalibData" ("smcd"))
+  ("DIDispenserCalibToolHelper" ("cth"))
+  ("DILaserPositionZHeightEntity" ("lpzhe" "lpzh" "lp"))
+
+  ("DIModCalibJobListWrite" ("cjlw" "jlw"))
+  ("DIModCalibJobListShuttle" ("cjls" "jls"))
+  ("DIModCalibJobListMoveRange" ("cjlmr" "jlmr"))
+  ("DIModCalibJobListLaser" ("cjll" "jll"))
+
+  ("DIModCalibJobLaserAdjustment" ("cjlaj" "jlaj"))
+  ("DIModCalibJobLaserAngle" ("cjla" "jla"))
+  ("DIModCalibJobLaserXYOffset" ("cjlxyo" "cjlo" "jlxyo" "jlo"))
+  ("DIModCalibJobMoveRange" ("cjmr" "jmr"))
+  ("DIModCalibJobShuttle" ("cjs" "js"))
+  ("DIModCalibJobStepMotors" ("cjsm" "jsm"))
+  ("DIModCalibJobWrite" ("cjw" "jw"))))
 
 (setq dragon-ffe-pc-calib `(
   ("PPCalibMod" ("mod"))

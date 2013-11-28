@@ -684,7 +684,6 @@
   (outline-minor-mode t)
   (my-doxym-bindings)
   (buffer-face-mode t)
-  (column-marker-1 -1)
   (set (make-local-variable 'comment-multi-line) t))
 
 (defun my-doxym-bindings()
@@ -1274,9 +1273,7 @@ It's value is irelevant.")
 (defun my-programming-common-hook ()
   ;; icicles has problems because 2C-command from two-column.el already uses f2
   ;(local-set-key [f2] 'gud-ext-mode)
-  ;; +1 to avoid a false positive marker in whitespace-mode for lines which are
-  ;; just fill-column chars long
-  (column-marker-1 (1+ fill-column)))
+  (fci-mode t))
 
 (dolist (x '(c-mode-common-hook
              idl-mode-hook

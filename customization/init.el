@@ -174,7 +174,6 @@
 
 (require 'server)
 (require 'x-dict)  
-(require 'column-marker)
 (require 'hideshow)  
 (require 'filladapt) 
 (require 'recentf)
@@ -198,6 +197,7 @@
 (require 'dired-x)
 (eval-after-load "outline" '(require 'foldout))
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t) ;; there's also a shell-mode-hook
+(require 'fill-column-indicator)
 
 ;; I need load-library-ext; using autoload it should work, but currently it
 ;; doesn't, so for now I load load-library-ext viawith load-library.

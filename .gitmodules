@@ -50,3 +50,6 @@
 [submodule "progmodes/sln-mode"]
 	path = progmodes/sln-mode
 	url = https://github.com/sensorflo/sln-mode.git
+[submodule "misc/multiple-cursors"]
+	path = misc/multiple-cursors
+	url = https://github.com/magnars/multiple-cursors.el.git

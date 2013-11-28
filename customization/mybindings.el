@@ -95,6 +95,7 @@
 (global-set-key [(control ?\;)] 'ace-jump-mode)
 (global-set-key [C-M-up] 'move-text-up)
 (global-set-key [C-M-down] 'move-text-down)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
 (global-set-key [f7]   'compile)
 (global-set-key [f10]  'ediff-show-registry)

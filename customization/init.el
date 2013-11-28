@@ -194,6 +194,7 @@
 (require 'autopair)
 (require 'ace-jump-mode)
 (require 'move-text)
+(require 'multiple-cursors)
 (eval-after-load "outline" '(require 'foldout))
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t) ;; there's also a shell-mode-hook
 

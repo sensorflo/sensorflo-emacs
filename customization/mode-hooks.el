@@ -181,9 +181,7 @@
      "\\_<__unhook\\_>" "\\_<__uuidof\\_>" "\\_<__value\\_>"
      "\\_<__virtual_inheritance\\_>" "\\_<__w64\\_>" "\\_<__wchar_t\\_>"))
 
-  (if (featurep 'subword)
-      (subword-mode t)
-    (c-subword-mode t))
+  (subword-mode t)
 
   (setq c-basic-offset 2)
   ;; (set (make-local-variable 'compilation-error-regexp-alist)

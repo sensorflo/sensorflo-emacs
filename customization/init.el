@@ -196,7 +196,7 @@
 (require 'multiple-cursors)
 (require 'dired-x)
 (eval-after-load "outline" '(require 'foldout))
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t) ;; there's also a shell-mode-hook
+(require 'ansi-color)
 (require 'fill-column-indicator)
 
 ;; I need load-library-ext; using autoload it should work, but currently it

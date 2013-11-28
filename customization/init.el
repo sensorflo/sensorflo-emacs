@@ -267,6 +267,7 @@
     ("personality.*\\.txt\\'" . pm-mode)
     ("\\.wiki\\'" . mediawiki-mode)
     ("\\.env\\'" . conf-mode)
+    ("\\(\\`\\|/\\)\\.dmrc\\'" . conf-mode)
     ("\\.git\\(config\\|modules\\)\\'" . conf-mode)
     ("\\.typ\\'" . gtypist-mode)
     ("\\.pl\\'" . cperl-mode)

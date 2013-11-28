@@ -30,6 +30,8 @@
     (setq c-basic-offset 2)
     (c-set-offset 'access-label '-)
     (c-set-offset 'inclass '++)
+    (setq fill-column 100)
+
     (dragon-font-lock-add-keywords)
     (set (make-local-variable 'vc-handled-backends) nil)
 

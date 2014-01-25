@@ -479,6 +479,18 @@
         (untabify (point-min) (point-max)))
       (delete-trailing-whitespace))))
 
+;;; graphviz-dot
+;; ----------------------------------------------
+(add-hook 'graphviz-dot-mode-hook 'my-graphviz-dot-mode-hook)
+(defun my-graphviz-dot-mode-hook ()
+  (set (make-local-variable 'compile-command)
+       (let* ((srcfilename (if (buffer-file-name)
+                                 (file-name-nondirectory (buffer-file-name))
+                               (buffer-name)))
+              (outfilename
+               (concat (file-name-sans-extension (file-name-nondirectory srcfilename))
+                       ".png")))
+         (concat "dot -Tpng " srcfilename " >" outfilename " && display " outfilename))))
 
 ;;; text modes 
 ;;; ===================================================================

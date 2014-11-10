@@ -129,6 +129,7 @@
 (require 'autoexp-mode)
 (require 'sln-mode)
 (require 'flex-mode)
+(require 'bison-mode)
 (load-library "graphviz-dot-mode")
 
 
@@ -292,7 +293,8 @@
     ("\\(\\`\\|/\\)git-rebase-todo" . git-irb-mode)    
     ("\\b[Aa]utoexp\\.dat\\'" . autoexp-mode)    
     ("\\.\\(dot\\|gv\\)\\'" . graphviz-dot-mode)
-    ("\\.l\\'" . flex-mode)    
+    ("\\.l\\'" . flex-mode)
+    ("\\.yy?\\'" . bison-mode)
     )))
   (dolist (x my-auto-mode-alist) 
     (add-to-list 'auto-mode-alist x)))

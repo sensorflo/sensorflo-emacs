@@ -2,6 +2,7 @@
 */*/
 *.elc
 *~
+/elpa/
 session.*
 auto-save-list/
 TAGS

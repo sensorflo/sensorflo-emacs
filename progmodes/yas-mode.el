@@ -3,8 +3,13 @@
 ;; Copyright 2009-2014 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
+;; URL: https://github.com/sensorflo/sensorflo-emacs then
+;;      progmodes/yas-mode.el
 ;; Created: 2009
 ;; 
+;; Yasmala is Yet Another Syntax MetA LAnguage. Documentation is available on
+;; https://github.com/sensorflo/sensorflo-docs.
+;;
 ;; This file is not part of GNU Emacs.
 ;; 
 ;; This program is free software: you can redistribute it and/or modify
@@ -24,6 +29,8 @@
 ;;
 ;;; Code:
 (require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
+(require 'meta-syntax-faces) ; https://github.com/sensorflo/sensorflo-emacs/,
+                             ; then progmodes/meta-syntax-faces.elo
 
 (defvar yas-mode-hook nil)
 
@@ -83,8 +90,6 @@
 
 ;;     st)
 ;;   "Syntax table used while in `yas-mode'.")
-
-(require 'meta-syntax-faces) ; https://github.com/sensorflo/sensorflo-emacs/, then progmodes/meta-syntax-faces.elo
 
 (defconst yas-mode-font-lock-keywords
   (list

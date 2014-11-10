@@ -38,64 +38,8 @@
 (unless yas-mode-map
   (setq yas-mode-map (make-sparse-keymap)))
 
-;; (defvar yas-mode-syntax-table
-;;   (let ((st (make-syntax-table)))
-
-;;     ;; white space
-;;     (modify-syntax-entry ?\s " " st)	
-;;     (modify-syntax-entry ?\t " " st)
-;;     (modify-syntax-entry ?\n " " st)
-;;     (modify-syntax-entry ?\f " " st)
-
-;;     ;; word
-;;     (modify-syntax-entry ?\_ "w" st)
-
-;;     ;; symbol : none
-    
-;;     ;; punctuation (operators)
-;;     (modify-syntax-entry ?\! "." st)
-;;     (modify-syntax-entry ?\@ "." st)
-;;     (modify-syntax-entry ?\^ "." st)
-;;     (modify-syntax-entry ?\& "." st)
-;;     (modify-syntax-entry ?\* "." st)
-;;     (modify-syntax-entry ?\- "." st)
-;;     (modify-syntax-entry ?\+ "." st)
-;;     (modify-syntax-entry ?\= "." st)
-;;     (modify-syntax-entry ?\; "." st)
-;;     (modify-syntax-entry ?\: "." st)
-;;     (modify-syntax-entry ?\| "." st)
-;;     (modify-syntax-entry ?\. "." st)
-;;     (modify-syntax-entry ?\, "." st)
-;;     (modify-syntax-entry ?\/ "." st)
-
-;;     ;; parentheses
-;;     (modify-syntax-entry ?\( "(" st)
-;;     (modify-syntax-entry ?\{ "(" st)
-;;     (modify-syntax-entry ?\[ "(" st)
-;;     (modify-syntax-entry ?\< "(" st)
-;;     (modify-syntax-entry ?\) ")" st)
-;;     (modify-syntax-entry ?\} ")" st)
-;;     (modify-syntax-entry ?\] ")" st)
-;;     (modify-syntax-entry ?\> ")" st)
-
-;;     ;; escapes
-;;     (modify-syntax-entry ?\\ "\\" st)
-
-;;     ;; terminal/string quote
-;;     (modify-syntax-entry ?\" "\"" st)
-
-;;     ;; comments
-;;     (modify-syntax-entry ?\# "<12" st)
-;;     (modify-syntax-entry ?\n ">" st)
-
-;;     st)
-;;   "Syntax table used while in `yas-mode'.")
-
 (defconst yas-mode-font-lock-keywords
   (list
-   ;; comment / plain
-   ;;(cons "\\(%%.*\\)$" 'font-lock-unimportant-face)
-   
    ;; comment / semantic
    (list "\\(?:^\\|[^`'\"]\\)\\(#[_^]?\\)\\(\\(\\w\\|_\\)+\\)" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) )
    (list "\\(?:^\\|[^`'\"]\\)\\(##\\s-*\\)\\(.*\\)$" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face) )
@@ -137,11 +81,8 @@
 (defun yas-mode()
   (interactive)
   (kill-all-local-variables)
-  ;; (set-syntax-table yas-mode-syntax-table)
   
-  ;; TODO: mark/forward/backward defun
-  
-  ;; TODO: default compile string
+  ;; TODO: syntax table
   
   (use-local-map yas-mode-map)  
         
@@ -158,8 +99,6 @@
   
   (setq major-mode 'yas-mode mode-name "yas")
 
-  ;; TODO: font-lock-mark-block-function
-  
   (run-hooks 'yas-mode-hook))
 
 (provide 'yas-mode)

@@ -315,11 +315,16 @@ and '.h' matches files ending in 'ch' where c is any character."
 ;;; fill
 ;; ----------------------------------------------------------------------
 (defun fill-paragraph-dwim (arg)
-  "With nil ARG, `fill-paragraph', else `unfill-paragraph'."
+  "With nil ARG, `fill-paragraph' with nil as arg, else `unfill-paragraph'."
   (interactive "*P")
   (if arg
       (unfill-paragraph)
     (fill-paragraph nil)))
+
+(defun unfill-paragraph ()
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (let ((fill-column (point-max)))
+    (fill-paragraph-dwim nil)))
 
 
 ;;; rectangular region

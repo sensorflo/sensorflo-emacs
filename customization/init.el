@@ -128,6 +128,7 @@
 (require 'vbnet-mode)
 (require 'autoexp-mode)
 (require 'sln-mode)
+(require 'flex-mode)
 (load-library "graphviz-dot-mode")
 
 
@@ -290,7 +291,8 @@
     ("\\.sln\\'" . sln-mode)    
     ("\\(\\`\\|/\\)git-rebase-todo" . git-irb-mode)    
     ("\\b[Aa]utoexp\\.dat\\'" . autoexp-mode)    
-    ("\\.\\(dot\\|gv\\)\\'" . graphviz-dot-mode)    
+    ("\\.\\(dot\\|gv\\)\\'" . graphviz-dot-mode)
+    ("\\.l\\'" . flex-mode)    
     )))
   (dolist (x my-auto-mode-alist) 
     (add-to-list 'auto-mode-alist x)))

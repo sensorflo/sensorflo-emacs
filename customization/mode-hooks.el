@@ -363,6 +363,20 @@
 
 (add-hook 'idl-mode-hook 'my-idl-mode-hook)
 
+;;; cppkoans-mode
+; ------------------------------------------------------------------
+(defun my-cppkoans-mode-hook ()
+  (set (make-local-variable 'compile-command)
+       "cd ~/src/cppkoans/build/make && make")
+  (local-set-key [(f3)] 'cppkoans-forward-edit-field)
+  (local-set-key [(shift f3)] 'cppkoans-backward-edit-field))
+
+(add-hook 'cppkoans-mode-hook 'my-cppkoans-mode-hook)
+
+(add-hook 'find-file-hook
+          (lambda() (if (cppkoans-koans-buffer-p) (cppkoans-mode))))
+
+
 ;;; emacs lisp / lisp / lisp interacton major mode
 ; ------------------------------------------------------------------
 (let ((hook-list      

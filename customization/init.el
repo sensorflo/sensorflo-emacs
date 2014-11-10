@@ -202,6 +202,7 @@
 (require 'ansi-color)
 (require 'fill-column-indicator)
 (require 'filecache)
+(require 'cppkoans-mode)
 
 ;; I need load-library-ext; using autoload it should work, but currently it
 ;; doesn't, so for now I load load-library-ext viawith load-library.

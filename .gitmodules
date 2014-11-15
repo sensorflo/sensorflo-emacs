@@ -53,3 +53,6 @@
 [submodule "misc/multiple-cursors"]
 	path = misc/multiple-cursors
 	url = https://github.com/magnars/multiple-cursors.el.git
+[submodule "textmodes/xmlunicode"]
+	path = textmodes/xmlunicode
+	url = https://github.com/sensorflo/xmlunicode.git

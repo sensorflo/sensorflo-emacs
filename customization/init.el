@@ -19,7 +19,7 @@
 (message "init file: settings part 1")
 
 ;; set the config variable
-(let ((file "site-config.el"))
+(let ((file (concat user-emacs-directory "site-config.el")))
   (if (file-readable-p file)
       (load-file file)
     (setq config nil)))
@@ -300,11 +300,6 @@
   (dolist (x my-auto-mode-alist) 
     (add-to-list 'auto-mode-alist x)))
 
-(file-cache-add-file-list
- '("~/.emacs.d"
-   "~/.emacs.d/site-lisp"
-   "~/.emacs.d/modified-lisp"))
-
 ;; 1) note the "", that is if an empty extension was given, i.e. the abbrev "ao."
 (setq ffe-ext-map '(
   ("h" ("h" "")) ; 1)
@@ -318,15 +313,6 @@
 
 (load-library "mybindings")
 (load-library "mode-hooks")
-
-;; project stuff
-;; I don't know yet how to avoid having that in the emacs init file
-(load-library "dragon") 
-(load-library "nova") 
-(load-library "indel") 
-(load-library "bib") 
-(load-library "coma") 
-(load-library "misc-small-projects") 
 
 
 ;;; autostart

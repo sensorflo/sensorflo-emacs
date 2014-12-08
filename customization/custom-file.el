@@ -175,8 +175,6 @@
  '(ispell-complete-word-dict "~/aspell/words")
  '(ispell-program-name "aspell" t)
  '(ispell-silently-savep t)
- '(iswitchb-mode t)
- '(iswitchb-regexp t)
  '(jit-lock-defer-time 0.25)
  '(jit-lock-stealth-time 5)
  '(kill-ring-max 30)

@@ -1069,10 +1069,6 @@
   (forward-char 4))
 (add-hook 'ibuffer-hook 'my-ibuffer-hook)
  
-(defun my-iswitchb-minibuffer-setup-hook ()
-  (define-key iswitchb-mode-map [(control return)] 'iswitchb-select-buffer-text))
-(add-hook 'iswitchb-minibuffer-setup-hook 'my-iswitchb-minibuffer-setup-hook)
-
 ;;; minibuffer
 ;; ----------------------------------------------------------------------------
 ;; (define-key minibuffer-local-filename-must-match-map [(backtab)] 'file-alias-minibuffer-complete)

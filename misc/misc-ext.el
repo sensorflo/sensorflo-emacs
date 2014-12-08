@@ -311,6 +311,21 @@ and '.h' matches files ending in 'ch' where c is any character."
 	      (y-or-n-p "Point is on an unmarked files. You want to delete the marked files? "))
       (call-interactively 'dired-do-delete))))
 
+(defun dired-update-file-autoloads ()
+  ;; Return nil for success, offending file name else.
+  (let ((file (dired-get-filename)) failure)
+    (condition-case err
+        (update-file-autoloads file)
+      (error (setq failure err)))
+    (if (not failure)
+	nil
+      (dired-log "update-file-autoloads error for %s:\n%s\n" file failure)
+      (dired-make-relative file))))
+
+(defun dired-do-update-file-autoloads (&optional arg)
+  (interactive "P")
+  (dired-map-over-marks-check (function dired-update-file-autoloads) arg 'update-file-autoloads t))
+
 
 ;;; fill
 ;; ----------------------------------------------------------------------

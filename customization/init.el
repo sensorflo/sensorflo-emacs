@@ -8,7 +8,6 @@
 ;;
 ;; TODO
 ;; - Try to avoid require. Try to insert all into mode hooks.
-;; - Work more with autoload
 ;; - have a look at Drew Adam's init: site-lisp/emacs-init.el
 ;;
 ;;; Code:
@@ -61,6 +60,11 @@
   (setenv "SHELL" "D:/cygwin/bin/bash.exe")
   (setenv "ESHELL" "D:/cygwin/bin/bash.exe"))
 
+;; autoload
+(setq generated-autoload-file (concat user-emacs-directory "customization/loaddefs-custom.el"))
+(load-file generated-autoload-file)
+(load-file (concat user-emacs-directory "site-lisp/loaddefs-site-lisp.el"))
+
 ;; custom-file
 ;; some modes initialize stuff using their custom variables while loading, thus
 ;; load custom file before loading modes
@@ -76,14 +80,8 @@
 ;; ==================================================
 (message "init file: required libraries")
 
-;;; things that say they have to be first
-;; --------------------------------------------------
-(message "init file: required libraries: things that say they have to be first")
 (require 'powerkey)
 
-;;; buffers & files
-;; --------------------------------------------------
-(message "init file: required libraries: buffers & files")
 (when (equal system-type 'windows-nt)
   (require 'cygwin-mount)
   (require 'w32-symlinks)  
@@ -92,122 +90,13 @@
 (load-library "find-file")
 (require 'window-numbering)
 
-;;; text/markup modes
-;; --------------------------------------------------
-(message "init file: required libraries: text/markup modes")
-(require 'markup-faces)
-(require 'html-helper-mode)
-(require 'html-font)
 ;; nxhtml is not part of sensorflo-emacs git repo
 (when (file-readable-p "nxhtml/autostart.el") 
   (load-library "nxhtml/autostart.el"))
-(require 'yas-mode)
-(require 'adoc-mode)
-(require 'doxym-mode)
-(require 'bbcode)
-(require 'latex-ext)
-(require 'mediawiki)
-
-
-;;; programming / config-file  modes
-;; --------------------------------------------------
-(message "init file: required libraries: programming / conf-file modes")
-(require 'cc-mode)
-(require 'cperl-mode) ; TODO: check out ped or sepia mode
-(require 'ruby-mode)
-(require 'python)
-(require 'lisp-mode)
-(require 'batch-mode)
-(require 'powershell-mode)
-(require 'sh-script)
-(require 'conf-mode)
-(require 'vssconf-mode)
-(require 'stream-mode)
-(require 'dt2-mode)
-(require 'rl-mode)
-(require 'vbnet-mode)
-(require 'autoexp-mode)
-(require 'sln-mode)
-(require 'flex-mode)
-(require 'bison-mode)
-(load-library "graphviz-dot-mode")
-
-
-;;; external tools
-;; --------------------------------------------------
-(message "init file: required libraries: tools")
-(require 'edebug)
-(require 'gud)
-(require 'mode-compile)
-(require 'compile)
-(require 'doxymacs) 
-(require 'psvn) 
-(require 'mks) 
-(require 'speedbar)
-
-
-;;; misc major modes
-;; --------------------------------------------------
-(message "init file: required libraries: misc major modes")
-(require 'grep)
-(require 'shell)
-(require 'info)
-;;(eval-after-load "info" '(require 'info+)) ; doesn't work with emacs 23
-(require 'apropos)
-(require 'browse-kill-ring)
-(require 'gtypist-mode)
-(require 'linkd)
-;(require 'palette) ; info won't work in emacs 23 anymore
-(require 'cus-edit)
-(require 'logfile-mode)
-(require 'git-irb-mode)
-
-
-;;; markup helper functionality 
-;; --------------------------------------------------
-
-
-;;; programming helper functionality 
-;; --------------------------------------------------
-
-
-;;; misc helper functionality 
-;; --------------------------------------------------
-(message "init file: required libraries: misc helper functionality")
 
 (require 'server)
-(require 'x-dict)  
-(require 'hideshow)  
-(require 'filladapt) 
-(require 'recentf)
-(require 'glasses)
-(require 'eol-conversion)
-(require 'highlight-parentheses) 
-(require 'whitespace)
-(require 'align)
-(require 'make-mode)
-(require 'kill-ring-search)
-(require 'markerpen)
-(require 'out-xtra)
-(require 'hide-lines)
-(require 'ebuff-menu)
-(require 'bm)
-(require 'auto-complete)
-(require 'autopair)
-(require 'ace-jump-mode)
-(require 'move-text)
-(require 'multiple-cursors)
-(require 'dired-x)
-(eval-after-load "outline" '(require 'foldout))
-(require 'ansi-color)
-(require 'fill-column-indicator)
-(require 'filecache)
 (require 'cppkoans-mode)
 
-;; I need load-library-ext; using autoload it should work, but currently it
-;; doesn't, so for now I load load-library-ext viawith load-library.
-;; todo: make it work
-(message "init file: required libraries: misc helper functionality: mine")
 (load-library "misc-ext")
 (load-library "simple-ext") 
 (load-library "cc-mode-ext") 

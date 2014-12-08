@@ -436,7 +436,7 @@ This value is appended with YaTeX-verbatim-environments.")
 ;;;
 ;;YaTeX math-mode functions
 ;;;
-;;;###autoload from yatex.el
+;;;###autoload
 (defun YaTeX-toggle-math-mode (&optional arg)
   (interactive "P")
   (or (memq 'YaTeX-math-mode mode-line-format) nil

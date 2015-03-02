@@ -97,6 +97,7 @@
   ;; Emacs/XEmacs-compatibility `defun': remove interactive "_" for Emacs, use
   ;; existing functions when they are `fboundp', provide shortcuts if they are
   ;; known to be defined in a specific Emacs branch (for short .elc)
+;;;###autoload
   (defmacro defunx (name arglist &rest definition)
     (let ((xemacsp (string-match "XEmacs" emacs-version)) reuses first)
       (while (memq (setq first (car definition))

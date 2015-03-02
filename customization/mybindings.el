@@ -97,7 +97,7 @@
 (global-set-key [C-M-down] 'move-text-down)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
-(global-set-key [f7]   'compile)
+(global-set-key [f7]   'recompile)
 (global-set-key [f10]  'ediff-show-registry)
 
 (define-key ctl-x-r-map "e" 'extract-rectangle)
@@ -137,8 +137,6 @@
   (local-set-key [(control f)(control ? )] 'replace-by-space)
   ;; (local-set-key [(meta s)]                'project-grep-find-ext)
   ;; (local-set-key [(control meta s)]        'project-grep-find-sexp-at-point)
-  (local-set-key [(control f)(control n)] 'tempo-forward-mark)
-  (local-set-key [(control f)(control p)] 'tempo-backward-mark)
   (local-set-key [(control meta n)]        'next-error)
   (local-set-key [(control meta p)]        'previous-error)
   (local-set-key [(control f)(control ?,)] 'compilation-ext-previous-file)

@@ -1,4 +1,4 @@
-;;; loaddefs-site-lisp.el --- automatically extracted autoloads
+;;; loaddefs-local-site-lisp.el --- automatically extracted autoloads
 ;;
 ;;; Code:
 
@@ -3087,9 +3087,9 @@ Input sectining command with previous overview.
 
 ;;;***
 
-(provide 'loaddefs-site-lisp)
+(provide 'loaddefs-local-site-lisp)
 ;; Local Variables:
 ;; no-update-autoloads: t
 ;; coding: utf-8
 ;; End:
-;;; loaddefs-site-lisp.el ends here
+;;; loaddefs-local-site-lisp.el ends here

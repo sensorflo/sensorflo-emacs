@@ -23,7 +23,7 @@
    ))
 
 ;;;###autoload
-(define-derived-mode dt2-mode text-mode "dt2"
+(define-derived-mode dt2-mode conf-mode "dt2"
   "Major mode for editing dt2 files.
 Turning on dt2 mode runs the normal hook `dt2-mode-hook'."
   (interactive)

@@ -91,6 +91,7 @@
 (defalias 'dmm 'describe-minor-mode)	;!! clash
 (defalias 'ds 'describe-symbol)
 (defalias 'dtp 'describe-text-properties)
+(defalias 'dc 'describe-char)
 
 ;;; file: ...file
 (defalias 'bcf 'byte-compile-file) 

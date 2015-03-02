@@ -45,7 +45,7 @@
   (message "rl-mode, version %s" rl-mode-version))
 
 ;;;###autoload
-(define-derived-mode rl-mode text-mode "rl"
+(define-derived-mode rl-mode prog-mode "rl"
   "Major mode for editing readline init files.
 Turning on rl mode runs the normal hook `rl-mode-hook'."
   (interactive)

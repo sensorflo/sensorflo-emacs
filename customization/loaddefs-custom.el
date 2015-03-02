@@ -3,6 +3,42 @@
 ;;; Code:
 
 
+;;;### (autoloads nil "../../src/ef/src/IDE-support/Emacs/ef-mode"
+;;;;;;  "../../src/ef/src/IDE-support/Emacs/ef-mode.el" (21713 61094
+;;;;;;  848089 270000))
+;;; Generated autoloads from ../../src/ef/src/IDE-support/Emacs/ef-mode.el
+
+(autoload 'ef-mode "../../src/ef/src/IDE-support/Emacs/ef-mode" "\
+Major mode for editing EF files.
+Turning on EF mode runs the normal hook `ef-mode-hook'.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "../misc/multiple-cursors/mc-edit-lines" "../misc/multiple-cursors/mc-edit-lines.el"
+;;;;;;  (21137 60452 341375 985000))
+;;; Generated autoloads from ../misc/multiple-cursors/mc-edit-lines.el
+
+(autoload 'mc/edit-lines "../misc/multiple-cursors/mc-edit-lines" "\
+Add one cursor to each line of the active region.
+Starts from mark and moves in straight down or up towards the
+line point is on.
+
+\(fn)" t nil)
+
+(autoload 'mc/edit-ends-of-lines "../misc/multiple-cursors/mc-edit-lines" "\
+Add one cursor to the end of each line in the active region.
+
+\(fn)" t nil)
+
+(autoload 'mc/edit-beginnings-of-lines "../misc/multiple-cursors/mc-edit-lines" "\
+Add one cursor to the beginning of each line in the active region.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "../modified-site-lisp/batch-mode" "../modified-site-lisp/batch-mode.el"
 ;;;;;;  (20741 14140 0 0))
 ;;; Generated autoloads from ../modified-site-lisp/batch-mode.el
@@ -890,6 +926,23 @@ cleaning up these problems.
 
 ;;;***
 
+;;;### (autoloads nil "../modified-site-lisp/x-dict" "../modified-site-lisp/x-dict.el"
+;;;;;;  (21741 63343 798084 765000))
+;;; Generated autoloads from ../modified-site-lisp/x-dict.el
+
+(autoload 'xdict-query "../modified-site-lisp/x-dict" "\
+Query dict.leo.org for WORD.
+This calls my python script x-dict (it can be found at: http://www.xsteve.at/prg/python)
+
+\(fn WORD)" t nil)
+
+(autoload 'xdict-query-with-word-at-point "../modified-site-lisp/x-dict" "\
+Run `xdict-query' for the word at point.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "../progmodes/autoexp-mode/autoexp-mode" "../progmodes/autoexp-mode/autoexp-mode.el"
 ;;;;;;  (21136 63505 250986 522000))
 ;;; Generated autoloads from ../progmodes/autoexp-mode/autoexp-mode.el
@@ -921,8 +974,24 @@ See (finder-commentary \"cppkoans-mode\")
 ;;;***
 
 ;;;### (autoloads nil "../progmodes/doxymacs/doxymacs" "../progmodes/doxymacs/doxymacs.el"
-;;;;;;  (20991 65242 618083 464000))
+;;;;;;  (21644 25668 948733 312000))
 ;;; Generated autoloads from ../progmodes/doxymacs/doxymacs.el
+
+(autoload 'doxymacs-mode "../progmodes/doxymacs/doxymacs" "\
+Minor mode for using/creating Doxygen documentation.
+To submit a problem report, request a feature or get support, please
+visit doxymacs' homepage at http://doxymacs.sourceforge.net/.
+
+To see what version of doxymacs you are running, enter
+`\\[doxymacs-version]'.
+
+In order for `doxymacs-lookup' to work you will need to customise the
+variable `doxymacs-doxygen-dirs'.
+
+Key bindings:
+\\{doxymacs-mode-map}
+
+\(fn &optional ARG)" t nil)
 
 (or (assoc 'doxymacs-mode minor-mode-alist) (setq minor-mode-alist (cons '(doxymacs-mode " doxy") minor-mode-alist)))
 
@@ -1060,7 +1129,7 @@ Turning on doxym mode runs the normal hook `doxym-mode-hook'.
 ;;;***
 
 ;;;### (autoloads nil "../textmodes/mediawiki/mediawiki" "../textmodes/mediawiki/mediawiki.el"
-;;;;;;  (21607 47531 620568 584000))
+;;;;;;  (21741 59562 150053 40000))
 ;;; Generated autoloads from ../textmodes/mediawiki/mediawiki.el
 
 (autoload 'mediawiki-draft "../textmodes/mediawiki/mediawiki" "\
@@ -1084,11 +1153,67 @@ mediawiki-draft-data-file.
 
 \(fn)" t nil)
 
+(autoload 'mediawiki-mode "../textmodes/mediawiki/mediawiki" "\
+Major mode for editing articles written in the markup language
+used by Mediawiki.
+
+Wikipedia articles are usually unfilled: newline characters are not
+used for breaking paragraphs into lines. Unfortunately, Emacs does not
+handle word wrapping yet. As a workaround, wikipedia-mode turns on
+longlines-mode automatically. In case something goes wrong, the
+following commands may come in handy:
+
+\\[mediawiki-fill-article] fills the buffer.
+\\[mediawiki-unfill-article] unfills the buffer.
+
+Be warned that function can be dead  slow, better use mediawiki-unfill-paragraph-or-region.
+\\[mediawiki-unfill-paragraph-or-region] unfills the paragraph
+\\[mediawiki-unfill-paragraph-simple] doehe same but simpler.
+
+The following commands put in markup structures.
+\\[mediawiki-insert-strong-emphasis] inserts italics
+\\[mediawiki-insert-bold] inserts bold text
+\\[mediawiki-insert-italics] italics
+\\[mediawiki-insert-header] header
+\\[mediawiki-insert-link] inserts a link
+
+The following commands are also defined:
+\\[mediawiki-insert-user] inserts user name
+\\[mediawiki-insert-signature] inserts ~~~~
+\\[mediawiki-insert-enumerate] inserts enumerate type structures
+\\[mediawiki-insert-itemize] inserts itemize type structures
+\\[mediawiki-insert-hline] inserts a hline
+
+The draft functionality
+\\[mediawiki-draft]
+\\[mediawiki-draft-region]
+\\[mediawiki-draft-view-draft]
+\\[mediawiki-draft-page]
+\\[mediawiki-draft-buffer]
+
+Replying and sending functionality
+\\[mediawiki-reply-at-point-simple]
+\\[mediawiki-draft-reply]
+
+The register functionality
+\\[mediawiki-copy-page-to-register]
+\\[defun mediawiki-insert-page-to-register]
+
+Some simple editing commands.
+\\[mediawiki-enhance-indent]
+\\[mediawiki-yank-prefix]
+\\[mediawiki-unfill-paragraph-or-region]
+
+\\[mediawiki-terminate-paragraph]     starts a new list item or paragraph in a context-aware manner.
+\\[mediawiki-next-header]     moves to the next (sub)section header.
+\\[mediawiki-prev-header]     moves to the previous (sub)section header.
+
+\(fn)" t nil)
+
 ;;;***
 
 (provide 'loaddefs-custom)
 ;; Local Variables:
-;; no-byte-compile: t
 ;; no-update-autoloads: t
 ;; coding: utf-8
 ;; End:

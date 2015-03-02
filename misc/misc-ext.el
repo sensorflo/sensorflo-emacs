@@ -509,7 +509,7 @@ read only flag is automatically unset."
 (add-to-list
  'compilation-error-regexp-alist-alist
  '(gnu-sensorflo
-   "^\\(?:file:\\)?\\(.*?[^0-9\n]\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|[^0-9\n]\\)"
+   "^\\(?:file:\\|[a-zA-Z0-9]+:[ \t]+\\)?\\(.+?\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|[^0-9\n]\\)"
    1 2 3 (4 . nil)))
 
 (add-to-list
@@ -656,7 +656,7 @@ To select a previous/following comment, move point out of comment"
      (point))))
 
 
-;;; indent / tabify
+;;; indent / tabify / whites
 ;; ----------------------------------------------------------------------
 (defun column (&optional pos) 
   "Returns the column pos is at. If pos is nil, point is taken."
@@ -737,6 +737,17 @@ and (buffer-size) respectively is used."
 	 (end (1- end)))
     (indent-rigidly beg end (if backward (- standard-indent) standard-indent))
     (setq deactivate-mark nil))))
+
+;; see also whitespace-cleanup
+(defun fix-white ()
+  (save-restriction
+    (widen)
+    ;; note that this is about all spaces, not just those at the start of a
+    ;; line
+    (if indent-tabs-mode
+        (tabify (point-min) (point-max))
+      (untabify (point-min) (point-max)))
+    (delete-trailing-whitespace)))
 
 
 ;;; outline

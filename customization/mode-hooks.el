@@ -161,8 +161,9 @@
     (list
      ;; C++11
      "\\_<static_assert\\_>" "\\_<alignas\\_>" "\\_<alignof\\_>" "\\_<decltype\\_>" "\\_<constexpr\\_>"
-     "\\_<noexcept\\_>" "\\_<nullptr\\_>" "\\_<thread_local\\_>"
-     (list "\\_<char\\(?:16\\|32\\)_t\\_>" '(0 font-lock-type-face))
+     "\\_<noexcept\\_>" "\\_<thread_local\\_>"
+     (list "\\_<\\(?:char\\(?:16\\|32\\)_t\\|nullptr_t\\)\\_>" '(0 font-lock-type-face))
+     (list "\\_<nullptr\\_>" '(0 font-lock-constant-face))
      
      ;; MS visual studio
      "\\_<__abstract\\_>" "\\_<__alignof\\_>" "\\_<__asm\\_>" "\\_<__assume\\_>"
@@ -392,6 +393,7 @@
 
 (defun my-gen-lisp-hook ()
   (hs-minor-mode t)
+  (outline-minor-mode t)
   (setq tab-width 8)
   
   (local-set-key [(meta m)(meta m)] 'kmacro-start-stop-macro-ext)
@@ -431,14 +433,12 @@
 (add-hook 'stream-mode-hook 'my-stream-mode-hook)
 (defun my-stream-mode-hook ()
   (require 'tempos-stream)
-  (filladapt-mode t)
   (doxymacs-mode 1)
   (doxymacs-font-lock))
 
 (add-hook 'dt2-mode-hook 'my-dt2-mode-hook)
 (defun my-dt2-mode-hook ()
-  (outline-minor-mode t)
-  (filladapt-mode t))
+  (outline-minor-mode t))
 
 
 ;;; conf mode 
@@ -518,7 +518,6 @@
 (add-hook 'tex-mode-hook 'my-latex-hook)
 
 (defun my-latex-hook ()
-  (auto-fill-mode t)
   (outline-minor-mode t)
   (my-latex-bindings))
 
@@ -657,19 +656,8 @@
 (add-hook 'adoc-mode-hook 'my-adoc-mode-hook)
 
 (defun my-adoc-mode-hook ()
-  ;; (auto-fill-mode t)
+  ;; note that adoc-mode derives from text-mode, thus more is handled there
   (outline-minor-mode t)
-  (buffer-face-mode t)
-  ;; (if (< (buffer-size) 200000)
-  ;;     (flyspell-buffer)
-  ;;   (message "NOT flyspelling buffer automatically because it is too large"))
-  ;; (flyspell-prog-mode)
-
-  (set (make-local-variable 'word-wrap) t)
-  (toggle-truncate-lines -1)
-  (require 'screen-lines) ; or is screenline.el better?
-  (screen-lines-mode 1)
-
   (set (make-local-variable 'compile-command)
        (concat "asciidoc "
                (if (buffer-file-name)
@@ -681,6 +669,8 @@
 (defun my-adoc-bindings ()
   (require 'tempos-adoc) 
 
+  (local-set-key [f5] 'flyspell-goto-next-error)
+  (local-set-key [f6] 'ispell-word)
   (local-set-key [f8] 'adoc-browse-url-output)
   (local-set-key "\C-c\C-p" 'adoc-promote-title)
   (local-set-key "\C-c\C-t" 'adoc-toggle-title-type)
@@ -698,13 +688,14 @@
   (local-set-key [(control ?\,)(h)(?3)] 'tempo-template-adoc-title-3)
   (local-set-key [(control ?\,)(h)(?4)] 'tempo-template-adoc-title-4))
 
+(add-to-list 'auto-coding-regexp-alist '("\\`\\s-*:encoding:\\s-*UTF-8\\b" . utf-8))
+
 
 ;;; doxym
 ;; --------------------------------------------------------------------------------
 (add-hook 'doxym-mode-hook 'my-doxym-mode-hook)
 
 (defun my-doxym-mode-hook ()
-  (auto-fill-mode t)
   (outline-minor-mode t)
   (my-doxym-bindings)
   (buffer-face-mode t)
@@ -774,25 +765,14 @@
 (add-hook 'pod-mode-hook 'my-pod-hook)
 
 (defun my-pod-hook ()
-  (outline-minor-mode t)
-  (buffer-face-mode t))
-
-;;; text
-;; -----------------------------------------------------------------------------
-(add-hook 'text-mode-hook 'my-text-hook)
-
-(defun my-text-hook ()
-  (if (and (null buffer-file-name))  
-      (setq buffer-offer-save t)))
+  (outline-minor-mode t))
 
 ;;; markdown
 ;; -----------------------------------------------------------------------------
 (add-hook 'markdown-mode-hook 'my-markdown-mode-hook)
 
 (defun my-markdown-mode-hook ()
-  (buffer-face-mode t)
   (outline-minor-mode t)
-  (buffer-face-mode t)
 
   (set (make-local-variable 'word-wrap) t)
   (toggle-truncate-lines -1)
@@ -804,7 +784,6 @@
 (add-hook 'bbcode-hook 'my-bbcode-hook)
 
 (defun my-bbcode-hook ()
-  (buffer-face-mode t)
   (my-bbcode-bindings))
 
 (defun my-bbcode-bindings ()
@@ -843,7 +822,6 @@
 (add-hook 'mediawiki-mode-hook 'my-mediawiki-hook)
 
 (defun my-mediawiki-hook ()
-  (buffer-face-mode t)
   (visual-line-mode 1)
   (outline-minor-mode t)
   (set (make-local-variable 'word-wrap) t)
@@ -902,7 +880,7 @@
 ;;; enriched
 ;; -----------------------------------------------------------------------------
 (defun my-enriched-mode-hook()
-  (buffer-face-mode))
+  )
 
 (add-hook 'enriched-mode-hook 'my-enriched-mode-hook)
 
@@ -934,11 +912,11 @@
 ;;; help mode
 ;; -------------------------------------------------------------------
 (defun my-help-mode-hook()
-  (unless (member (buffer-name) '("*Colors*" "*Faces*" "*Character Set List*" "*Character List*"))
-    (buffer-face-mode t))
   (local-set-key [(S)] 'help-mode-goto-src)
   (local-set-key [(l)] 'help-go-back)   ; like Info-history-back
   (local-set-key [(control tab)] 'backward-button)
+
+  (set (make-local-variable 'show-trailing-whitespace) nil)
 
   ;; Funktioniert nicht insofern dass dann die anderen highlightnings
   ;; verschwinden. Auch highlighht-regexp funktioniert in diesem Sinne nicht.
@@ -961,8 +939,7 @@
   (save-excursion
     (goto-char (point-min))
     (when (re-search-forward "(@\\*\\s-*\".*?\"\\s-*)" nil t)
-      (linkd-mode)))
-  (buffer-face-mode t))
+      (linkd-mode))))
 
 (add-hook 'finder-mode-hook 'my-finder-mode-hook)
 
@@ -970,8 +947,9 @@
 ;;; info mode
 ;; -------------------------------------------------------------------
 (defun my-info-mode-hook()
+  (require 'markup-faces)
   (define-key Info-mode-map [(control tab)] 'Info-prev-reference)
-  (buffer-face-mode t)
+  (set (make-local-variable 'show-trailing-whitespace) nil)
   (font-lock-add-keywords nil (list
     (list "^[ \t]*--[ \t]*\\(\\w*\\)[ \t]*:[ \t]*\\([^ \t\n]+\\)" '(1 markup-emphasis-face t) '(2 markup-strong-face t)))))
 (add-hook 'Info-mode-hook 'my-info-mode-hook)
@@ -1007,6 +985,7 @@
   (local-set-key [remap dired-do-delete] 'dired-do-delete-ext)
   (local-set-key "r" 'wdired-change-to-wdired-mode) ; suggested by wdired
   (local-set-key "*."               'dired-mark-extension-dwim) 
+  (local-set-key "O"                'dired-open-in-external-app)
   (local-set-key [(control return)] 'project-dired-find-main-file)
   (local-set-key "*i"               'project-dired-mark-files))
 
@@ -1045,7 +1024,6 @@
    (t 3)))
 
 (defun my-man-mode-hook ()
-  (buffer-face-mode)
   (setq outline-regexp
         (concat "\\(?:" Man-heading-regexp "\\|" Man-heading2-regexp "\\)"))
   (setq outline-level 'Man-outline-level))
@@ -1202,7 +1180,7 @@
 ;;; custom
 ;; ----------------------------------------------------------------------------
 (defun my-Custom-mode-hook ()
-  (buffer-face-mode))
+  )
 
 (add-hook 'Custom-mode-hook 'my-Custom-mode-hook)
 
@@ -1216,14 +1194,11 @@
 (add-hook 'before-save-hook 'custom-file-before-save-hook t)
 
 
-;;; common (all, text, programming, ...)
+;;; common (editing, text, programming, ...)
 ;;; ===================================================================
 
-;;; all - remember that there are also global settings defined throuh custom and in init.el
-
 (defvar common-mode-hook nil
-  "Hook called when entering almost any mode.
-For all modes affected see mode-hooks.el")
+  "Hook called when entering a mode which is about editing files.")
 
 (defvar mode-hooks-common-called nil
   "When buffer local, then `my-common-mode-hook' has been called for this buffer.
@@ -1236,34 +1211,7 @@ It's value is irelevant.")
 (add-hook 'common-mode-hook 'my-common-mode-hook) 
 
 ;; deliberatly without minibuffer modes
-(dolist (x '(c-mode-common-hook
-             shell-mode-hook 
-             sh-mode-hook
-             idl-mode-hook
-             conf-mode-hook
-             html-helper-mode-hook
-             cperl-mode-hook
-             php-mode-hook
-             ruby-mode-hook
-             python-mode-hook
-             vbnet-mode-hook
-             tex-mode-hook
-             lisp-mode-hook
-             lisp-interaction-mode
-             emacs-lisp-mode-hook
-             logfile-mode-hook
-             html-helper-mode-hook
-             text-mode-hook
-             Buffer-menu-mode-hook
-             bs-mode-hook
-             mks-cat-mode-hook
-             custom-mode-hook
-             makefile-mode-hook
-             makefile-gmake-mode-hook
-             stream-mode-hook
-             dt2-mode-hook
-             adoc-mode-hook
-             doxym-mode-hook
+(dolist (x '(Buffer-menu-mode-hook
              dired-mode-hook))
   (add-hook x 'common-mode-hook-helper))
 
@@ -1274,10 +1222,10 @@ It's value is irelevant.")
     (make-local-variable 'mode-hooks-common-called)
     (run-hooks 'common-mode-hook)))
 
-;; For most cases the find file hook is good enough, because in most cases we're
-;; visiting files. But sometimes you e.g. want to have a c++-mode buffer without
-;; an underlying file, so find file hook is never called, and then you need
-;; that my-common-mode-hook is called by the mode's hook.
+;; For most cases the find file hook is good enough, because in most cases
+;; we're visiting files. But sometimes you e.g. want to have a c++-mode buffer
+;; without an underlying file, so find file hook is never called, and then you
+;; need that my-common-mode-hook is called by the mode's hook.
 (defun my-common-mode-hook-find-file ()
   (unless (local-variable-p 'mode-hooks-common-called)
     (make-local-variable 'mode-hooks-common-called)
@@ -1287,29 +1235,69 @@ It's value is irelevant.")
               without an underlying file." major-mode major-mode)
     (my-common-mode-hook)))
 
-(add-hook 'find-file-hook 'my-common-mode-hook-find-file)  
+(add-hook 'find-file-hook 'my-common-mode-hook-find-file)
 
-;;; programming 
-(defun my-programming-common-hook ()
-  ;; icicles has problems because 2C-command from two-column.el already uses f2
-  ;(local-set-key [f2] 'gud-ext-mode)
-  (fci-mode t))
+;;; [common/]comint
+(defun my-comint-mode-hook()
+  (my-common-mode-hook))
 
-(dolist (x '(c-mode-common-hook
-             idl-mode-hook
-             java-mode-hook
-             cperl-mode-hook
-             ruby-mode-hook
-             python-mode-hook
-             sh-mode-hook
-             shell-script-mode
-             visual-basic-mode
-             rl-mode
-             matlab-mode
-             vbnet-mode
-             makefile-gmake-mode
-             php-mode-hook
-             emacs-lisp-mode-hook))
-  (add-hook x 'my-programming-common-hook))
+(add-hook 'comint-mode-hook 'my-comint-mode-hook)
+
+;;; [common/]edit -- my own
+(defun my-edit-mode-hook()
+  (my-common-mode-hook)
+  (setq-local show-trailing-whitespace t)
+  (my-edit-mode-bindings))
+
+(defun my-edit-mode-bindings ()
+  ;; new bindings
+  (local-set-key [(control f)(control n)] 'tempo-forward-mark)
+  (local-set-key [(control f)(control p)] 'tempo-backward-mark))
+
+;;; [common/edit/]conf
+(defun my-conf-mode-hook()
+  (my-edit-mode-hook))
+
+(add-hook 'conf-mode-hook 'my-conf-mode-hook)
+
+;;; [common/edit/]text
+(defvar flyspell-mode-hack nil
+  "When non-nil, turn on `flyspell-mode' after processing file local variables.")
+
+(defun my-text-mode-hook()
+  (my-edit-mode-hook)
+  (auto-fill-mode t)
+  (if (null buffer-file-name)
+      (setq buffer-offer-save t))
+  (set (make-local-variable 'ispell-check-comments) nil)
+  (set (make-local-variable 'flyspell-mode-hack) t)
+  (add-hook (make-local-variable 'hack-local-variables-hook)
+            'my-final-text-mode-hook))
+
+(defun my-final-text-mode-hook ()
+  (when flyspell-mode-hack
+    (flyspell-mode)
+    (if (< (buffer-size) 200000)
+        (flyspell-buffer)
+      (message "NOT flyspelling buffer automatically because it is too large")))
+
+  (when sentence-end-double-space
+    (font-lock-add-keywords
+     nil (list
+          (list (lambda (end)
+                  (and (re-search-forward "\\b\\([?.!] \\)[^ \n]" end t)
+                       (not (save-excursion
+                              (goto-char (match-beginning 0))
+                              (save-match-data
+                                (looking-back "\\b\\([Ee]\\.g\\|[Ee]tc\\|[Ii]\\.e\\)"))))))
+                '(1 font-lock-warning-face))))))
+
+(add-hook 'text-mode-hook 'my-text-mode-hook)
+
+;;; [common/edit]/prog
+(defun my-prog-mode-hook ()
+  (my-edit-mode-hook))
+
+(add-hook 'prog-mode-hook 'my-prog-mode-hook)
 
 ;;; mode-hooks.el ends here

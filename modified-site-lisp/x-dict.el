@@ -193,6 +193,7 @@ to the beginning of the queried x-dict entry.")
   "Return the url that is used to look up the next query."
   (cadr (assoc xdict-dictionary '((leo "dict.leo.org") (dict-cc "www.dict.cc")))))
 
+;;;###autoload
 (defun xdict-query (word)
   "Query dict.leo.org for WORD.
 This calls my python script x-dict (it can be found at: http://www.xsteve.at/prg/python)"
@@ -218,6 +219,7 @@ This calls my python script x-dict (it can be found at: http://www.xsteve.at/prg
              (forward-line 2)
              (recenter 1))))))
 
+;;;###autoload
 (defun xdict-query-with-word-at-point ()
   "Run `xdict-query' for the word at point."
   (interactive)

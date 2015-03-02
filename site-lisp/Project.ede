@@ -1,0 +1,11 @@
+;; Object ef
+;; EDE Project Files are auto generated: Do Not Edit
+(ede-proj-project "ef"
+  :file "Project.ede"
+  :name "ef"
+  :targets
+  (list
+    (ede-proj-target-makefile-program "allreally"
+      :name "allreally"
+      :path ""
+      :source '("irbuilderast.cpp"))))

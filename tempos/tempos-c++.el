@@ -142,15 +142,15 @@ qt: /*! ... */"
 
 (tempo-define-template "c-for-std-2"
  '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
-   "for" (tempos-c++-between-keyword-parenthesis) "( int i = 0 ; i < " p "; i++ )"
+   "for" (tempos-c++-between-keyword-parenthesis) "( int i=0; i<" p "; ++i )"
    (tempos-c++-open-brace)
    r-or-blank-line>
    (tempos-c++-close-brace)))
 
 (tempo-define-template "c-for-iter"
   '( lws
-     "for" (tempos-c++-between-keyword-parenthesis) "( auto iter=" p ".begin() ; "
-            "iter!=" p ".end() ; "
+     "for" (tempos-c++-between-keyword-parenthesis) "( auto iter=" p ".begin(); "
+            "iter!=" p ".end(); "
             "++iter )"
       (tempos-c++-open-brace)
       r-or-blank-line>

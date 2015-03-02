@@ -44,7 +44,7 @@
    ))
 
 ;;;###autoload
-(define-derived-mode stream-mode text-mode "stream"
+(define-derived-mode stream-mode prog-mode "stream"
   "Major mode for editing stream files.
 Turning on stream mode runs the normal hook `stream-mode-hook'."
   (interactive)

@@ -192,6 +192,7 @@
          ("\\.l\\'" . flex-mode)    
          ("\\.yy?\\'" . bison-mode)
          ("\\.ef\\'" . ef-mode)
+         ("\\.ll\\'" . llvm-mode)
          ("\\.rs\\'" . rust-mode)
          ("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode)
          ("\\(\\`\\|/\\)[-0-9A-Z_]+\\'" . adoc-mode))))

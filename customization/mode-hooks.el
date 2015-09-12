@@ -1184,6 +1184,13 @@
 
 (add-hook 'Custom-mode-hook 'my-Custom-mode-hook)
 
+;;; compilation
+;; ----------------------------------------------------------------------------
+(defun my-compilation-mode-hook ()
+  (toggle-truncate-lines -1))
+
+(add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
+
 
 ;;; not really modes but other hooks 
 ;;; ===================================================================

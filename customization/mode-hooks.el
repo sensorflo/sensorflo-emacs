@@ -1254,6 +1254,7 @@ It's value is irelevant.")
 (defun my-edit-mode-hook()
   (my-common-mode-hook)
   (setq-local show-trailing-whitespace t)
+  (fci-mode)
   (my-edit-mode-bindings))
 
 (defun my-edit-mode-bindings ()

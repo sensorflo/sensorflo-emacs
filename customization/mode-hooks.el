@@ -1229,11 +1229,17 @@ It's value is irelevant.")
     (make-local-variable 'mode-hooks-common-called)
     (run-hooks 'common-mode-hook)))
 
-;; For most cases the find file hook is good enough, because in most cases
-;; we're visiting files. But sometimes you e.g. want to have a c++-mode buffer
-;; without an underlying file, so find file hook is never called, and then you
-;; need that my-common-mode-hook is called by the mode's hook.
 (defun my-common-mode-hook-find-file ()
+  (when (> (buffer-size) (* 10 1024 1024))
+    (setq buffer-read-only t)
+    (buffer-disable-undo)
+    (fundamental-mode)
+    (message "large file: putting it into fundamental mode"))
+
+  ;; For most cases the find file hook is good enough, because in most cases
+  ;; we're visiting files. But sometimes you e.g. want to have a c++-mode
+  ;; buffer without an underlying file, so find file hook is never called, and
+  ;; then you need that my-common-mode-hook is called by the mode's hook.
   (unless (local-variable-p 'mode-hooks-common-called)
     (make-local-variable 'mode-hooks-common-called)
     (message "find-file-hook needed to call my-common-mode-hook.

@@ -98,7 +98,6 @@
 ;;; file: ...file
 (defalias 'bcf 'byte-compile-file) 
 (defalias 'lf 'load-file) 
-(defalias 'df 'delete-file) 
 (defalias 'rnf 'rename-file) 
 (defalias 'sfm 'set-file-modes) ; see also cm=chmod
 

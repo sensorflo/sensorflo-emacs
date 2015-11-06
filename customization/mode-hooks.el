@@ -1184,6 +1184,21 @@
 (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
 
 
+;;; whitespace
+;; ----------------------------------------------------------------------------
+(defun my-whitespace-mode-hook ()
+  ;; redundant to whitespace-style
+  (setq whitespace-report-list
+        (list
+         (cons 'empty                   whitespace-empty-at-bob-regexp)
+         (cons 'empty                   whitespace-empty-at-eob-regexp)
+         (cons 'trailing                whitespace-trailing-regexp)
+         (cons 'indentation             nil)
+         (cons 'space-after-tab         nil))))
+
+(add-hook 'whitespace-mode-hook 'my-whitespace-mode-hook)
+
+
 ;;; not really modes but other hooks 
 ;;; ===================================================================
 
@@ -1218,8 +1233,17 @@
 
     ;; the following is the last thing that is executed from all the mode
     ;; related hooks.
-    ;; nothing yet
-  )
+
+    ;; Make sure whitespace picks up the actual value of indent-tabs-mode /
+    ;; tab-width. A better solution would probably be to modify whitespace.el
+    ;; such that it accesses `whitespace-indent-tabs-mode' /
+    ;; `whitespace-tab-width' via a function. Internaly that function either
+    ;; returns `indent-tabs-mode' in the normal case or
+    ;; `whitespace-indent-tabs-mode' in the case the user wants to overwrite it
+    ;; with a whitespace specific value
+    (when whitespace-mode
+      (whitespace-mode 0)
+      (whitespace-mode 1)))
   (mode-message-end "my-after-change-major-mode-hook"))
 
 (add-hook 'after-change-major-mode-hook 'my-after-change-major-mode-hook)
@@ -1228,6 +1252,7 @@
 ;; (currently) read only
 (defun my-edit-mode-hook ()
   (mode-message-start "my-edit-mode-hook")
+  (whitespace-mode t)
   (fci-mode t)
   (mode-message-end "my-edit-mode-hook"))
 

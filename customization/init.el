@@ -10,6 +10,23 @@
 ;; - Try to avoid require. Try to insert all into mode hooks.
 ;; - have a look at Drew Adam's init: site-lisp/emacs-init.el
 ;;
+;; Summary of how to customize Emacs:
+;; - Emacs' customization
+;;   - Init file (~/.emacs.d/init.el). Run only once at Emacs' startup.
+;;   - Customization variables (in file denoted by `custom-file'). Loaded within
+;;     my init file.
+;;
+;; - find-file-hook. I used to use that earlier, but no longer. One of the
+;;   reasons is that `normal-mode' naturally doesn't run it.
+;;
+;; - mode hooks, see .emacs.d/customiation/mode-hooks.el. Is hierarchical:
+;;   - change-major-mode-after-body-hook
+;;   - parent modes, such as text-mode-hook or prog-mode-hook
+;;   - leaf modes, e.g. python-mode-hook
+;;   - after-change-major-mode-hook
+;;     - edit-mode-hook
+;;     - project hooks
+
 ;;; Code:
 
 

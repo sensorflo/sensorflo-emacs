@@ -2,15 +2,7 @@
 ;;
 ;;; Commentary
 ;;
-;; precedence 
-;; ------------
-;; 1. PROJECT-MODE-hook
-;; 2. MODE-hook
-;; 3. PROJECT-common-'hook'
-;; 4. common-mode-'hook'
-;; 5. settings in _emacs.el
-;; ??? mybindings.el !!!!!!!!!!!
-;; ??? custom.el !!!!!!!!!!!
+;; See init.el for a summary of how to customize Emacs.
 ;;
 ;;
 ;; autoload support
@@ -1201,116 +1193,53 @@
 (add-hook 'before-save-hook 'custom-file-before-save-hook t)
 
 
-;;; common (editing, text, programming, ...)
+;;; common (all, text, programming, ...)
 ;;; ===================================================================
+;; See also init.el for a summary of how to customize Emacs
 
-(defvar common-mode-hook nil
-  "Hook called when entering a mode which is about editing files.")
+(defun my-change-major-mode-after-body-hook ()
+  (mode-message-start "my-change-major-mode-after-body-hook")
+  (unless (string-match "minibuffer" (symbol-name major-mode))
+    ;; nop yet
+    )
+  (mode-message-end "my-change-major-mode-after-body-hook"))
 
-(defvar mode-hooks-common-called nil
-  "When buffer local, then `my-common-mode-hook' has been called for this buffer.
-It's value is irelevant.")
+(add-hook 'change-major-mode-after-body-hook 'my-change-major-mode-after-body-hook)
 
-(defun my-common-mode-hook ()
-  (message "my-common-mode-hook")
-  (my-common-mode-bindings))
+(defun my-after-change-major-mode-hook ()
+  (mode-message-start "my-after-change-major-mode-hook")
+  (unless (string-match "minibuffer" (symbol-name major-mode))
+    (when (is-edit-mode)
+      (my-edit-mode-hook))
+    (my-common-mode-bindings)
 
-(add-hook 'common-mode-hook 'my-common-mode-hook) 
+    ;; projects. Probably project.el should offer an project-hook.
+    ;; nothing yet
 
-;; deliberatly without minibuffer modes
-(dolist (x '(Buffer-menu-mode-hook
-             dired-mode-hook))
-  (add-hook x 'common-mode-hook-helper))
+    ;; the following is the last thing that is executed from all the mode
+    ;; related hooks.
+    ;; nothing yet
+  )
+  (mode-message-end "my-after-change-major-mode-hook"))
 
-;; Since some modes are devired from others, my-common-mode-hook might be
-;; called multiple times, once for each level of the hierarchy.
-(defun common-mode-hook-helper ()
-  (unless (local-variable-p 'mode-hooks-common-called)
-    (make-local-variable 'mode-hooks-common-called)
-    (run-hooks 'common-mode-hook)))
+(add-hook 'after-change-major-mode-hook 'my-after-change-major-mode-hook)
 
-(defun my-common-mode-hook-find-file ()
-  (when (> (buffer-size) (* 10 1024 1024))
-    (setq buffer-read-only t)
-    (buffer-disable-undo)
-    (fundamental-mode)
-    (message "large file: putting it into fundamental mode"))
+;; Meant for all modes where the user freely can edit text -- even if it's
+;; (currently) read only
+(defun my-edit-mode-hook ()
+  (mode-message-start "my-edit-mode-hook")
+  (fci-mode t)
+  (mode-message-end "my-edit-mode-hook"))
 
-  ;; For most cases the find file hook is good enough, because in most cases
-  ;; we're visiting files. But sometimes you e.g. want to have a c++-mode
-  ;; buffer without an underlying file, so find file hook is never called, and
-  ;; then you need that my-common-mode-hook is called by the mode's hook.
-  (unless (local-variable-p 'mode-hooks-common-called)
-    (make-local-variable 'mode-hooks-common-called)
-    (message "find-file-hook needed to call my-common-mode-hook.
-              Add %S to list in mode-hooks.el, if you wan't
-              my-common-mode-hook to be called for %S for buffers
-              without an underlying file." major-mode major-mode)
-    (my-common-mode-hook)))
-
-(add-hook 'find-file-hook 'my-common-mode-hook-find-file)
-
-;;; [common/]comint
-(defun my-comint-mode-hook()
-  (my-common-mode-hook))
-
-(add-hook 'comint-mode-hook 'my-comint-mode-hook)
-
-;;; [common/]edit -- my own
-(defun my-edit-mode-hook()
-  (my-common-mode-hook)
-  (setq-local show-trailing-whitespace t)
-  (fci-mode)
-  (my-edit-mode-bindings))
-
-(defun my-edit-mode-bindings ()
-  ;; new bindings
-  (local-set-key [(control f)(control n)] 'tempo-forward-mark)
-  (local-set-key [(control f)(control p)] 'tempo-backward-mark))
-
-;;; [common/edit/]conf
-(defun my-conf-mode-hook()
-  (my-edit-mode-hook))
-
-(add-hook 'conf-mode-hook 'my-conf-mode-hook)
-
-;;; [common/edit/]text
-(defvar flyspell-mode-hack nil
-  "When non-nil, turn on `flyspell-mode' after processing file local variables.")
-
-(defun my-text-mode-hook()
-  (my-edit-mode-hook)
-  (auto-fill-mode t)
-  (if (null buffer-file-name)
-      (setq buffer-offer-save t))
-  (set (make-local-variable 'ispell-check-comments) nil)
-  (set (make-local-variable 'flyspell-mode-hack) t)
-  (add-hook (make-local-variable 'hack-local-variables-hook)
-            'my-final-text-mode-hook))
-
-(defun my-final-text-mode-hook ()
-  (when flyspell-mode-hack
-    (flyspell-mode)
-    (if (< (buffer-size) 200000)
-        (flyspell-buffer)
-      (message "NOT flyspelling buffer automatically because it is too large")))
-
-  (when sentence-end-double-space
-    (font-lock-add-keywords
-     nil (list
-          (list (lambda (end)
-                  (and (re-search-forward "\\b\\([?.!] \\)[^ \n]" end t)
-                       (not (save-excursion
-                              (goto-char (match-beginning 0))
-                              (save-match-data
-                                (looking-back "\\b\\([Ee]\\.g\\|[Ee]tc\\|[Ii]\\.e\\)"))))))
-                '(1 font-lock-warning-face))))))
+(defun my-text-mode-hook ()
+  (mode-message-start "my-text-mode-hook")
+  (mode-message-end "my-text-mode-hook"))
 
 (add-hook 'text-mode-hook 'my-text-mode-hook)
 
-;;; [common/edit]/prog
 (defun my-prog-mode-hook ()
-  (my-edit-mode-hook))
+  (mode-message-start "my-prog-mode-hook")
+  (mode-message-end "my-prog-mode-hook"))
 
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)
 

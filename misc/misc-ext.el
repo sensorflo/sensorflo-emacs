@@ -874,4 +874,25 @@ sequence."
 	       (replacement (concat "\\C-" (char-to-string (downcase (+ ctrl-char (- ?A ?\1)))))))
 	  (replace-match replacement t t))))))
 
+(defun mode-message-start (element)
+  ;; (message (concat "<" element
+  ;;                  " major-mode=" (symbol-name major-mode)
+  ;;                  " buffer-name=" (if (buffer-name) (buffer-name) "nil")
+  ;;                  " buffer-file-name=" (if buffer-file-name buffer-file-name "nil")
+  ;;                  ">"))
+  )
+
+(defun mode-message-end (element)
+  ;; (message (concat "</" element
+  ;;                  " major-mode=" (symbol-name major-mode)
+  ;;                  " buffer-name=" (if (buffer-name) (buffer-name) "nil")
+  ;;                  " buffer-file-name=" (if buffer-file-name buffer-file-name "nil")
+  ;;                  ">"))
+  )
+
+;; heuristic similar as in ws-trim-mode-heuristic todo: maybe only look at
+;; latin letters and ignore characters with code points larger say 128
+(defun is-edit-mode ()
+  (where-is-internal 'self-insert-command nil 'non-ascii))
+
 ;;; misc-ext.el ends here

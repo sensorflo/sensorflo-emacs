@@ -66,11 +66,13 @@
 (defalias 'mwo 'mediawiki-open)
 (defalias 'cm 'chmod)
 (defalias 'fsb 'flyspell-buffer)
+(defalias 'wc 'whitespace-cleanup)
 
 ;;; toggle: t... 
 (defalias 'ttl 'toggle-truncate-lines)
 (defalias 'tww 'toggle-word-wrap)
 (defalias 'tbc 'toggle-background-color)
+(defalias 'wet 'whitespace-ext-toggle)
 
 ;;; list: l... 
 (defalias 'lp 'list-processes) 

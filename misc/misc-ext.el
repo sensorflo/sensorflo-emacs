@@ -749,6 +749,43 @@ and (buffer-size) respectively is used."
       (untabify (point-min) (point-max)))
     (delete-trailing-whitespace)))
 
+(defun whitespace-ext-toggle ()
+  (interactive)
+  (whitespace-toggle-options 'tabs)
+  (whitespace-toggle-options 'spaces)
+  (whitespace-toggle-options 'newline)
+  (whitespace-toggle-options 'tab-mark)
+  (whitespace-toggle-options 'space-mark)
+  (whitespace-toggle-options 'newline-mark))
+
+(defun whitespace-forward-problem ()
+  (interactive)
+  (let* ((sub-regexps
+          ;; copied from whitespace-report-region, i.e. rendunat
+          (mapcar
+           (lambda (option)
+             (cond
+              ((eq (car option) 'indentation)
+               (whitespace-indentation-regexp))
+              ((eq (car option) 'indentation::tab)
+               (whitespace-indentation-regexp 'tab))
+              ((eq (car option) 'indentation::space)
+               (whitespace-indentation-regexp 'space))
+              ((eq (car option) 'space-after-tab)
+               (whitespace-space-after-tab-regexp))
+              ((eq (car option) 'space-after-tab::tab)
+               (whitespace-space-after-tab-regexp 'tab))
+              ((eq (car option) 'space-after-tab::space)
+               (whitespace-space-after-tab-regexp 'space))
+              (t
+               (cdr option))))
+           whitespace-report-list))
+         (regexp
+          (concat "\\(?:\\(?:"
+                  (mapconcat (lambda (x) x) sub-regexps "\\)\\|\\(?:")
+                  "\\)\\)")))
+    (re-search-forward regexp)))
+
 
 ;;; outline
 ;; ----------------------------------------------------------------------

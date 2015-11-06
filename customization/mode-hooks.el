@@ -1253,6 +1253,7 @@
 (defun my-edit-mode-hook ()
   (mode-message-start "my-edit-mode-hook")
   (whitespace-mode t)
+  (ws-trim-mode)
   (fci-mode t)
   (mode-message-end "my-edit-mode-hook"))
 

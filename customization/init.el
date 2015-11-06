@@ -169,8 +169,20 @@
 ;; following terms take precedence over the terms already in auto-mode-alist
 ;; before this modification.
 (let ((my-auto-mode-alist
-       '(("\\(/\\|\\`\\)\\(\\.?profile\\|\\.bash_\\(profile\\|login\\|logout\\|aliases\\)\\|\\.bash\\(rc\\|\\.bashrc\\)\\)\\'" . shell-script-mode)
-         ("git-?flow\\(?:-\\w+\\)?\\'" . shell-script-mode)
+       '(;; The default for auto-mode-alist forgets to include the following
+         ;; default bash related files (partly defined by bash, partly by
+         ;; Ubuntu)
+         ("\\(/\\|\\`\\)profile\\'" . sh-mode)
+         ("\\(/\\|\\`\\)bash\\.bashrc\\'" . sh-mode)
+         ("\\(/\\|\\`\\)\\.bash_aliases\\'" . sh-mode)
+         ;; my own additinal bash related files
+         ("\\(/\\|\\`\\)\\.profile_[^/]*\\'" . sh-mode)
+         ("\\(/\\|\\`\\)localprofile\\'" . sh-mode)
+         ("\\(/\\|\\`\\)\\.bash\\(rc\\)?_[^/]*\\'" . sh-mode)
+
+         ("git-?flow\\(?:-\\w+\\)?\\'" . sh-mode)
+         ("\\(/\\|\\`\\)\\.gitshrc\\'" . sh-mode)
+         ("\\(/\\|\\`\\)\\.gitconfig_[^/]*\\'" . conf-mode)
          ("\\.env\\'" . shell-script-mode)
          ("\\.bas\\'" . visual-basic-mode)
          ("inputrc" . rl-mode)

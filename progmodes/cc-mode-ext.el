@@ -774,4 +774,5 @@ the directory part and without suffix. Thus for
 ;; string is fontified with an not font-lock-string-face."
 ;;   nil)
 
+(provide 'cc-mode-ext)
 ;;; cc-mode-ext.el ends here

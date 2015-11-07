@@ -132,7 +132,6 @@
 
 (load-library "misc-ext")
 (load-library "simple-ext") 
-(load-library "cc-mode-ext") 
 (load-library "hi-lock-ext") 
 (load-library "project") 
 (load-library "kmacro-ext") 

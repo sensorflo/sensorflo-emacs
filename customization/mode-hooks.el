@@ -139,6 +139,7 @@
 ;; defaults for all projects
 (defun default-c-mode-common-hook ()
   (message "default-c-mode-common-hook")
+  (require 'cc-mode-ext)
   (auto-fill-mode t)
   (require 'filladapt)
   (c-setup-filladapt)

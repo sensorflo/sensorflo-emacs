@@ -79,13 +79,9 @@
   (setenv "ESHELL" "D:/cygwin/bin/bash.exe"))
 
 ;; autoload
-(setq generated-autoload-file (concat user-emacs-directory "customization/loaddefs-custom.el"))
-(load-file generated-autoload-file)
-
-;; todo!!!! when not yet exists, generate & byte compile !!!!!!!
-(load-library "loaddefs-site-lisp")
-
-(load-file (concat user-emacs-directory "site-lisp/loaddefs-local-site-lisp.el"))
+(load-library "loaddefs-custom")
+(load-library "loaddefs-site-lisp") ; todo: when not yet exists, generate & byte compile
+(load-library "loaddefs-local-site-lisp")
 
 ;; custom-file
 ;; some modes initialize stuff using their custom variables while loading, thus

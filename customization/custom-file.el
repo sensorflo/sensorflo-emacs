@@ -144,8 +144,6 @@
    (quote
     (byte-compile chgrp chmod chown compress copy delete hardlink load move print shell symlink touch uncompress)))
  '(dired-recursive-deletes (quote always))
- '(display-time-default-load-average nil)
- '(display-time-mode nil)
  '(doremi-down-keys (quote (down 14)))
  '(doremi-up-keys (quote (up 16)))
  '(doxym-break-section-line nil)

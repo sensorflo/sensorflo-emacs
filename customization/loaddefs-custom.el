@@ -16,6 +16,51 @@ Turning on EF mode runs the normal hook `ef-mode-hook'.
 
 ;;;***
 
+;;;### (autoloads nil "../misc/hi-lock-ext" "../misc/hi-lock-ext.el"
+;;;;;;  (20741 14150 0 0))
+;;; Generated autoloads from ../misc/hi-lock-ext.el
+
+(autoload 'highlight-toggle-sexp-or-region "../misc/hi-lock-ext" "\
+Toggle highlighting of sexp-at-point or region.
+
+It's the region if mark is active, it's the sexp at point
+otherwise. If it is already highlighted, unhighlight it. The face
+used for highlighting is the first unused face of
+`highlight-face-list'
+
+\(fn)" t nil)
+
+(autoload 'highlight-arguments "../misc/hi-lock-ext" "\
+Highlights all arguments of current C/C++ method, each in a
+  different face. This is done by calling
+  highlight-toggle-sexp-or-region for each argument of the
+  method.
+
+\(fn)" t nil)
+
+(autoload 'highlight-members "../misc/hi-lock-ext" "\
+Highlights all member identifiers, i.e. all identifiers that
+  follow the naming ESEC guidelines for class members.
+
+\(fn)" t nil)
+
+(autoload 'highlight-arguments-uni "../misc/hi-lock-ext" "\
+Highlights all argument identifiers (i.e. identifiers that follow the naming ESEC guidelines
+
+\(fn)" t nil)
+
+(autoload 'highlight-locals "../misc/hi-lock-ext" "\
+Highlights all locals identifiers - however with a imprecise regex
+
+\(fn)" t nil)
+
+(autoload 'unhighlight-all "../misc/hi-lock-ext" "\
+Unhighlight all highlightened sexp in current buffer
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "../misc/multiple-cursors/mc-edit-lines" "../misc/multiple-cursors/mc-edit-lines.el"
 ;;;;;;  (21137 60452 341375 985000))
 ;;; Generated autoloads from ../misc/multiple-cursors/mc-edit-lines.el

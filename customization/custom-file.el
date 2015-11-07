@@ -195,7 +195,6 @@
  '(glasses-separator "_")
  '(global-auto-revert-mode t)
  '(global-font-lock-mode t)
- '(global-hi-lock-mode t)
  '(grep-command "grep -n '' *{cpp,h,idl}")
  '(grep-find-command
    "find .  \\

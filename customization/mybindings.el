@@ -98,6 +98,13 @@
 (global-set-key [C-M-down] 'move-text-down)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
+(global-set-key "\C-xw" (make-sparse-keymap))
+(global-set-key "\C-xws" 'highlight-toggle-sexp-or-region)
+(global-set-key "\C-xwu" 'unhighlight-all)
+(global-set-key "\C-xwa" 'highlight-arguments)
+(global-set-key "\C-xwA" 'highlight-arguments-uni)
+(global-set-key "\C-xwm" 'highlight-members)
+
 (global-set-key [f7]   'recompile)
 (global-set-key [f10]  'ediff-show-registry)
 

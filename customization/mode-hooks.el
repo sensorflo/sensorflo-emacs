@@ -1174,18 +1174,6 @@
 
 (add-hook 'xdict-hook 'my-xdict-hook)
 
-;;; hi-lock
-;; ----------------------------------------------------------------------------
-(defun my-hi-lock-mode-hook ()
-  ;; or is it better to use eval-after-load?
-  (define-key hi-lock-map "\C-xws" 'highlight-toggle-sexp-or-region)
-  (define-key hi-lock-map "\C-xwu" 'unhighlight-all)
-  (define-key hi-lock-map "\C-xwa" 'highlight-arguments)
-  (define-key hi-lock-map "\C-xwA" 'highlight-arguments-uni)
-  (define-key hi-lock-map "\C-xwm" 'highlight-members))
-
-(add-hook 'hi-lock-mode-hook 'my-hi-lock-mode-hook)
-
 ;;; custom
 ;; ----------------------------------------------------------------------------
 (defun my-Custom-mode-hook ()

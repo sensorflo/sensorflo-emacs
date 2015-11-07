@@ -1272,6 +1272,7 @@
 
 (defun my-prog-mode-hook ()
   (mode-message-start "my-prog-mode-hook")
+  (gud-tooltip-mode t)
   (mode-message-end "my-prog-mode-hook"))
 
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)

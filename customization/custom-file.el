@@ -206,7 +206,6 @@
  '(grep-highlight-matches t)
  '(grep-scroll-output t)
  '(grep-window-height 15)
- '(gud-tooltip-mode t)
  '(gud-tooltip-modes
    (quote
     (gud-mode c-mode c++-mode fortran-mode python-mode cperl-mode)))

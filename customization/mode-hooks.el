@@ -1259,6 +1259,7 @@
 ;; (currently) read only
 (defun my-edit-mode-hook ()
   (mode-message-start "my-edit-mode-hook")
+  (show-paren-mode t)
   (whitespace-mode t)
   (ws-trim-mode)
   (fci-mode t)

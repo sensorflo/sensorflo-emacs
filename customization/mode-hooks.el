@@ -143,6 +143,7 @@
   (require 'filladapt)
   (c-setup-filladapt)
   (hs-minor-mode t)
+  (outline-minor-mode t)
   (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet)))) 
   (setq comment-start-skip "\\(//[/!]*\\|/\\*[*!]*\\)\\s-*") ;should be part of doxymacs?
   (when (null comment-end-skip)

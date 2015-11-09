@@ -202,6 +202,7 @@
 
          ("\\.h\\'" . c++-mode) ; .h is c-mode by default
          ("\\.tl[hi]\\'". c++-mode)
+         ("\\.\\(boc\\|boh\\)\\'". c++-mode)
          ;; .text is text-mode by default
          ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
          ("\\.lo[g0-9]\\'" . logfile-mode)

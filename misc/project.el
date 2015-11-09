@@ -51,6 +51,7 @@ Returns nil if it is unknown."
         (case-fold-search t))
     (cond
      ((null actual-fn) nil)
+     ((string-match "/src/[^/\n]*xentis[^/\n]*/" actual-fn) 'project-xentis)
      ((string-match "/\\(inos\\|inco\\|lua\\)\\(/\\|$\\)" actual-fn) 'project-indel) ; before dragon, because it is contained within dragon
      ((string-match "/diebonder/pc\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
      ((string-match "/Common\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)

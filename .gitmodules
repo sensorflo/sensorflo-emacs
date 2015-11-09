@@ -56,3 +56,6 @@
 [submodule "textmodes/xmlunicode"]
 	path = textmodes/xmlunicode
 	url = https://github.com/sensorflo/xmlunicode.git
+[submodule "progmodes/git-modes"]
+	path = progmodes/git-modes
+	url = https://github.com/sensorflo/git-modes.git

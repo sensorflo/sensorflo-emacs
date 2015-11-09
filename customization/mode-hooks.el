@@ -140,6 +140,7 @@
 (defun default-c-mode-common-hook ()
   (message "default-c-mode-common-hook")
   (auto-fill-mode t)
+  (require 'filladapt)
   (c-setup-filladapt)
   (hs-minor-mode t)
   (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet)))) 
@@ -147,6 +148,7 @@
   (when (null comment-end-skip)
     (setq comment-end-skip "\\s-*\\*+/"))
   (abbrev-mode 0)
+  (require 'doxymacs)
   (doxymacs-mode 1)
   (doxymacs-font-lock)
 

@@ -256,6 +256,9 @@ qt: /*! ... */"
     "\n"
     "#endif // " (upcase (tempo-lookup-named 'class)) "__H_\n"))
 
+(tempo-define-snippet "c-delete-copy-ctor-and-assignment"
+  '((c-class-name) "(const " (c-class-name) "&) = delete;" > n
+    (c-class-name) "& operator=(const " (c-class-name) "&) = delete;" >))
 
 ;; comment block
 (tempo-define-template "c-comment-block"

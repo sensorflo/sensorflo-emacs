@@ -78,6 +78,15 @@
   (setenv "SHELL" "D:/cygwin/bin/bash.exe")
   (setenv "ESHELL" "D:/cygwin/bin/bash.exe"))
 
+;; Setup quick and correct (according to my personal preferences) loading of
+;; libraries. Obviously this should be done before loading any library. It
+;; woudn't be an error if a library was loaded before.
+(setq load-prefer-newer t)
+(require 'auto-compile) ; not that .elc are only ever updated but never created
+(setq auto-compile-display-buffer nil)
+(auto-compile-on-load-mode 1)
+(auto-compile-on-save-mode 1)
+
 ;; autoload
 (load-library "loaddefs-custom")
 (load-library "loaddefs-site-lisp") ; todo: when not yet exists, generate & byte compile

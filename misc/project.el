@@ -47,7 +47,10 @@
 (defun project-root-type (&optional file-name)
   "Returns the root type of the project of the passed file/directory name.
 Returns nil if it is unknown."
-  (let ((actual-fn (or file-name (buffer-file-name) default-directory))
+  (let ((actual-fn (or
+                    (when (stringp file-name) file-name)
+                    (when (stringp buffer-file-name) buffer-file-name)
+                    (when (stringp default-directory) default-directory)))
         (case-fold-search t))
     (cond
      ((null actual-fn) nil)

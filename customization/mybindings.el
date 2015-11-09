@@ -59,6 +59,7 @@
 (global-set-key [remap fill-paragraph]          'fill-paragraph-dwim)
 (global-set-key [remap yank]                    'yank-ext)
 (global-set-key [remap yank-pop]                'yank-pop-ext) ;see also yank-push below
+(global-set-key [remap comment-dwim]            'comment-dwim-ext)
 
 
 ;;; redefine existing bindings with semantically different functionality

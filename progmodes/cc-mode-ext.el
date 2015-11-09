@@ -729,6 +729,9 @@ the directory part and without suffix. Thus for
       (tempo-template-c-block)
     (insert ?{)))
 
+(defvar c-doc-comment-char ?*
+  "Char to be used afer '/*'")
+
 (defun c-toggle-comment-style ()
   ""
   (interactive)
@@ -741,10 +744,12 @@ the directory part and without suffix. Thus for
       (delete-region (match-beginning 0) (match-end 0))
       (beginning-of-line)
       (open-line 1)
-      (insert "/**" str " */")
+      (insert "/*" c-doc-comment-char str " */")
       (indent-for-tab-command)))
    ((looking-at "//")
-    (replace-regexp "//\\(.*?\\)\\s-*$" "/**\\1 */" nil (point) (line-end-position)))
+    (replace-regexp "//\\(.*?\\)\\s-*$"
+                    (concat "/*" (string c-doc-comment-char) "\\1 */")
+                    nil (point) (line-end-position)))
    ((looking-at "/\\*")
     (replace-regexp "/\\*[*!]*\\(.*?\\)\\**/" "//\\1" nil (point) (line-end-position)))))
 

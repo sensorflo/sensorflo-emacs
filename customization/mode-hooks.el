@@ -178,9 +178,8 @@
   (subword-mode t)
 
   (setq c-basic-offset 2)
-  ;; (set (make-local-variable 'compilation-error-regexp-alist)
-  ;; '(gnu-sensorflo gcc-include))
-  (setq compilation-error-regexp-alist '(gnu-sensorflo gcc-include doxygen))
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       '(gnu-sensorflo gcc-include doxygen))
   (outline-c-mode-common)
   (my-c-mode-common-bindings))
 

@@ -533,14 +533,42 @@ read only flag is automatically unset."
 (add-to-list
  'compilation-error-regexp-alist-alist
  '(gnu-sensorflo
-   "^\\(?:file:\\|[a-zA-Z0-9]+:[ \t]+\\)?\\(.+?\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|[^0-9\n]\\)"
-   1 2 3 (4 . nil)))
+   "^\\(?:[^ \t:]+:[ \t]+\\)?\\(.*?[^0-9\n]\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|\\( *required from\\| *note\\)\\|[^0-9\n]\\)"
+   1 2 3 (4 . 5)))
+
+;; The vanila gcc-include does not make the type unconditionally 'warning' as I
+;; want it to be.
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(gcc-include-sensorflo
+   "^\\(?:In file included \\|                 \\|\t\\)from \
+\\([0-9]*[^0-9\n]\\(?:[^\n :]\\| [^-/\n]\\|:[^ \n]\\)*?\\):\
+\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?"
+   1 2 3 0))
 
 (add-to-list
  'compilation-error-regexp-alist-alist
  '(doxygen
    "^\\(.*?[^0-9\n]\\)(\\([0-9]+\\)):\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|\\)"
    1 2 nil (3 . nil)))
+
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(cppunit
+   "^[0-9]+) .*? line: \\([0-9]+\\)[ \t]*\\(.+\\)"
+   2 1))
+
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(xentis-codegen
+   "^[ \t]*in file \\(.+?\\) on line \\([0-9]+\\)"
+   1 2))
+
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(xentis-log
+   "^.......... ..:..:...[^ ]* <[^>]+> \\[\\(?:ERROR\\|\\(WARN\\)\\|\\(.+\\)\\)?\\] \\(.*?\\):\\([0-9]+\\)"
+   3 4 nil (1 . 2)))
 
 ;; The original compilation-mode-font-lock-keywords does highlight to much stuff
 ;; for my taste. That results in wrong/misleading highlights in my makefiles.

@@ -89,7 +89,7 @@
  '(comment-column 1)
  '(compilation-ask-about-save nil)
  '(compilation-auto-jump-to-first-error t)
- '(compilation-error-regexp-alist (quote (gnu gcc-include msft perl)))
+ '(compilation-error-regexp-alist (quote (xentis-log gnu-sensorflo gcc-include-sensorflo doxygen perl cppunit xentis-codegen)))
  '(compilation-error-regexp-systems-list (quote (gnu 4bsd msft)))
  '(compilation-message-face (quote default))
  '(compilation-read-command t)

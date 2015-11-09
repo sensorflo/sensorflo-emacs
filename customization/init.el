@@ -48,7 +48,8 @@
 (dolist
     (x (append
 	'("site-lisp/"
-	  "site-lisp/ecb-2.40/")
+	  "site-lisp/ecb-2.40/"
+          "site-lisp/vlfi/")
 	(if (not (and (>= emacs-major-version 23) (>= emacs-minor-version 2)))
 	    (mapcar
 	     (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))

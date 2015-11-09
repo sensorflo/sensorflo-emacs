@@ -180,9 +180,6 @@
          ("\\(/\\|\\`\\)localprofile\\'" . sh-mode)
          ("\\(/\\|\\`\\)\\.bash\\(rc\\)?_[^/]*\\'" . sh-mode)
 
-         ("git-?flow\\(?:-\\w+\\)?\\'" . sh-mode)
-         ("\\(/\\|\\`\\)\\.gitshrc\\'" . sh-mode)
-         ("\\(/\\|\\`\\)\\.gitconfig_[^/]*\\'" . conf-mode)
          ("\\.env\\'" . shell-script-mode)
          ("\\.bas\\'" . visual-basic-mode)
          ("inputrc" . rl-mode)
@@ -193,6 +190,9 @@
          ;; the standard git config / attribute files to auto-mode-aliast via
          ;; autoload.
          ("\\(/\\|\\`\\)\\.gitconfig_[^/]*\\'" . gitconfig-mode)
+         ("git-?flow\\(?:-\\w+\\)?\\'" . sh-mode)
+         ("\\(/\\|\\`\\)\\.gitshrc\\'" . sh-mode)
+         ("\\(/\\|\\`\\)git-rebase-todo\\'" . git-irb-mode)
 
          ("\\.h\\'" . c++-mode) ; .h is c-mode by default
          ("\\.tl[hi]\\'". c++-mode)
@@ -218,7 +218,6 @@
          ("\\.cmake\\'" . cmake-mode)
          ("\\.\\(frm\\|bas\\|cls\\|vb\\)$" . vbnet-mode)    
          ("\\.sln\\'" . sln-mode)    
-         ("\\(\\`\\|/\\)git-rebase-todo" . git-irb-mode)    
          ("\\b[Aa]utoexp\\.dat\\'" . autoexp-mode)    
          ("\\.\\(dot\\|gv\\)\\'" . graphviz-dot-mode)    
          ("\\.g4?\\'" . antlr-mode)  ; default only has .g

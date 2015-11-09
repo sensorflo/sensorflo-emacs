@@ -440,6 +440,14 @@
 
 (add-hook 'conf-mode-hook 'my-conf-mode-hook)
 
+;;; gitconfig mode
+;; ----------------------------------------------
+(defun my-gitconfig-mode-hook()
+  ;; because Git by default creates the config file using tabs, not spaces
+  (setq indent-tabs-mode t))
+
+(add-hook 'gitconfig-mode-hook 'my-gitconfig-mode-hook)
+
 ;;; visual basic .NET
 ;; ----------------------------------------------
 (add-hook 'vbnet-mode-hook 'my-vbnet-mode-hook)

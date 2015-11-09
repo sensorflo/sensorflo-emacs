@@ -188,6 +188,12 @@
          ("inputrc" . rl-mode)
          ("\\.bat\\'" . batch-mode)
          ("\\.ps1\\'" . powershell-mode)
+
+         ;; gitconfig-mode and gitattributes-mode already autonomously added
+         ;; the standard git config / attribute files to auto-mode-aliast via
+         ;; autoload.
+         ("\\(/\\|\\`\\)\\.gitconfig_[^/]*\\'" . gitconfig-mode)
+
          ("\\.h\\'" . c++-mode) ; .h is c-mode by default
          ("\\.tl[hi]\\'". c++-mode)
          ;; .text is text-mode by default

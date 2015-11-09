@@ -637,6 +637,46 @@ Type \\[describe-mode] in the shell buffer for a list of commands.
 
 ;;;***
 
+;;;### (autoloads (gitattributes-mode) "gitattributes-mode" "gitattributes-mode.el"
+;;;;;;  (22080 25480 169740 28000))
+;;; Generated autoloads from gitattributes-mode.el
+
+(autoload 'gitattributes-mode "gitattributes-mode" "\
+A major mode for editing .gitattributes files.
+\\{gitattributes-mode-map}
+
+\(fn)" t nil)
+
+(dolist (pattern '("/\\.gitattributes\\'" "/\\.git/info/attributes\\'" "/git/attributes\\'")) (add-to-list 'auto-mode-alist (cons pattern #'gitattributes-mode)))
+
+;;;***
+
+;;;### (autoloads (gitconfig-mode) "gitconfig-mode" "gitconfig-mode.el"
+;;;;;;  (22080 25469 196393 913000))
+;;; Generated autoloads from gitconfig-mode.el
+
+(autoload 'gitconfig-mode "gitconfig-mode" "\
+A major mode for editing .gitconfig files.
+
+\(fn)" t nil)
+
+(dolist (pattern '("/\\.gitconfig\\'" "/\\.git/config\\'" "/git/config\\'" "/\\.gitmodules\\'")) (add-to-list 'auto-mode-alist (cons pattern 'gitconfig-mode)))
+
+;;;***
+
+;;;### (autoloads (gitignore-mode) "gitignore-mode" "gitignore-mode.el"
+;;;;;;  (22080 25454 689326 200000))
+;;; Generated autoloads from gitignore-mode.el
+
+(autoload 'gitignore-mode "gitignore-mode" "\
+A major mode for editing .gitignore files.
+
+\(fn)" t nil)
+
+(dolist (pattern (list "/\\.gitignore\\'" "/\\.git/info/exclude\\'" "/git/ignore\\'")) (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
+
+;;;***
+
 ;;;### (autoloads nil "god-mode" "god-mode.el" (21136 61243 131006
 ;;;;;;  40000))
 ;;; Generated autoloads from god-mode.el

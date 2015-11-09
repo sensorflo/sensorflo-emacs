@@ -120,6 +120,11 @@
 (require 'cppkoans-mode)
 (require 'filladapt)
 
+;; My customization of different modes references faces markup-faces. It's
+;; error prone to try that each respective mode-hook contains a (require
+;; 'markup-faces). So it's done once here.
+(require 'markup-faces)
+
 (load-library "misc-ext")
 (load-library "simple-ext") 
 (load-library "cc-mode-ext") 

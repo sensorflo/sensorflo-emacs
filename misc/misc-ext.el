@@ -365,6 +365,13 @@ The app is chosen from your OS's preference."
         (mapc (lambda (fPath) (shell-command (format "open \"%s\"" fPath)) )  myFileList) )
        ((string-equal system-type "gnu/linux")
         (mapc (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath)) ) myFileList))))))
+
+(defun dired-find-file-literally ()
+  "In Dired, visit literally the file or directory named on this line."
+  (interactive)
+  (let ((find-file-run-dired t))
+    (find-file-literally (dired-get-file-for-visit))))
+
 
 ;;; fill
 ;; ----------------------------------------------------------------------

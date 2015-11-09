@@ -990,7 +990,8 @@
   (local-set-key "*."               'dired-mark-extension-dwim) 
   (local-set-key "O"                'dired-open-in-external-app)
   (local-set-key [(control return)] 'project-dired-find-main-file)
-  (local-set-key "*i"               'project-dired-mark-files))
+  (local-set-key "*i"               'project-dired-mark-files)
+  (local-set-key "f"                'dired-find-file-literally))
 
 ;;; flyspell / flyspell timer (needs aspell)
 ;; --------------------------------------------------------------------

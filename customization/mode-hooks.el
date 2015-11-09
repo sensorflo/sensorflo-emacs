@@ -18,6 +18,7 @@
 (require 'rx)
 (require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
+
 ;;; programming modes 
 ;;; ===================================================================
 
@@ -509,6 +510,7 @@
                        ".png")))
          (concat "dot -Tpng " srcfilename " >" outfilename " && display " outfilename))))
 
+
 ;;; text modes 
 ;;; ===================================================================
 
@@ -888,6 +890,7 @@
 (add-hook 'enriched-mode-hook 'my-enriched-mode-hook)
 
 
+
 ;;; misc modes
 ;;; ============================================================================
 
@@ -1211,6 +1214,7 @@
 (add-hook 'whitespace-mode-hook 'my-whitespace-mode-hook)
 
 
+
 ;;; not really modes but other hooks 
 ;;; ===================================================================
 
@@ -1220,6 +1224,7 @@
 (add-hook 'before-save-hook 'custom-file-before-save-hook t)
 
 
+
 ;;; common (all, text, programming, ...)
 ;;; ===================================================================
 ;; See also init.el for a summary of how to customize Emacs

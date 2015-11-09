@@ -35,6 +35,7 @@
   (list
    ;; commit lines which need attention
    (list "^\\s-*\\w+\\s-+[a-f0-9]+\\s-+\\(.*!!+.*\\)$" (list 1 'font-lock-warning-face t))
+   (list "^\\s-*\\w+\\s-+[a-f0-9]+\\s-+\\(commit fix\\b.*\\)$" (list 1 'font-lock-warning-face t))
    (list "^\\s-*\\w+\\s-+[a-f0-9]+\\s-+\\(.*<< auto moved\\b.*\\)$" (list 1 'font-lock-semi-unimportant t))
    ;; auto moved commit's command should be either squash or fixup
    (list "^\\s-*\\(p\\|pick\\|r\\|reword\\|e\\|edit\\)\\s-+\\w+\\s-+\\(.*<< auto moved\\b.*\\)$"
@@ -46,10 +47,7 @@
 
    ;; commit-id is not really important
    (list "^\\s-*\\w+\\s-+\\([a-f0-9]+\\)\\b"
-         (list 1 'font-lock-semi-unimportant t))
-
-   (list "^\\s-*#\\s-*\\(p\\|pick\\|r\\|reword\\|e\\|edit\\|s\\|squash\\|f\\|fixup\\|x\\|exec\\)\\s-+[a-f0-9]+\\s-+.*\n" (list 0 'font-lock-semi-unimportant t))
-   ))
+         (list 1 'font-lock-semi-unimportant t))))
 
 (defun git-irb-move-commit-at-point-to-referenced-commit ()
   (interactive)
@@ -60,7 +58,7 @@
          (re-prebanter "^\\s-*\\w+\\s-+\\w+\\s-*")
          (re-dst (concat re-prebanter "")))
     (beginning-of-line)
-    (if (not (looking-at (concat re-prebanter ".*commit fix\\(?:for \\(?:commit \\)?\\)? '\\(.*\\)'")))
+    (if (not (looking-at (concat re-prebanter ".*commit fix \\(?:for \\(?:commit \\)?\\)?['\"]\\(.*\\)['\"]")))
         (error "point is not on a commit line having a reference to another commit on it"))
     (goto-char (point-min))
     (when (not (save-match-data (re-search-forward (concat re-prebanter ".*" (match-string 1)) src-start t)))
@@ -99,6 +97,8 @@ See (finder-commentary \"git-irb-mode\")."
   (kill-all-local-variables)
   
   ;; syntax table
+  (modify-syntax-entry ?\" ".")
+  (modify-syntax-entry ?\' ".")
   (modify-syntax-entry ?\# "<")
   (modify-syntax-entry ?\n ">")
   (modify-syntax-entry ?\r ">")

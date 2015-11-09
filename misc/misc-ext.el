@@ -326,6 +326,23 @@ and '.h' matches files ending in 'ch' where c is any character."
   (interactive "P")
   (dired-map-over-marks-check (function dired-update-file-autoloads) arg 'update-file-autoloads t))
 
+(defun dired-c-convert-ifndef-to-pragma-once ()
+  ;; Return nil for success, offending file name else.
+  (let ((file (dired-get-filename)) failure)
+    (condition-case err
+        (progn
+          (find-file file)
+          (c-convert-ifndef-to-pragma-once))
+      (error (setq failure err)))
+    (if (not failure)
+	nil
+      (dired-log "c-convert-ifndef-to-pragma-once error for %s:\n%s\n" file failure)
+      (dired-make-relative file))))
+
+(defun dired-c-convert-ifndef-to-pragma-once (&optional arg)
+  (interactive "P")
+  (dired-map-over-marks-check (function c-convert-ifndef-to-pragma-once) arg 'c-convert-ifndef-to-pragma-once t))
+
 (defun dired-open-in-external-app (&optional file)
   "In dired, open file in external app.
 

@@ -723,6 +723,12 @@ the directory part and without suffix. Thus for
     
   ))
 
+(defun c-electric-left-brace ()
+  (interactive)
+  (if (looking-at "[ \t]*$")
+      (tempo-template-c-block)
+    (insert ?{)))
+
 (defun c-toggle-comment-style ()
   ""
   (interactive)
@@ -741,6 +747,21 @@ the directory part and without suffix. Thus for
     (replace-regexp "//\\(.*?\\)\\s-*$" "/**\\1 */" nil (point) (line-end-position)))
    ((looking-at "/\\*")
     (replace-regexp "/\\*[*!]*\\(.*?\\)\\**/" "//\\1" nil (point) (line-end-position)))))
+
+(defun c-convert-ifndef-to-pragma-once ()
+  (interactive)
+  (let (found-match)
+    (save-restriction
+      (widen)
+      (goto-char 0)
+      (when (looking-at
+             "\\`[ \t\n]*\\(#ifndef[ \t]*\\([a-zA-Z0-9_]+\\)[ \t]*\n#define[ \t]*\\2.*$\\)")
+        (save-match-data
+          (when (re-search-forward "^[ \t]*#endif\\(?:[ \t]*//.*?\n\\)?[ \t\n]*\\'")
+            (replace-match "")
+            (setq found-match t)))
+        (when found-match
+          (replace-match "#pragma once" t t nil 1))))))
 
 ;; (defun c-font-lock-invalid-string ()
 ;;   "Replacement of the original `c-font-lock-invalid-string'.

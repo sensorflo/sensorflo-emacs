@@ -23,6 +23,7 @@
 (defalias 'fl 'find-library) 
 (defalias 'll 'load-library)  
 (defalias 'ff 'find-file) ; C-x f is quick, but sometimes my mind thinks I ought to start with M-x f(ind)...
+(defalias 'ffl 'find-file-literally)
 (defalias 'id 'insert-date) 
 (defalias 'iid 'insert-initials-date) 
 (defalias 'url 'browse-url-at-point) 
@@ -134,6 +135,7 @@
 (defalias 'fpm 'flyspell-prog-mode)
 (defalias 'fsm 'flyspell-mode)
 (defalias 'fm 'flyspell-mode)
+(defalias 'lnm 'line-number-mode)
 
 ;;; marker pen: mp...
 (defalias 'mp0 'markerpen0) 

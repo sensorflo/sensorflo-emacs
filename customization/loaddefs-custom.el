@@ -956,6 +956,23 @@ controlled by the `ws-trim-global-modes' variable.
 
 ;;;***
 
+;;;### (autoloads (xentis-c-mode-common-hook xentis-cperl-mode-hook
+;;;;;;  xentis-find-file-hook) "../projects/xentis" "../projects/xentis.el"
+;;;;;;  (21808 45796 719479 448000))
+;;; Generated autoloads from ../projects/xentis.el
+
+(autoload 'xentis-hook "../projects/xentis" "\
+
+
+\(fn)" nil nil)
+
+(autoload 'xentis-c-mode-common-hook "../projects/xentis" "\
+
+
+\(fn)" nil nil)
+
+;;;***
+
 ;;;### (autoloads nil "../textmodes/adoc-mode/adoc-mode" "../textmodes/adoc-mode/adoc-mode.el"
 ;;;;;;  (21607 29924 702512 772000))
 ;;; Generated autoloads from ../textmodes/adoc-mode/adoc-mode.el

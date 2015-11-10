@@ -34,12 +34,6 @@
 ;; ==================================================
 (message "init file: settings part 1")
 
-;; set the config variable
-(let ((file (concat user-emacs-directory "site-config.el")))
-  (if (file-readable-p file)
-      (load-file file)
-    (setq config nil)))
-
 ;; load-path
 (dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
   (let ((default-directory (concat user-emacs-directory x)))
@@ -56,6 +50,8 @@
 	     '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
   (add-to-list 'load-path (concat user-emacs-directory x)))
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
 
 ;; find-function-C-source-directory
 (setq find-function-C-source-directory
@@ -64,19 +60,6 @@
 		(string-match "[0-9]+\\.[0-9]+" emacs-version)
 		(match-string 0 emacs-version))
 	      "/src/"))
-
-;; environment
-(when (eq config 'office-xp)
-  (add-to-list 'Info-default-directory-list "D:/cygwin/usr/share/info")
-  (add-to-list 'exec-path "D:/cygwin/bin")
-  (setq explicit-shell-file-name "D:/cygwin/bin/bash.exe")
-  (setq shell-file-name "D:/cygwin/bin/bash.exe")
-  (setenv "PATH" (concat "D:\\cygwin\\bin" path-separator "D:\\cygwin\\usr\\local\\bin" path-separator (getenv "PATH"))) 
-  (setenv "HOMESHARE" nil)
-  (setenv "HOME1" "D:\\")
-  (setenv "HOMEDRIVE" "D:\\")
-  (setenv "SHELL" "D:/cygwin/bin/bash.exe")
-  (setenv "ESHELL" "D:/cygwin/bin/bash.exe"))
 
 ;; Setup quick and correct (according to my personal preferences) loading of
 ;; libraries. Obviously this should be done before loading any library. It

@@ -979,9 +979,15 @@ sequence."
   ;;                  ">"))
   )
 
-;; heuristic similar as in ws-trim-mode-heuristic todo: maybe only look at
-;; latin letters and ignore characters with code points larger say 128
+;; heuristic slighlt similar as in ws-trim-mode-heuristic: if more than 5 keys
+;; in A-Z are not bound to self-insert-command then it's not an edit mode.
 (defun is-edit-mode ()
-  (where-is-internal 'self-insert-command nil 'non-ascii))
+  (let ((ch ?A)
+        (bogous-cnt 0))
+    (while (<= ch ?Z)
+      (when (not (equal 'self-insert-command (key-binding (make-string 1 ch) t)))
+        (setq bogous-cnt (1+ bogous-cnt)))
+      (setq ch (1+ ch)))
+    (< bogous-cnt 5)))
 
 ;;; misc-ext.el ends here

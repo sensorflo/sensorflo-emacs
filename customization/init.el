@@ -154,7 +154,8 @@
 
 ;; magic-mode-alist 
 (dolist (x '(("\\s-*/\\*[*!][ \t]*$" . doxym-mode)
-             ("\\(\\s-*\\(//.*\\)?\n\\)*\\([.*]\s-*\n\\)?\\(=+ \\w\\)" . adoc-mode)))
+             ;; This matches my personal AsciiDoc files
+             ("\\(?::encoding:.*\n\\)?//.*AsciiDoc" . adoc-mode)))
   (add-to-list 'magic-mode-alist x))
 
 ;; auto-mode-alist
@@ -222,8 +223,7 @@
          ("\\.ef\\'" . ef-mode)
          ("\\.ll\\'" . llvm-mode)
          ("\\.rs\\'" . rust-mode)
-         ("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode)
-         ("\\(\\`\\|/\\)[-0-9A-Z_]+\\'" . adoc-mode))))
+         ("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode))))
   (setq auto-mode-alist (nconc my-auto-mode-alist auto-mode-alist)))
 
 ;; 1) note the "", that is if an empty extension was given, i.e. the abbrev "ao."

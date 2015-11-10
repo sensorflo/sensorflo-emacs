@@ -62,3 +62,6 @@
 [submodule "progmodes/info-mode"]
 	path = progmodes/info-mode
 	url = https://gist.github.com/a6299a9cd0563abdc02d.git
+[submodule "progmodes/cppkoans-mode"]
+	path = progmodes/cppkoans-mode
+	url = https://github.com/sensorflo/cppkoans-mode.git

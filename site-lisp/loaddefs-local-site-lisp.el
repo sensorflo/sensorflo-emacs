@@ -1358,8 +1358,9 @@ in different ways, using `C-,'.
 
 ;;;***
 
-;;;### (autoloads nil "mediawiki" "mediawiki.el" (21136 61243 131006
-;;;;;;  40000))
+;;;### (autoloads (mediawiki-mode mediawiki-draft-buffer mediawiki-draft-page
+;;;;;;  mediawiki-draft) "mediawiki" "mediawiki.el" (22082 5496 891638
+;;;;;;  619000))
 ;;; Generated autoloads from mediawiki.el
 
 (autoload 'mediawiki-draft "mediawiki" "\
@@ -1380,6 +1381,63 @@ Open a temporary buffer in wikipedia mode for editing an wikipedia
 Mediawiki-draft-buffer sends the contents of the current (temporary)
 buffer to the mediawiki-draft-buffer, see the variable
 mediawiki-draft-data-file.
+
+\(fn)" t nil)
+
+(autoload 'mediawiki-mode "mediawiki" "\
+Major mode for editing articles written in the markup language
+used by Mediawiki.
+
+Wikipedia articles are usually unfilled: newline characters are not
+used for breaking paragraphs into lines. Unfortunately, Emacs does not
+handle word wrapping yet. As a workaround, wikipedia-mode turns on
+longlines-mode automatically. In case something goes wrong, the
+following commands may come in handy:
+
+\\[mediawiki-fill-article] fills the buffer.
+\\[mediawiki-unfill-article] unfills the buffer.
+
+Be warned that function can be dead  slow, better use mediawiki-unfill-paragraph-or-region.
+\\[mediawiki-unfill-paragraph-or-region] unfills the paragraph
+\\[mediawiki-unfill-paragraph-simple] doehe same but simpler.
+
+The following commands put in markup structures.
+\\[mediawiki-insert-strong-emphasis] inserts italics
+\\[mediawiki-insert-bold] inserts bold text
+\\[mediawiki-insert-italics] italics
+\\[mediawiki-insert-header] header
+\\[mediawiki-insert-link] inserts a link
+
+The following commands are also defined:
+\\[mediawiki-insert-user] inserts user name
+\\[mediawiki-insert-signature] inserts ~~~~
+\\[mediawiki-insert-enumerate] inserts enumerate type structures
+\\[mediawiki-insert-itemize] inserts itemize type structures
+\\[mediawiki-insert-hline] inserts a hline
+
+The draft functionality
+\\[mediawiki-draft]
+\\[mediawiki-draft-region]
+\\[mediawiki-draft-view-draft]
+\\[mediawiki-draft-page]
+\\[mediawiki-draft-buffer]
+
+Replying and sending functionality
+\\[mediawiki-reply-at-point-simple]
+\\[mediawiki-draft-reply]
+
+The register functionality
+\\[mediawiki-copy-page-to-register]
+\\[defun mediawiki-insert-page-to-register]
+
+Some simple editing commands.
+\\[mediawiki-enhance-indent]
+\\[mediawiki-yank-prefix]
+\\[mediawiki-unfill-paragraph-or-region]
+
+\\[mediawiki-terminate-paragraph]     starts a new list item or paragraph in a context-aware manner.
+\\[mediawiki-next-header]     moves to the next (sub)section header.
+\\[mediawiki-prev-header]     moves to the previous (sub)section header.
 
 \(fn)" t nil)
 

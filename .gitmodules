@@ -68,3 +68,6 @@
 [submodule "misc/magit"]
 	path = misc/magit
 	url = https://github.com/sensorflo/magit.git
+[submodule "textmodes/mediawiki"]
+	path = textmodes/mediawiki
+	url = https://github.com/sensorflo/mediawiki-el.git

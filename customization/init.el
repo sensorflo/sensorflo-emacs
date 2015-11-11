@@ -99,7 +99,6 @@
   (require 'cygwin-mount)
   (require 'w32-symlinks)
   (require 'w32-browser))
-(require 'ido)
 (load-library "find-file")
 (require 'window-numbering)
 

@@ -71,10 +71,11 @@
 (auto-compile-on-save-mode 1)
 
 ;; autoload
+;; intendet for own libraries
 (load-library "loaddefs-custom")
-(if (locate-library "loaddefs-site-lisp")
-    (load-library "loaddefs-site-lisp")
-  (message "Did not found loaddefs-site-lisp"))
+;; intendet for system wide libraries
+(load-library "loaddefs-site-lisp")
+;; intendet for libraries in .emacs.d/site-lisp
 (load-library "loaddefs-local-site-lisp")
 
 ;; custom-file

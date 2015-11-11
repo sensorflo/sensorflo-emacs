@@ -65,3 +65,6 @@
 [submodule "progmodes/cppkoans-mode"]
 	path = progmodes/cppkoans-mode
 	url = https://github.com/sensorflo/cppkoans-mode.git
+[submodule "misc/magit"]
+	path = misc/magit
+	url = https://github.com/sensorflo/magit.git

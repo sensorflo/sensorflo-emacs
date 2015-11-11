@@ -72,7 +72,9 @@
 
 ;; autoload
 (load-library "loaddefs-custom")
-(load-library "loaddefs-site-lisp") ; todo: when not yet exists, generate & byte compile
+(if (locate-library "loaddefs-site-lisp")
+    (load-library "loaddefs-site-lisp")
+  (message "Did not found loaddefs-site-lisp"))
 (load-library "loaddefs-local-site-lisp")
 
 ;; custom-file

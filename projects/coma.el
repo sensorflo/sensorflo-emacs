@@ -1,9 +1,9 @@
 ;;; coma.el --- customizations specific to the coma project
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;;; Commentary:
-;; 
+;;
 
 ;;; Variables:
 (require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/

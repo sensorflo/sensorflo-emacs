@@ -19,7 +19,7 @@
 (require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
 
-;;; programming modes 
+;;; programming modes
 ;;; ===================================================================
 
 ;;; shell
@@ -28,7 +28,7 @@
 (defun my-sh-mode-hook ()
   (ansi-color-for-comint-mode-on)
   (my-sh-mode-bindings))
-  
+
 ;; todo: think about moving all bindings in this buffer to mybindings.el
 (defun my-sh-mode-bindings()
   (require 'tempos-bash)
@@ -42,8 +42,8 @@
   (local-set-key [(control ?\,)(c)(f)] 'tempo-template-bash-for)
   (local-set-key [(control ?\,)(c)(w)] 'tempo-template-bash-while)
   (local-set-key [(control ?\,)(c)(s)] 'tempo-template-bash-case) ; s for switch
-  (local-set-key [(control ?\,)(c)(c)] 'tempo-template-bash-case-clause) 
-  
+  (local-set-key [(control ?\,)(c)(c)] 'tempo-template-bash-case-clause)
+
   ;; definitions
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(d)(s)] 'tempo-template-bash-def-sub) ;s for subroutin
@@ -63,14 +63,14 @@
 (add-hook 'cperl-mode-hook 'my-cperl-mode-hook)
 (defun my-cperl-mode-hook ()
   (my-cperl-mode-bindings))
-  
+
 (defun my-cperl-mode-bindings()
   (require 'tempos-perl)
 
   (local-set-key [(f5)] 'perldb)
   (local-set-key [(f7)] 'cperl-check-syntax)
   (local-set-key [(f8)] 'cperl-check-syntax)
-  
+
   (local-set-key [(control ?\,)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
 
@@ -82,7 +82,7 @@
   (local-set-key [(control ?\,)(c)(f)] 'tempo-template-perl-for)
   (local-set-key [(control ?\,)(c)(w)] 'tempo-template-perl-while)
   (local-set-key [(control ?\,)(c)(c)] 'tempo-template-perl-continue)
-  
+
   ;; definitions
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(d)(s)] 'tempo-template-perl-def-sub) ;s for subroutin
@@ -106,7 +106,7 @@
   ;; (local-set-key [(f5)] 'python-debug)
   (local-set-key [(f7)] 'python-check)
   (local-set-key [(f8)] 'python-check)
-  
+
   (local-set-key [(control ?\,)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
 
@@ -118,7 +118,7 @@
   (local-set-key [(control ?\,)(c)(f)] 'tempo-template-py-for)
   (local-set-key [(control ?\,)(c)(w)] 'tempo-template-py-while)
   (local-set-key [(control ?\,)(c)(c)] 'tempo-template-py-continue)
-  
+
   ;; definitions
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(d)(c)] 'tempo-template-py-def-class)
@@ -145,7 +145,7 @@
   (c-setup-filladapt)
   (hs-minor-mode t)
   (outline-minor-mode t)
-  (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet)))) 
+  (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet))))
   (setq comment-start-skip "\\(//[/!]*\\|/\\*[*!]*\\)\\s-*") ;should be part of doxymacs?
   (when (null comment-end-skip)
     (setq comment-end-skip "\\s-*\\*+/"))
@@ -161,7 +161,7 @@
      "\\_<noexcept\\_>" "\\_<thread_local\\_>"
      (list "\\_<\\(?:char\\(?:16\\|32\\)_t\\|nullptr_t\\)\\_>" '(0 font-lock-type-face))
      (list "\\_<nullptr\\_>" '(0 font-lock-constant-face))
-     
+
      ;; MS visual studio
      "\\_<__abstract\\_>" "\\_<__alignof\\_>" "\\_<__asm\\_>" "\\_<__assume\\_>"
      "\\_<__based\\_>" "\\_<__box\\_>" "\\_<__cdecl\\_>" "\\_<__declspec\\_>"
@@ -206,20 +206,20 @@
            "\\(" c++-h-outline-level4-regex "\\)"))
     (set (make-local-variable 'outline-level) 'c++-h-outline-level)))
 
-(setq c++-cpp-outline-level1-regex "^\\S-.*\\w+\\s-*::\\s-*\\w+.*(" ) 
-(setq c++-cpp-outline-level2-regex "xxxblabliblabluxxx2" ) 
-(setq c++-cpp-outline-level3-regex "xxxblabliblabluxxx3" ) 
-(setq c++-cpp-outline-level4-regex "xxxblabliblabluxxx4" ) 
+(setq c++-cpp-outline-level1-regex "^\\S-.*\\w+\\s-*::\\s-*\\w+.*(" )
+(setq c++-cpp-outline-level2-regex "xxxblabliblabluxxx2" )
+(setq c++-cpp-outline-level3-regex "xxxblabliblabluxxx3" )
+(setq c++-cpp-outline-level4-regex "xxxblabliblabluxxx4" )
 
 ;; TODO: separate into C++ / doxy / dragon regexes
-(setq c++-h-outline-level1-regex "\\(struct\\|class\\)\\s-*\\sw+\\s-*[^;]*$" ) 
+(setq c++-h-outline-level1-regex "\\(struct\\|class\\)\\s-*\\sw+\\s-*[^;]*$" )
 (setq c++-h-outline-level2-regex "\\s-*\\(private\\|public\\|protected\\)\\s-*:" )
 (setq c++-h-outline-level31-regex "\\s-*\\(//+\\|/\\**!?\\)\\s-*\\([\\\\@]name\\|misc\\)" ) ; groups
 (setq c++-h-outline-level32-regex "\\s-*//[^/]\\|\\s-*/\\*[^*]" ) ; pseudo-sub groups
 (setq c++-h-outline-level3-regex (concat "\\(" c++-h-outline-level31-regex "\\)\\|\\(" c++-h-outline-level32-regex "\\)"))
 (setq c++-h-outline-level41-regex "\\s-*\\(\\s-\\|\\sw\\|[~*&_:<>]\\)+\\(;\\|(\\(\\s-*)\\s-*\\(const\\s-*\\)?;\\)?\\|{\\)\\s-*\\(//.*\\|/\\*.*\\)?$")
 (setq c++-h-outline-level42-regex "\\s-*\\sw+\\s-*(.*)\\s-*;\\s-*$" ) ; like FOO( arg1, arg2 );
-(setq c++-h-outline-level43-regex "\\s-*\\sw+\\s-*(\\s-*\\sw+\\s-*)\\s-*" ) ; like FOO( name ) ( ... 
+(setq c++-h-outline-level43-regex "\\s-*\\sw+\\s-*(\\s-*\\sw+\\s-*)\\s-*" ) ; like FOO( name ) ( ...
 (setq c++-h-outline-level4-regex (concat "\\(" c++-h-outline-level41-regex "\\)\\|\\(" c++-h-outline-level42-regex "\\)\\|\\(" c++-h-outline-level43-regex "\\)"))
 
 (defun c++-cpp-outline-level ()
@@ -245,19 +245,19 @@
   (local-set-key [remap yank] 'yank-and-indent)
   (local-set-key [remap c-mark-function] 'c-mark-function-incl-comment)
   (local-set-key [remap mark-pagee] 'c-mark-block)
-  (local-set-key [remap c-beginning-of-defun] 'c-beginning-of-defun-ext) 
+  (local-set-key [remap c-beginning-of-defun] 'c-beginning-of-defun-ext)
   (local-set-key [remap c-end-of-defun] 'c-end-of-defun-ext)
 
   ;; jump
   (local-set-key [(control ?\.)(o)] 'c-goto-other-defun)
   (local-set-key [(control ?\.)(d)] 'c-goto-declaration)
-  (local-set-key [(control ?\.)(D)] 'c-goto-specific-defun-name) 
-  (local-set-key [(control ?\.)(n)] 'c-forward-defun-name) 
+  (local-set-key [(control ?\.)(D)] 'c-goto-specific-defun-name)
+  (local-set-key [(control ?\.)(n)] 'c-forward-defun-name)
   (local-set-key [(control ?\.)(p)] 'c-beginning-of-defun-param-list)
-  (local-set-key [(control ?\.)(b)] 'c-beginning-of-defun-body) 
-  (local-set-key [(control ?\.)(r)] 'c-recenter-defun-or-region) 
-  (local-set-key [(control ?\.)(c)] 'c-goto-class-declaration) 
-  
+  (local-set-key [(control ?\.)(b)] 'c-beginning-of-defun-body)
+  (local-set-key [(control ?\.)(r)] 'c-recenter-defun-or-region)
+  (local-set-key [(control ?\.)(c)] 'c-goto-class-declaration)
+
   ;; misc
   (local-set-key [(control ?\,)(control ?/)] 'tempo-complete-tag)
   (local-set-key [(control f)(p)] 'remove-parantheses)
@@ -281,20 +281,20 @@
   (local-set-key [(control ?\,)(c)(e)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(c)(e)(e)] 'tempo-template-c-else)
   (local-set-key [(control ?\,)(c)(e)(i)] 'tempo-template-c-else-if)
-  (local-set-key [(control ?\,)(c)(f)] 'tempo-template-doremi-c-for) 
+  (local-set-key [(control ?\,)(c)(f)] 'tempo-template-doremi-c-for)
   (local-set-key [(control ?\,)(c)(w)] 'tempo-template-c-while)
   (local-set-key [(control ?\,)(c)(d)] 'tempo-template-c-do)
   (local-set-key [(control ?\,)(c)(s)] 'tempo-template-c-switch)
   (local-set-key [(control ?\,)(c)(c)] 'tempo-template-c-case)
-  (local-set-key [(control ?\,)(c)(d)] 'tempo-template-c-default) 
-  (local-set-key [(control ?\,)(c)(t)] 'tempo-template-c-try) 
-  (local-set-key [(control ?\,)(c)(k)] 'tempo-template-c-catch) 
+  (local-set-key [(control ?\,)(c)(d)] 'tempo-template-c-default)
+  (local-set-key [(control ?\,)(c)(t)] 'tempo-template-c-try)
+  (local-set-key [(control ?\,)(c)(k)] 'tempo-template-c-catch)
   (local-set-key [(control ?\,)(c)(b)] 'tempo-template-c-block)
 
   ;; comments
   (local-set-key [(control ?\,)(k)] (make-sparse-keymap))
-  (local-set-key [(control ?\,)(k)(k)] 'tempo-template-c-comment-block) 
-  (local-set-key [(control ?\,)(k)(b)] 'tempo-template-c-comment-block) 
+  (local-set-key [(control ?\,)(k)(k)] 'tempo-template-c-comment-block)
+  (local-set-key [(control ?\,)(k)(b)] 'tempo-template-c-comment-block)
   (local-set-key [(control ?\,)(k)(g)] 'tempo-template-c-member-group-named)
   (local-set-key [(control ?\,)(k)(G)] 'tempo-template-c-member-group)
   (local-set-key [(control ?\,)(k)(u)] (make-sparse-keymap))
@@ -304,9 +304,9 @@
 
   ;; preprocessor
   (local-set-key [(control ?\,)(p)] (make-sparse-keymap))
-  (local-set-key [(control ?\,)(p)(i)] 'tempo-template-c-include) 
-  (local-set-key [(control ?\,)(p)(I)] 'tempo-template-c-include-system) 
-  
+  (local-set-key [(control ?\,)(p)(i)] 'tempo-template-c-include)
+  (local-set-key [(control ?\,)(p)(I)] 'tempo-template-c-include-system)
+
   ;; names / ids
   (local-set-key [(control ?\,)(n)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(n)(n)] 'insert-class-name-dwim)
@@ -314,13 +314,13 @@
 
   ;; text
   (local-set-key [(control ?\,)(t)] (make-sparse-keymap))
-  
+
   ;; log / messages
   (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
-  
+
   ;; error
   (local-set-key [(control ?\,)(e)] (make-sparse-keymap))
-  
+
   ;; definitions / declarations
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
 
@@ -340,8 +340,8 @@
 
 ;; idl mode
 ;; ------------------------------------------------------------------
-(setq idl-outline-level1-regex "[i]nterface\\|[l]ibrary" ) 
-(setq idl-outline-level2-regex "\\s-*\\(/\\*+!?\\|//+\\)\\s-*\\(@name\\b\\|misc\\)" )  
+(setq idl-outline-level1-regex "[i]nterface\\|[l]ibrary" )
+(setq idl-outline-level2-regex "\\s-*\\(/\\*+!?\\|//+\\)\\s-*\\(@name\\b\\|misc\\)" )
 (setq idl-outline-level3-regex "\\(\\s-+\\sw+\\)\\{,4\\}\\s-*[({]\\s-*\\()\\s-*;\\s-*\\)?$" )
 
 (defun my-idl-mode-hook ()
@@ -379,7 +379,7 @@
 
 ;;; emacs lisp / lisp / lisp interacton major mode
 ; ------------------------------------------------------------------
-(let ((hook-list      
+(let ((hook-list
        (list
         'lisp-mode-hook
         'lisp-interaction-mode
@@ -394,17 +394,17 @@
   (hs-minor-mode t)
   (outline-minor-mode t)
   (setq tab-width 8)
-  
+
   (local-set-key [(meta m)(meta m)] 'kmacro-start-stop-macro-ext)
-  
+
   (local-set-key [(control ?\,)] (make-sparse-keymap))
 
   (setq paragraph-start "\f\\|[ \t]*$\\|^[ \t]*\"")
-  
+
   (font-lock-add-keywords nil (list
      (list (concat "^\\s-*(\\s-*def\\w*\\s-*[^ \t(]+\\s-*([^)]*)\\s-*"
-		   "\\(?:\n\\s-*\\)?\"\\(\\)")
-	   '(1 font-lock-unimportant t)) 
+                   "\\(?:\n\\s-*\\)?\"\\(\\)")
+           '(1 font-lock-unimportant t))
      ))
 
   ;; (require 'autopair)
@@ -422,7 +422,7 @@
   (local-set-key [(control ?\,)(d)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(d)(f)] 'tempo-template-elisp-defun) ;f for function
   (local-set-key [(control ?\,)(d)(d)] 'tempo-template-elisp-defun) ;f for function
-  
+
   ;; misc
   (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(m)(l)] 'tempo-template-elisp-let))
@@ -440,7 +440,7 @@
   (outline-minor-mode t))
 
 
-;;; conf mode 
+;;; conf mode
 ;; ----------------------------------------------
 (defun my-conf-mode-hook()
   )
@@ -465,7 +465,7 @@
   (require 'tempos-xml-doc)
 
   (font-lock-add-keywords nil (list
-     (list "<[^>]+?>" '(0 font-lock-semi-unimportant prepend)) 
+     (list "<[^>]+?>" '(0 font-lock-semi-unimportant prepend))
      ))
 
   (local-set-key [(return)] 'indent-new-comment-line)
@@ -480,9 +480,9 @@
 
   ;; comment
   (local-set-key [(control ?\,)(k)] (make-sparse-keymap))
-  (local-set-key [(control ?\,)(k)(s)] 'tempo-template-xml-doc-summary) 
+  (local-set-key [(control ?\,)(k)(s)] 'tempo-template-xml-doc-summary)
   (local-set-key [(control ?\,)(k)(p)] 'tempo-template-xml-doc-param))
-  
+
 ;;; autoexp
 ;; ----------------------------------------------
 (add-hook 'autoexp-mode-hook 'my-autoexp-mode-hook)
@@ -514,7 +514,7 @@
          (concat "dot -Tpng " srcfilename " >" outfilename " && display " outfilename))))
 
 
-;;; text modes 
+;;; text modes
 ;;; ===================================================================
 
 ;;; html helper minor mode
@@ -533,17 +533,17 @@
   (require 'tempos-latex)
 
   (local-set-key [(control j)] 'backward-char)
-  
+
   (local-set-key [(control c)(control o)(d)] 'latex-ext-dec-level)
   (local-set-key [(control c)(control o)(i)] 'latex-ext-inc-level)
   (local-set-key [(control c)(u)] 'latex-ext-up)
-  
+
   (local-set-key [(meta ?\,)] (make-sparse-keymap))
   (local-set-key [(meta ?\,)(p)] 'latex-ext-remove-surrounding)
   (local-set-key [(meta ?\,)(s)] 'latex-ext-remove-surrounding)
 
   (local-set-key [(control ?\,)] (make-sparse-keymap))
-  
+
   ;; (greek) symbols
   ;; xi is on o, and omicron itself can be written using regular o and O
   (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
@@ -570,14 +570,14 @@
   (local-set-key [(control ?\,)(s)(x)] '(lambda () (interactive) (insert "\\chi"))) ;!
   (local-set-key [(control ?\,)(s)(y)] '(lambda () (interactive) (insert "\\psi"))) ;!
   (local-set-key [(control ?\,)(s)(z)] '(lambda () (interactive) (insert "\\omega"))) ;!
-  
+
   (local-set-key [(control ?\,)(s)(A)] '(lambda () (interactive) (insert "A")))
   (local-set-key [(control ?\,)(s)(B)] '(lambda () (interactive) (insert "B")))
   (local-set-key [(control ?\,)(s)(C)] '(lambda () (interactive) (insert "\\Gamma")))
   (local-set-key [(control ?\,)(s)(D)] '(lambda () (interactive) (insert "\\Delta")))
   (local-set-key [(control ?\,)(s)(E)] '(lambda () (interactive) (insert "E")))
-  (local-set-key [(control ?\,)(s)(F)] '(lambda () (interactive) (insert "Z"))) ;! 
-  (local-set-key [(control ?\,)(s)(G)] '(lambda () (interactive) (insert "H")))  ;! 
+  (local-set-key [(control ?\,)(s)(F)] '(lambda () (interactive) (insert "Z"))) ;!
+  (local-set-key [(control ?\,)(s)(G)] '(lambda () (interactive) (insert "H")))  ;!
   (local-set-key [(control ?\,)(s)(H)] '(lambda () (interactive) (insert "\\Theta"))) ;!
   (local-set-key [(control ?\,)(s)(I)] '(lambda () (interactive) (insert "I")))
   (local-set-key [(control ?\,)(s)(K)] '(lambda () (interactive) (insert "K")))
@@ -594,14 +594,14 @@
   (local-set-key [(control ?\,)(s)(X)] '(lambda () (interactive) (insert "X"))) ;!
   (local-set-key [(control ?\,)(s)(Y)] '(lambda () (interactive) (insert "\\Psi"))) ;!
   (local-set-key [(control ?\,)(s)(Z)] '(lambda () (interactive) (insert "\\Omega"))) ;!
-  
+
   (local-set-key [(control ?\,)(control s)(e)] '(lambda () (interactive) (insert "\\varepsilon")))
   (local-set-key [(control ?\,)(control s)(h)] '(lambda () (interactive) (insert "\\vartheta")))
   (local-set-key [(control ?\,)(control s)(p)] '(lambda () (interactive) (insert "\\varpi")))
   (local-set-key [(control ?\,)(control s)(r)] '(lambda () (interactive) (insert "\\varrho")))
   (local-set-key [(control ?\,)(control s)(s)] '(lambda () (interactive) (insert "\\varsigma")))
   (local-set-key [(control ?\,)(control s)(v)] '(lambda () (interactive) (insert "\\varphi")))
-  
+
   (local-set-key [(control ?\,)(s)(control c)] '(lambda () (interactive) (insert "\\chi")))
   (local-set-key [(control ?\,)(s)(control e)] '(lambda () (interactive) (insert "\\eta")))
   (local-set-key [(control ?\,)(s)(control g)] '(lambda () (interactive) (insert "\\gamma")))
@@ -610,40 +610,40 @@
   (local-set-key [(control ?\,)(s)(control r)] '(lambda () (interactive) (insert "\\rho")))
   (local-set-key [(control ?\,)(s)(control x)] '(lambda () (interactive) (insert "\\xi")))
   (local-set-key [(control ?\,)(s)(control z)] '(lambda () (interactive) (insert "\\zeta")))
-                                 
+
   (local-set-key [(control ?\,)(s)(control C)] '(lambda () (interactive) (insert "X"))) ; chi
-  (local-set-key [(control ?\,)(s)(control E)] '(lambda () (interactive) (insert "H")))  ;  eta 
-  (local-set-key [(control ?\,)(s)(control G)] '(lambda () (interactive) (insert "\\Gamma"))) 
-  (local-set-key [(control ?\,)(s)(control T)] '(lambda () (interactive) (insert "\\Theta"))) 
-  (local-set-key [(control ?\,)(s)(control O)] '(lambda () (interactive) (insert "\\Omega"))) 
+  (local-set-key [(control ?\,)(s)(control E)] '(lambda () (interactive) (insert "H")))  ;  eta
+  (local-set-key [(control ?\,)(s)(control G)] '(lambda () (interactive) (insert "\\Gamma")))
+  (local-set-key [(control ?\,)(s)(control T)] '(lambda () (interactive) (insert "\\Theta")))
+  (local-set-key [(control ?\,)(s)(control O)] '(lambda () (interactive) (insert "\\Omega")))
   (local-set-key [(control ?\,)(s)(control R)] '(lambda () (interactive) (insert "P"))) ; rho
   (local-set-key [(control ?\,)(s)(control X)] '(lambda () (interactive) (insert "\\Xi"))) ;
   (local-set-key [(control ?\,)(s)(control Z)] '(lambda () (interactive) (insert "Z"))) ;zeta
-  
+
   (local-set-key [(control ?\,)(f)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(f)(v)] 'tempo-template-latex-verbatim)
   (local-set-key [(control ?\,)(f)(b)] 'tempo-template-latex-bold)
   (local-set-key [(control ?\,)(f)(e)] 'tempo-template-latex-emph)
   (local-set-key [(control ?\,)(f)(m)] 'tempo-template-latex-math)
   (local-set-key [(control ?\,)(f)(t)] 'tempo-template-latex-text-in-math)
-  
+
   (local-set-key [(control ?\,)(b)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(b)(v)] 'tempo-template-latex-verbatim-block)
   (local-set-key [(control ?\,)(b)(m)] 'tempo-template-latex-math-block)
   (local-set-key [(control ?\,)(b)(e)] 'tempo-template-latex-equation)
-  
+
   (local-set-key [(control ?\,)(i)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(i)(i)] 'tempo-template-latex-item)
   (local-set-key [(control ?\,)(i)(b)] 'tempo-template-latex-item)
   (local-set-key [(control ?\,)(i)(d)] 'tempo-template-latex-def-item)
   (local-set-key [(control ?\,)(i)(e)] 'tempo-template-latex-item)
-  
+
   (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(l)(b)] 'tempo-template-latex-itemize) ; bulleted list
   (local-set-key [(control ?\,)(l)(i)] 'tempo-template-latex-itemize) ; bulleted list
   (local-set-key [(control ?\,)(l)(d)] 'tempo-template-latex-description)
   (local-set-key [(control ?\,)(l)(e)] 'tempo-template-latex-enumeration)
-  
+
   (local-set-key [(control ?\,)(h)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(h)(?0)] 'tempo-template-latex-h0)
   (local-set-key [(control ?\,)(h)(?t)] 'tempo-template-latex-h0)
@@ -652,7 +652,7 @@
   (local-set-key [(control ?\,)(h)(?3)] 'tempo-template-latex-h3)
   (local-set-key [(control ?\,)(h)(?4)] 'tempo-template-latex-h4)
   (local-set-key [(control ?\,)(h)(?5)] 'tempo-template-latex-h5)
-  
+
   ;; misc
   (local-set-key [(control ?\,)(m)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(m)(e)] 'tempo-template-latex-env)
@@ -675,7 +675,7 @@
   (my-adoc-bindings))
 
 (defun my-adoc-bindings ()
-  (require 'tempos-adoc) 
+  (require 'tempos-adoc)
 
   (local-set-key [f5] 'flyspell-goto-next-error)
   (local-set-key [f6] 'ispell-word)
@@ -739,7 +739,7 @@
   (local-set-key [(control ?\,)(t)(r)] 'tempo-template-html-tr+)
   (local-set-key [(control ?\,)(t)(d)] 'tempo-template-html-td)
   (local-set-key [(control ?\,)(t)(h)] 'tempo-template-html-th)
-  
+
   ;; list
   (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(l)(u)] 'tempo-template-html-ul+)
@@ -806,7 +806,7 @@
   ;; (local-set-key [(control ?\,)(t)(r)] 'tempo-template-html-tr+)
   ;; (local-set-key [(control ?\,)(t)(d)] 'tempo-template-html-td)
   ;; (local-set-key [(control ?\,)(t)(h)] 'tempo-template-html-th)
-  
+
   ;; list
   (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
   (local-set-key [(control ?\,)(l)(u)] 'tempo-template-bbcode-ulist)
@@ -862,7 +862,7 @@
   (local-set-key [(control ?\,)(t)(r)] 'tempo-template-html-tr+)
   (local-set-key [(control ?\,)(t)(d)] 'tempo-template-html-td)
   (local-set-key [(control ?\,)(t)(h)] 'tempo-template-html-th)
-  
+
   ;; ;; list
   ;; (local-set-key [(control ?\,)(l)] (make-sparse-keymap))
   ;; (local-set-key [(control ?\,)(l)(u)] 'tempo-template-mediawiki-ulist)
@@ -993,7 +993,7 @@
   (local-set-key [remap isearch-backward] 'dired-isearch-backward-regexp)
   (local-set-key [remap dired-do-delete] 'dired-do-delete-ext)
   (local-set-key "r" 'wdired-change-to-wdired-mode) ; suggested by wdired
-  (local-set-key "*."               'dired-mark-extension-dwim) 
+  (local-set-key "*."               'dired-mark-extension-dwim)
   (local-set-key "O"                'dired-open-in-external-app)
   (local-set-key [(control return)] 'project-dired-find-main-file)
   (local-set-key "*i"               'project-dired-mark-files)
@@ -1023,10 +1023,10 @@
 ;; (add-hook 'idl-mode-hook '(lambda () (setq flyspell-generic-check-word-predicate 'c-mode-common-flyspell-verify)))
 ;; (add-hook 'emacs-lisp-mode-hook '(lambda () (setq flyspell-generic-check-word-predicate 'c-mode-common-flyspell-verify)))
 
-;;; (wo)?man 
+;;; (wo)?man
 ;; ----------------------------------------------------------------------------
 (defvar Man-heading2-regexp "\\s-+-")
-  
+
 (defun Man-outline-level ()
   (cond
    ((looking-at Man-heading-regexp) 1)
@@ -1056,7 +1056,7 @@
   (forward-line 3)
   (forward-char 4))
 (add-hook 'ibuffer-hook 'my-ibuffer-hook)
- 
+
 ;;; minibuffer
 ;; ----------------------------------------------------------------------------
 ;; (define-key minibuffer-local-filename-must-match-map [(backtab)] 'file-alias-minibuffer-complete)
@@ -1084,7 +1084,7 @@
   (local-set-key "\t" 'indent-line-or-region))
 (add-hook 'pm-mode-hook 'my-pm-hook)
 
-;;; inferior shell 
+;;; inferior shell
 ;; ----------------------------------------------------------------------------
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
@@ -1092,7 +1092,7 @@
 
 (defun my-comint-mode-hook ()
   (local-set-key [(control d)] 'delete-char)) ;comint-mode redefines C-d with comint-delchar-or-maybe-eof, which doesn't respect delete-selection-mode
- 
+
 ;;; mks
 ;; ----------------------------------------------------------------------------
 
@@ -1134,7 +1134,7 @@
 (add-hook 'mks-common-mode-hook 'my-mks-common-mode-hook)
 (add-hook 'mks-cat-mode-hook 'my-mks-cat-mode-hook)
 
-;;; logfile 
+;;; logfile
 (defun my-logfile-mode-hook()
   (outline-minor-mode t)
   (view-mode 1)
@@ -1206,7 +1206,7 @@
 
 
 
-;;; not really modes but other hooks 
+;;; not really modes but other hooks
 ;;; ===================================================================
 
 (defun custom-file-before-save-hook ()

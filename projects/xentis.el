@@ -2,14 +2,14 @@
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; URL: https://github.com/sensorflo/sensorflo-emacs/, then
-;;      projects/xentis.el 
+;;      projects/xentis.el
 ;;
 ;;; Commentary:
 ;;
 ;;; Code:
 (require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
 (require 're)              ; https://github.com/sensorflo/sensorflo-emacs/
-(require 'tempo-ext) 	   ; https://gitorious.org/tempo-ext
+(require 'tempo-ext)       ; https://gitorious.org/tempo-ext
 (require 'tempo-snippets)  ; http://nschum.de/src/emacs/tempo-snippets/
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
 
@@ -33,7 +33,7 @@
 
     (set (make-local-variable 'compilation-skip-threshold) 2)
 
-    ;; is also used by non-c[++] (minor) modes, e.g. find other file 
+    ;; is also used by non-c[++] (minor) modes, e.g. find other file
     (set (make-local-variable 'cc-search-directories) nil)
     (dolist (x '("include" "include/investment_compliance"
                  "include/investment_compliance/db_abstraction" "source/bo/investment_compliance"
@@ -102,7 +102,7 @@
   ;;   ;; style
   ;;   (when (not (xentis-coding-system-p))
   ;;     (if (y-or-n-p (format "%s: change coding system from %S to windows-1252-dos? "
-  ;;       		    (buffer-name) buffer-file-coding-system))
+  ;;                        (buffer-name) buffer-file-coding-system))
   ;;         (setq buffer-file-coding-system 'windows-1252-dos)
   ;;       (if (y-or-n-p "abort saving? ") (error "user aborted abort aving"))))
 
@@ -120,79 +120,79 @@
   "Returns t if between point and END is an issue concerning a method.
 Additionaly match data is set to mark the culprit by match group 1."
   (let ((method-start-pos t)
-	(method-end-pos t)
-	an-issue-found) 
+        (method-end-pos t)
+        an-issue-found)
     ;; iterate over methods and search for issues in each method
     (while (and method-start-pos
-		method-end-pos
-		(not an-issue-found)
-    		(< (point) (1- end)))
+                method-end-pos
+                (not an-issue-found)
+                (< (point) (1- end)))
       (setq method-start-pos
-	    (text-property-any (point) end 'face 'font-lock-function-name-face))
+            (text-property-any (point) end 'face 'font-lock-function-name-face))
       (when method-start-pos
-	(setq method-end-pos
-	      (text-property-not-all method-start-pos end 'face
-				     'font-lock-function-name-face)))
+        (setq method-end-pos
+              (text-property-not-all method-start-pos end 'face
+                                     'font-lock-function-name-face)))
       (when (and method-start-pos method-end-pos)
-	;; -- getters should be const
-	(when (not an-issue-found)
-	  (save-excursion
-	    (let (
+        ;; -- getters should be const
+        (when (not an-issue-found)
+          (save-excursion
+            (let (
                   (is-getter
-		   (progn
-		     (goto-char method-start-pos)
-		     (or (looking-at (concat "i?\\(?:Get\\|Show\\|Display\\|Print\\|Trace\\|Log\\)"
+                   (progn
+                     (goto-char method-start-pos)
+                     (or (looking-at (concat "i?\\(?:Get\\|Show\\|Display\\|Print\\|Trace\\|Log\\)"
                                              "\\(?:[A-Z_0-9]\\|\\b\\)"))
                          (looking-at (concat "[a-zA-Z_0-9]*\\(?:Is\\|Has\\|Was\\|Had\\|Contains\\)"
                                              "\\(?:[A-Z_0-9]\\|\\b\\)")))))
-		  (is-static
-		   (progn
-		     (beginning-of-line)
-		     (looking-at "\\s-*static\\b")))
-		  (is-const
-		   (progn
-		     (goto-char method-end-pos)
-		     (forward-list 1)
-		     (looking-at "\\s-*\\(?:=\\s-*0\\s-+\\)?const\\b")))
-		  (is-surpressed
-		   (progn
-		     (goto-char method-end-pos)
-		     (forward-list 1)
-		     (looking-at (concat "\\s-*\\(=\\s-*const\\s-*\\)?;"
-		        		 "?\\s-*\\(?://\\|/\\*+\\)\\s-*"
-		        		 "cppcheck-suppress")))))
-	      (when (and is-getter (not is-const)
-			 (not is-static) (not is-surpressed))
-		;; set match data for group 1 beginning at closing paranthesis
-		;; of argument list
-		(goto-char method-end-pos)
-		(forward-list 1)
-		(re-search-backward ")")
-		(looking-at "\\()\\(?:[ \t]*;\\)?[ \t]*\\)") 
-		(setq an-issue-found t)))))
+                  (is-static
+                   (progn
+                     (beginning-of-line)
+                     (looking-at "\\s-*static\\b")))
+                  (is-const
+                   (progn
+                     (goto-char method-end-pos)
+                     (forward-list 1)
+                     (looking-at "\\s-*\\(?:=\\s-*0\\s-+\\)?const\\b")))
+                  (is-surpressed
+                   (progn
+                     (goto-char method-end-pos)
+                     (forward-list 1)
+                     (looking-at (concat "\\s-*\\(=\\s-*const\\s-*\\)?;"
+                                         "?\\s-*\\(?://\\|/\\*+\\)\\s-*"
+                                         "cppcheck-suppress")))))
+              (when (and is-getter (not is-const)
+                         (not is-static) (not is-surpressed))
+                ;; set match data for group 1 beginning at closing paranthesis
+                ;; of argument list
+                (goto-char method-end-pos)
+                (forward-list 1)
+                (re-search-backward ")")
+                (looking-at "\\()\\(?:[ \t]*;\\)?[ \t]*\\)")
+                (setq an-issue-found t)))))
 
-	;; next iter
-	(goto-char method-end-pos)))
+        ;; next iter
+        (goto-char method-end-pos)))
     an-issue-found))
 
 (defun xentis-font-lock-add-keywords ()
   (font-lock-add-keywords
    nil
    (list
-    ;; 
-    (list 'xentis-looking-at-method-issues '(1 font-lock-warning-face append t)) 
+    ;;
+    (list 'xentis-looking-at-method-issues '(1 font-lock-warning-face append t))
 
     ;; white space errors
     (list "[ \t]+$" '(0 font-lock-warning-face append t))
 
-    ;; empty comments 
-    (list "/\\*+\\s-*\\*+/\\|//+\\s-*$" '(0 font-lock-unimportant t)) 
-    
+    ;; empty comments
+    (list "/\\*+\\s-*\\*+/\\|//+\\s-*$" '(0 font-lock-unimportant t))
+
     ;; acess to well known objects/classes
 
     ;; object names
     ;; collections object names are nouns in plural, i.e. ending in s
-    (list (lambda (end) 
+    (list (lambda (end)
             (when (re-search-forward
                    (concat "\\b\\(?:list\\|map\\|vector\\|map\\|array\\|stack"
                            "\\|deque\\|queue\\|set\\|unordered_set\\|unordered_map\\)"
@@ -204,7 +204,7 @@ Additionaly match data is set to mark the culprit by match group 1."
                   (beginning-of-line)
                   (not (looking-at "\\s-*typedef\\b"))))))
           '(1 font-lock-warning-face t))
-	(list "\\bm_impl->" '(0 font-lock-semi-unimportant))
+        (list "\\bm_impl->" '(0 font-lock-semi-unimportant))
 
 
     ;; testing
@@ -234,14 +234,14 @@ Additionaly match data is set to mark the culprit by match group 1."
           '(1 font-lock-warning-face append t t))
     (list "\\bTEST\\(?:_F\\)?[ \t\n]*([ \t\n]*[A-Za-z0-9_]+[ \t\n]*,[ \t\n]*\\(Disabled\\)"
           '(1 font-lock-warning-face append t))
-    (list "\\bBIL\\b" '(0 font-lock-semi-unimportant t)) 
-    
+    (list "\\bBIL\\b" '(0 font-lock-semi-unimportant t))
+
 
     ;; --- real garbage ---
     (list "^\\s-*//\\.+\\s-*\\(begin\\|end\\)\\b.*\n" '(0 font-lock-unimportant t))
     (list "^\\s-*\\(#define\\s-*\\)?_\\(START\\|STOP\\)_SKIP.*" '(0 font-lock-unimportant t))
     ;; "} // end if"  bullshit
-    (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\|switch\\|case\\|default\\|catch\\)\\s-*\\(\n\\|\\*/\\)" '(0 font-lock-unimportant t)) 
+    (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\|switch\\|case\\|default\\|catch\\)\\s-*\\(\n\\|\\*/\\)" '(0 font-lock-unimportant t))
     )
    t))
 
@@ -273,7 +273,7 @@ Additionaly match data is set to mark the culprit by match group 1."
 (defun doxygen-run()
   "Generates doxygen documentation for the current's buffer project, pc or rtos."
   (interactive)
-  
+
   ;; save all buffers without query
   (save-some-buffers t)
 
@@ -297,7 +297,7 @@ Additionaly match data is set to mark the culprit by match group 1."
   then put the buffer into grep mode. With arg, first a new
   buffer is created and the content of the clipboard is
   inserted."
-  
+
   (interactive "P")
   (when arg
     (set-buffer (get-buffer-create "*xentis dc*"))
@@ -312,7 +312,7 @@ Additionaly match data is set to mark the culprit by match group 1."
   "Runs the content of the current buffer through qn and then put
   the buffer into grep mode. With arg, first a new buffer is
   created and the content of the clipboard is inserted."
-  
+
   (interactive "P")
   (when arg
     (set-buffer (get-buffer-create "*quality notices*"))
@@ -353,7 +353,7 @@ Additionaly match data is set to mark the culprit by match group 1."
    (concat
     "find "
     (if (eq (project-root-type) 'project-diebonder-pc)
-        (concat 
+        (concat
          default-directory "../Sources "
          default-directory "../UnitTest "
          default-directory "../UnitTest2 "
@@ -377,16 +377,16 @@ Additionaly match data is set to mark the culprit by match group 1."
   (concat
    "find "
    (let ((mp (eamis-current-project-name)))                 ;
-	 (if mp
-		 (mapconcat
-		  'identity
-		  (remove-if-not
-		   #'file-exists-p
-		   (mapcar
-			'(lambda(dir) (file-relative-name (concat (eamis-root-dir) dir mp)))
-			'("/source/bo/" "/include/" "/test/unit/" "/test/module/")))
-		  " ")
-	   ". ")) " \\\n"
+         (if mp
+                 (mapconcat
+                  'identity
+                  (remove-if-not
+                   #'file-exists-p
+                   (mapcar
+                        '(lambda(dir) (file-relative-name (concat (eamis-root-dir) dir mp)))
+                        '("/source/bo/" "/include/" "/test/unit/" "/test/module/")))
+                  " ")
+           ". ")) " \\\n"
    "-regextype posix-egrep \\\n"
    "-type f \\\n"
    "-iregex '.*\\.(h|cpp|boc|boh)'  \\\n"
@@ -399,7 +399,7 @@ Additionaly match data is set to mark the culprit by match group 1."
    "\\(?:const\\s-*\\)?"
    "\\(?:"
    (regexp-opt
-    '("int" "double" "char" "uint32" "real64" 
+    '("int" "double" "char" "uint32" "real64"
       "HRESULT" "EHRESULT"
       "tPST_ExtInteger" "tPST_ExtReal" "tPST_ExtStruct" "tPST_INDELInteger" "tPST_INDELReal" "tPST_INDELStruct"
       "tPstContainerInteger" "tPstContainerIterator" "tPstContainerReal" "tPstContainerStruct" "tPstContainerText" "tPstDynEnumTransient" "tPstInteger" "tPstReal" "tPstStruct" "tPstText"))
@@ -412,23 +412,23 @@ Additionaly match data is set to mark the culprit by match group 1."
   (or
    (when
        (save-excursion
-	 (beginning-of-line)
-	 (or (looking-at "\\s-*\\(?:class\\|struct\\)\\s-+\\(.*?\\)\\_>")
-	     (looking-at "\\s-*static\\s-+const\\s-+\\(?:tDiagCondId\\|tItemId\\)\\s-+\\(.*?\\)\\_>")
-	     (looking-at "\\s-*SetBaseItemID\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>\\s-*)")
-	     (looking-at ".*PRS_INIT\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
-	     (looking-at ".*ACTUALS_INIT\\s-*(\\s-*\\(.*?\\)\\_>")
-	     (looking-at "\\s-*REGISTER_KEY_COMMAND\\s-*([^,\n]*,[^,\n]*,\\s-*&\\w+::\\(.*?\\)\\_>")
-	     (looking-at "\\s-*DECLARE_\\(?:READ\\|WRITE\\)_METHOD\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
-	     (and (looking-at "\\s-*\\(?:virtual\\s-+\\)?\\(?:EHRESULT\\|int32\\|void\\|double\\)\\(?:\\s-+\\|\\s-*&\\s-*\\)\\(\\(?:\\w\\|_\\)+\\)\\(.\\)")
-		  (not (string= ":" (match-string 2)))
-		  (not (string= "ehr" (match-string 1))))
-	     (looking-at (concat xentis-well-known-types "\\s-*\\(?:\\w\\|_\\)+::\\(\\(?:\\w\\|_\\)+\\)"))
-	     (and (looking-at (concat "\\s-*" xentis-well-known-types "\\s-*\\(\\(?:\\w\\|_\\)+\\)"))
-		  (not (string= "ehr" (match-string 1))))))
+         (beginning-of-line)
+         (or (looking-at "\\s-*\\(?:class\\|struct\\)\\s-+\\(.*?\\)\\_>")
+             (looking-at "\\s-*static\\s-+const\\s-+\\(?:tDiagCondId\\|tItemId\\)\\s-+\\(.*?\\)\\_>")
+             (looking-at "\\s-*SetBaseItemID\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>\\s-*)")
+             (looking-at ".*PRS_INIT\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
+             (looking-at ".*ACTUALS_INIT\\s-*(\\s-*\\(.*?\\)\\_>")
+             (looking-at "\\s-*REGISTER_KEY_COMMAND\\s-*([^,\n]*,[^,\n]*,\\s-*&\\w+::\\(.*?\\)\\_>")
+             (looking-at "\\s-*DECLARE_\\(?:READ\\|WRITE\\)_METHOD\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
+             (and (looking-at "\\s-*\\(?:virtual\\s-+\\)?\\(?:EHRESULT\\|int32\\|void\\|double\\)\\(?:\\s-+\\|\\s-*&\\s-*\\)\\(\\(?:\\w\\|_\\)+\\)\\(.\\)")
+                  (not (string= ":" (match-string 2)))
+                  (not (string= "ehr" (match-string 1))))
+             (looking-at (concat xentis-well-known-types "\\s-*\\(?:\\w\\|_\\)+::\\(\\(?:\\w\\|_\\)+\\)"))
+             (and (looking-at (concat "\\s-*" xentis-well-known-types "\\s-*\\(\\(?:\\w\\|_\\)+\\)"))
+                  (not (string= "ehr" (match-string 1))))))
      (concat "\\b" (match-string-no-properties 1) "\\b"))
    (when (and (save-excursion (beginning-of-line) (looking-at "\\s-*ehr\\s-*\\+?=\\s-\\(\\(?:\\w\\|_\\)+\\)"))
-	      (<= (point) (match-end 1)))
+              (<= (point) (match-end 1)))
      (concat "\\b" (match-string-no-properties 1) "\\b"))))
 
 (defun xentis-dwim ()
@@ -436,16 +436,16 @@ Additionaly match data is set to mark the culprit by match group 1."
   (cond
    ((save-excursion (beginning-of-line) (looking-at "\\s-*return\\s-+\\(S_OK\\|ehr\\)\\s-*;"))
     (save-excursion
-      (let ((replacement (if (string= (match-string 1) "S_OK") "ehr" "S_OK"))) 
-	(goto-char (match-beginning 1))
-	(delete-region (point) (match-end 1))
-	(insert replacement))))
+      (let ((replacement (if (string= (match-string 1) "S_OK") "ehr" "S_OK")))
+        (goto-char (match-beginning 1))
+        (delete-region (point) (match-end 1))
+        (insert replacement))))
    ((save-excursion (beginning-of-line) (looking-at "\\s-*\\(ERETURN_IF_FAILED\\|ETHROW_IF_FAILED\\)\\b"))
     (save-excursion
-      (let ((replacement (if (string= (match-string 1) "ERETURN_IF_FAILED") "ETHROW_IF_FAILED" "ERETURN_IF_FAILED"))) 
-	(goto-char (match-beginning 1))
-	(delete-region (point) (match-end 1))
-	(insert replacement))))))
+      (let ((replacement (if (string= (match-string 1) "ERETURN_IF_FAILED") "ETHROW_IF_FAILED" "ERETURN_IF_FAILED")))
+        (goto-char (match-beginning 1))
+        (delete-region (point) (match-end 1))
+        (insert replacement))))))
 
 ;; types
 ;; - interface
@@ -453,7 +453,7 @@ Additionaly match data is set to mark the culprit by match group 1."
 ;; - test case
 ;; - test helpers
 ;; - associated data/bussiness-logic class
-;; 
+;;
 ;; ortoghonal to type
 ;; - header file
 ;; - source file
@@ -520,7 +520,7 @@ void foo(int /*i*/) {
     (goto-char (match-beginning 0))
     (unless (looking-back "/\\*+\\s-*")
       (insert "/*"))
-        
+
     (goto-char argument-pos)
     (delete-region (line-beginning-position)
                    (progn (forward-line) (point)))))
@@ -543,12 +543,12 @@ void foo(int /*i*/) {
   ;; -- syntax
   ;; canonicalize Doxygen comment start delimiter to QT style (/*!)
   (xentis-dired-do-query-replace-regexp "/\\*\\*" "/*!")
-  ;; canonicalize Doxygen keywords to \mykeyword 
+  ;; canonicalize Doxygen keywords to \mykeyword
   (xentis-dired-do-query-replace-regexp "@\\(param\\|return\\|pre\\|post\\|warning\\|bug\\|note\\|caution\\|name\\)\\b" "\\\\\\1")
 
   ;; -- param paragraph
   ;; canonicalize to '\param id decription' (also note exactly one space before & after id)
-  ;; i.e. no '\param [in] id description' or '\param id: description' 
+  ;; i.e. no '\param [in] id description' or '\param id: description'
   (xentis-dired-do-query-replace-regexp "\\([\\@]param\\s-*\\)\\[.*?\\]" "\\1")
   (xentis-dired-do-query-replace-regexp "\\([\\@]param\\s-+[a-zA-Z0-9_]+\\)\\s-*:\\s-*" "\\1 ")
   (xentis-dired-do-query-replace-regexp "\\([\\@]param\\s-+[a-zA-Z0-9_]+\\)\\s-*[oi]f\\s-+type\\s-+\\S-+\\s-*\\(?::\\s-*\\)" "\\1 ")
@@ -595,90 +595,90 @@ void foo(int /*i*/) {
 
   ;; no blank lines between #includes/#imports/forward declarations
   ;; todo
-  ) 
+  )
 
 (defun my-dired-do-query-replace-regexp (regexp replacement)
   (let ((local-my-dired-buffer
-		 (if (boundp 'my-dired-buffer)
-			 my-dired-buffer
-		   (current-buffer))))
-	(switch-to-buffer local-my-dired-buffer)
-	(ignore-errors (dired-do-query-replace-regexp regexp replacement))
-	(switch-to-buffer local-my-dired-buffer)))
+                 (if (boundp 'my-dired-buffer)
+                         my-dired-buffer
+                   (current-buffer))))
+        (switch-to-buffer local-my-dired-buffer)
+        (ignore-errors (dired-do-query-replace-regexp regexp replacement))
+        (switch-to-buffer local-my-dired-buffer)))
 
 (defun xentis-fix-file-general-comments ()
   (interactive)
   (let ((my-dired-buffer (current-buffer)))
-	;; method banners
-	(my-dired-do-query-replace-regexp
-	 (concat
-	  "^[ \t]*//[ \t]*-+[ \t]*\n"
-	  "\\([ \t]*//[ \t]*\\(\\([a-zA-Z_0-9]+::\\)?~?[a-zA-Z_0-9]+\\([ \t]*()\\)?[ \t]*\\)?\n\\)?"
-	  "[ \t]*//[ \t]*-+[ \\t]*\n")
-	 "")
+        ;; method banners
+        (my-dired-do-query-replace-regexp
+         (concat
+          "^[ \t]*//[ \t]*-+[ \t]*\n"
+          "\\([ \t]*//[ \t]*\\(\\([a-zA-Z_0-9]+::\\)?~?[a-zA-Z_0-9]+\\([ \t]*()\\)?[ \t]*\\)?\n\\)?"
+          "[ \t]*//[ \t]*-+[ \\t]*\n")
+         "")
 
-	;; general banners surrounded by ///// lines
-	(my-dired-do-query-replace-regexp
-	 (concat
-	  ;; leading blank lines
-	  "^\\([ \t]*\n\\)*"
-	  ;; (leading and trailing) or (only trailing)
-	  "\\("
+        ;; general banners surrounded by ///// lines
+        (my-dired-do-query-replace-regexp
+         (concat
+          ;; leading blank lines
+          "^\\([ \t]*\n\\)*"
+          ;; (leading and trailing) or (only trailing)
+          "\\("
       "\\([ \t]*/\\{5,\\}[ \t]*\n\\)?"
       "\\([ \t]*//.*\n\\)+"
       "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
-	  ;; only leading
-	  "\\|"  
+          ;; only leading
+          "\\|"
       "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
       "\\([ \t]*//.*\n\\)+"
-	  "\\)"
-	  ;; trailing blank lines
-	  "\\([ \t\n]*\n\\)*")
-	 "\n")
+          "\\)"
+          ;; trailing blank lines
+          "\\([ \t\n]*\n\\)*")
+         "\n")
 
-	;; "} end ..." bullshit
-	(my-dired-do-query-replace-regexp "}[ \t]*//.*$" "}")
-	(my-dired-do-query-replace-regexp "\\(#endif\\)[ \t]*//.*" "\\1")
+        ;; "} end ..." bullshit
+        (my-dired-do-query-replace-regexp "}[ \t]*//.*$" "}")
+        (my-dired-do-query-replace-regexp "\\(#endif\\)[ \t]*//.*" "\\1")
 
-	;; remove blank lines before closing brace
-	;; (my-dired-do-query-replace-regexp "^\\(?:[ \t]*\n\\)+\\([ \t]*}\\)" "\\1")
+        ;; remove blank lines before closing brace
+        ;; (my-dired-do-query-replace-regexp "^\\(?:[ \t]*\n\\)+\\([ \t]*}\\)" "\\1")
 
-	;; replace tabs by spaces after comment-start delimiters
-	(my-dired-do-query-replace-regexp "//\t" "// ")
-	(my-dired-do-query-replace-regexp "\\(/\\*\\(?:\\*+\\|!+\\)?\\)\t" "\\1 ")
+        ;; replace tabs by spaces after comment-start delimiters
+        (my-dired-do-query-replace-regexp "//\t" "// ")
+        (my-dired-do-query-replace-regexp "\\(/\\*\\(?:\\*+\\|!+\\)?\\)\t" "\\1 ")
 
-	;; -- whites in comments
-	;; remove empty comment
-	(my-dired-do-query-replace-regexp "^\\s-*/\\*[*!]*\\(\\s-*\n\\)*\\s-*\\*/\\s-*\n" "")
+        ;; -- whites in comments
+        ;; remove empty comment
+        (my-dired-do-query-replace-regexp "^\\s-*/\\*[*!]*\\(\\s-*\n\\)*\\s-*\\*/\\s-*\n" "")
 
-	;; trailing ; after class inline method definition
-	(my-dired-do-query-replace-regexp "^[ \t]*;[ \t]*\n" "")
+        ;; trailing ; after class inline method definition
+        (my-dired-do-query-replace-regexp "^[ \t]*;[ \t]*\n" "")
 
-	;; The trailing whites after /** and leading whites before */ is exactly one
-	;; space
-	;; (xentis-dired-do-query-replace-regexp "\\(/\\*[*@]+\\)\\(?:\\(?:[ \t]*\n\\)+[ \t]*\\|[ \t]\\{2,\\}\\)" "\\1 ")
-	;; (xentis-dired-do-query-replace-regexp "\\(?:\\(?:[ \t]*\n\\)+[ \t]*\\|[ \t]\\{2,\\}\\)\\(\\*+/\\)" " \\1")
-	;; [ensure an empty comment has only exactly one space]
-	;; obsolete since empty comments are removed altogether
-	;; (xentis-dired-do-query-replace-regexp "/\\*+[ \t\n]\\{2,\\}\\*+/" "/** */")
+        ;; The trailing whites after /** and leading whites before */ is exactly one
+        ;; space
+        ;; (xentis-dired-do-query-replace-regexp "\\(/\\*[*@]+\\)\\(?:\\(?:[ \t]*\n\\)+[ \t]*\\|[ \t]\\{2,\\}\\)" "\\1 ")
+        ;; (xentis-dired-do-query-replace-regexp "\\(?:\\(?:[ \t]*\n\\)+[ \t]*\\|[ \t]\\{2,\\}\\)\\(\\*+/\\)" " \\1")
+        ;; [ensure an empty comment has only exactly one space]
+        ;; obsolete since empty comments are removed altogether
+        ;; (xentis-dired-do-query-replace-regexp "/\\*+[ \t\n]\\{2,\\}\\*+/" "/** */")
 
-	;; todo:
-	;; search for //-- and //== banners ("^[ 	]*//[-=]+") and modify manually
-	;; search for overly long lines: "^.\{110,\}"
+        ;; todo:
+        ;; search for //-- and //== banners ("^[ 	]*//[-=]+") and modify manually
+        ;; search for overly long lines: "^.\{110,\}"
 
-	;; new commit
- 	;; replace #ifndef by #pragma once
+        ;; new commit
+        ;; replace #ifndef by #pragma once
 
-	;; new commit
-	;; coding system / end-of-line delimiter
-	))
+        ;; new commit
+        ;; coding system / end-of-line delimiter
+        ))
 
 (defun xentis-create-abbrev-enable-function (arg)
   "Returns a function which suitable for abbrev's :enable-function.
 Arg is the 3rd items of a xentis-abbrev-table item"
   `(lambda () (xentis-abbrev-enable-function ,arg)))
 
-(defun xentis-abbrev-enable-function (arg) 
+(defun xentis-abbrev-enable-function (arg)
   (and
    ;; Inserting characters with symbol syntax shall not trigger checking for
    ;; possible abbrev-expansion.
@@ -703,9 +703,9 @@ Arg is the 3rd items of a xentis-abbrev-table item"
        ;; within comment/strings, prevent expansion if 'abbrev' is preceded by '
        ;; or . or \
        (if in-code t
-	 (save-excursion
-	   (backward-word)
-	   (looking-back "[^.'\\]"))))))))
+         (save-excursion
+           (backward-word)
+           (looking-back "[^.'\\]"))))))))
 
 ;;; file aliases / cache
 (setq filealias-default-root-dir "W:")
@@ -714,7 +714,7 @@ Arg is the 3rd items of a xentis-abbrev-table item"
   ("p"  . "~~DieBonder/PC/")
   ("r"   . "~~DieBonder/RTOS/")
   ("re"  . "~~DieBonder/rtosexprt/")
-  
+
   ("ppp"  . "~~DieBonder/PC/PickPlace/")
   ("pfc"  . "~~DieBonder/PC/flipchip/")
   ("psh"  . "~~DieBonder/PC/substrathandler/")
@@ -726,7 +726,7 @@ Arg is the 3rd items of a xentis-abbrev-table item"
   ("rdc"  . "~~DieBonder/RTOS/diecarrier/")
   ("rvi"  . "~~DieBonder/RTOS/vision/")
   ("rge"  . "~~DieBonder/RTOS/generics/")
-  
+
   ("pmcac" . "~~DieBonder/PC/Controllers/MCAssistController")
   ("pac"   . "~~DieBonder/PC/Controllers/MCAssistController")
 
@@ -734,7 +734,7 @@ Arg is the 3rd items of a xentis-abbrev-table item"
   ("ptst"  . "~~DieBonder/PC/Services/TeachServiceType")
   ("pcs"  . "~~DieBonder/PC/Services/CalibrationServices/CalibrationService")
   ("pcst"  . "~~DieBonder/PC/Services/CalibrationServices/CalibrationServiceType")
-  
+
   ("pde" . "~~DieBonder/PC/PickPlace/dcdemod/")
   ("pfo"  . "~~DieBonder/PC/PickPlace/ppforcemod/")
   ("pba" . "~~DieBonder/PC/PickPlace/ppbamod/")
@@ -743,7 +743,7 @@ Arg is the 3rd items of a xentis-abbrev-table item"
   ("pfx" . "~~DieBonder/PC/flipchip/ppfxmod/")
   ("pca" . "~~DieBonder/PC/PickPlace/PPCalibMod/")
   ("pse" . "~~DieBonder/PC/PickPlace/PPSeqBaseLib/")
-  
+
   ("rca" . "~~DieBonder/RTOS/PickPlace/ppcalibmod/sources/")
   ("rde" . "~~DieBonder/RTOS/PickPlace/dcdemod/sources/")
   ("rba" . "~~DieBonder/RTOS/PickPlace/ppbamod/sources/")
@@ -761,20 +761,20 @@ Arg is the 3rd items of a xentis-abbrev-table item"
    (("PC" ("p"))
     ("RTOS" ("r"))
     ("RTOSExport" ("re"))))
-			
+
   ;; Level MPS
   ("W:/DieBonder/PC"
    (("PickPlace" ("pp" "p"))
     ("DieCarrier" ("dc" "d"))
     ("DataMgmt" ("dm"))
     ("SubstrateHandler" ("sh" "s"))))
-  
+
   ("W:/DieBonder/RTOS"
    (("PickPlace" ("pp" "p"))
     ("DieCarrier" ("dc" "d"))
     ("DataMgmt" ("dm"))
     ("SubstrateHandler" ("sh" "s"))))
-  
+
   ;; Level Components
   ("W:/DieBonder/PC/PickPlace"
    (("PPBAMod" ("ba" "bam"))
@@ -795,7 +795,7 @@ Arg is the 3rd items of a xentis-abbrev-table item"
                 ("eamis/source/bo/investment_compliance" xentis-investment-compliance)
                 ("eamis/include/investment_compliance" xentis-investment-compliance)
                 )))
-  (dolist (elt mylist) 
+  (dolist (elt mylist)
     (add-to-list 'ffe-map-map elt)))
 
 (setq xentis-investment-compliance `(
@@ -885,9 +885,9 @@ Arg is the 3rd items of a xentis-abbrev-table item"
  '( lws
     '(progn
        (when xentis-method-decl-empty-comment
-	 (insert "/** */")
-	 (indent-according-to-mode)
-	 (insert "\n")))
+         (insert "/** */")
+         (indent-according-to-mode)
+         (insert "\n")))
     "EHRESULT " p " (" p ");" > % ))
 
 ;; implement such that it can be called when point is at the beginning of an

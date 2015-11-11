@@ -3,7 +3,7 @@
 
 ;;; special chars
 
-;;; inline text properties 
+;;; inline text properties
 (tempo-define-template "latex-verbatim"
  '( "\\verb|" r "|" )
  "verb")
@@ -24,7 +24,7 @@
  '( "\\textrm{" r "}" )
  "verb")
 
-;;; block text properties 
+;;; block text properties
 (tempo-define-template "latex-verbatim-block"
  '( "\\begin{verbatim}" n
     r
@@ -41,7 +41,7 @@
     "\\end{equation}" n )
  "verb")
 
-;;; lists 
+;;; lists
 (tempo-define-template "latex-enumeration"
  '( "\\begin{enumeration}" n
     r
@@ -69,7 +69,7 @@
  '( "\\item[" r "] " )
  "item")
 
-;;; sections 
+;;; sections
 (tempo-define-template "latex-h0"
   '("\\title{" r "}"))
 
@@ -89,7 +89,7 @@
   '("\\subsubsubsection{" r "}"))
 
 
-;;; misc 
+;;; misc
 (tempo-define-snippet "latex-env"
  '( "\\begin{" (p "env: \n" env) "}" n
     r

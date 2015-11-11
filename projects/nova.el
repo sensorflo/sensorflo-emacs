@@ -1,15 +1,15 @@
 ;;; nova.el --- customizations specific to the nova project
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;;; Commentary:
-;; 
+;;
 
 ;;; Variables:
 (require 'project)        ; https://github.com/sensorflo/sensorflo-emacs/
 (require 'rx)
 (require 'find-file-ext)
-(require 'tempo-snippets) 
+(require 'tempo-snippets)
 (require 'markup-faces)   ; https://github.com/sensorflo/markup-faces
 (require 'font-lock-ext)  ; https://github.com/sensorflo/font-lock-ext/
 
@@ -37,7 +37,7 @@
 
 ;; todo: make it more general. build / run is actually a set of the following,
 ;; each entry having an active|inactive flag:
-;; 
+;;
 ;; make target...
 ;; msync | msyncgeil | ( cp ./install/vwork;  dcinstall )
 ;; dckill && dcstart
@@ -99,8 +99,8 @@
     (c-set-offset 'arglist-cont-nonempty '(add c-lineup-arglist-close-under-paren 1))
     (nova-font-lock-add-c++-keywords)
     (setq c-class-name-alist
-	  '(("dispenserhead" . "DispensHead")
-	    ("bondhead" . "BondHeadLeDa")))
+          '(("dispenserhead" . "DispensHead")
+            ("bondhead" . "BondHeadLeDa")))
     (nova-c-mode-common-bindings)))
 
 (add-hook 'c-mode-common-hook 'nova-c-mode-common-hook t)
@@ -117,7 +117,7 @@
   ;; statements
   (local-set-key [(control ?,)(s)(?\;)] 'tempo-template-c-nova-statement-common)
   (local-set-key [(control ?,)(s)(r)] 'tempo-template-c-nova-early-return)
-  
+
   ;; text
   (local-set-key [(control ?,)(t)(o)] 'tempo-template-c-nova-oi18n)
   (local-set-key [(control ?,)(t)(t)] 'tempo-template-c-nova-ti18n)
@@ -125,15 +125,15 @@
   ;; nova project
   (local-set-key [(control f)(p)] (make-sparse-keymap))
   (local-set-key [(control f)(p)(l)] 'nova-rm-log)
-;  (local-set-key [remap dired-jump] 'nova-dired-jump) 
-  ) 
+;  (local-set-key [remap dired-jump] 'nova-dired-jump)
+  )
 
 (defun nova-common-mode-hook ()
   (when (eq (project-root-type) 'project-nova)
     (make-local-variable 'grep-find-command)
     (grep-apply-setting 'grep-find-command (concat
       "cd ~/prog/nova && find $(lsentities) \\\n"
-      "-not \\( -iname bin_capella64 -prune \\) -not -iregex '.*/\\.#.*' \\\n" 
+      "-not \\( -iname bin_capella64 -prune \\) -not -iregex '.*/\\.#.*' \\\n"
       "-iregex '.*\\.\\(h\\|cpp\\)' \\\n"
       "-print0 | xargs -0 grep --color=always \\\n"
       "-nIPe ''"))
@@ -154,8 +154,8 @@
   (when (eq (project-root-type) 'project-nova)
     (when (member major-mode '(c++-mode dt2-mode stream-mode doxym-mode))
       (save-restriction
-	(widen)
-	(untabify (point-min) (point-max)))) 
+        (widen)
+        (untabify (point-min) (point-max))))
     (when (and (not (nova-coding-system-p))
                (not (nova-pl2-file-p)))
       (if (yes-or-no-p (format "%s: change coding system from %S to utf-8-unix? "
@@ -165,20 +165,20 @@
 
 (add-hook 'before-save-hook 'nova-before-save-hook t)
 
-(defun nova-conf-after-save-hook () 
+(defun nova-conf-after-save-hook ()
   (when (and (memq major-mode '(conf-space-mode conf-unix-mode))
-	     (buffer-file-name)
-	     (string-match "\.env$" (buffer-file-name))
-	     (y-or-n-p "run qtconfig? "))
+             (buffer-file-name)
+             (string-match "\.env$" (buffer-file-name))
+             (y-or-n-p "run qtconfig? "))
     (when (get-buffer "*qtconfig output*")
       (kill-buffer "*qtconfig output*"))
     (let ((proc (start-process "qtconfig" (get-buffer-create "*qtconfig output*") "qtconfig")))
       (set-process-sentinel proc (lambda (p reason)
-				   (when (memq (process-status p) '(signal exit))
-				     (if (and (equal (process-status p) 'exit) (eq 0 (process-exit-status p))) 
-					 (call-process "notify-send" nil nil nil "-t" "1000" "qtconfig finished")
-				       (call-process "notify-send" nil nil nil "-t" "1000" "qtconfig finished with error"))
-				     (delete-process p)))))))
+                                   (when (memq (process-status p) '(signal exit))
+                                     (if (and (equal (process-status p) 'exit) (eq 0 (process-exit-status p)))
+                                         (call-process "notify-send" nil nil nil "-t" "1000" "qtconfig finished")
+                                       (call-process "notify-send" nil nil nil "-t" "1000" "qtconfig finished with error"))
+                                     (delete-process p)))))))
 
 (add-hook 'after-save-hook 'nova-conf-after-save-hook t)
 
@@ -197,14 +197,14 @@
      ;; pre-,postfixes
      (list (concat
             ; Context prefix. only _ or v_ is fontified.
-            "\\_<\\(?:[ioxscmg]\\(_\\)\\|\\(v_\\)\\)?" 
+            "\\_<\\(?:[ioxscmg]\\(_\\)\\|\\(v_\\)\\)?"
             ; type prefix. Fontified.
-            "\\(\\(?:[pcra]\\|sp\\)*\\(?:[nfeobs]\\|vec\\|mat\\)?\\)" 
-            ;; identifiers start upercase. Not fontified 
-            "[A-Z0-9_]\\(?:\\w\\|\\s_\\)*\\_>"                  
+            "\\(\\(?:[pcra]\\|sp\\)*\\(?:[nfeobs]\\|vec\\|mat\\)?\\)"
+            ;; identifiers start upercase. Not fontified
+            "[A-Z0-9_]\\(?:\\w\\|\\s_\\)*\\_>"
             ;; exclude identifier binding methods
-            "[ \t]*[^( \t]")                          
-           '(1 font-lock-semi-unimportant nil t) 
+            "[ \t]*[^( \t]")
+           '(1 font-lock-semi-unimportant nil t)
            '(2 font-lock-semi-unimportant nil t)
            '(3 font-lock-semi-unimportant)
            )
@@ -215,18 +215,18 @@
      ;; 'just' to satisfy compiler)
      (list "\\_<\\(\\(?:static\\|const\\|dynamic\\|reinterpret\\)_cast\\s-*<[^>]*>\\s-*\\)" '(1 font-lock-semi-unimportant))
      (list (concat "\\("
-		     "\\(?:->\\|\\.\\)[ \t]*"
-		     (rx (or "getm" "getm_s" "getm_s2" "getm_s3" "gets" "getkg" "getN" "getPa" "getK" "getrad" "getdegree" "getPas" "getCentipoise" "getm2" "getm3" "getrad_s" "getrad_s2" "getrad_s3" "getdegree_s" "getdegree_s2" "getdegree_s3"))
-		     "[ \t]*"
-		     "([ \t]*)"
-		   "\\)")
-	   '(1 font-lock-semi-unimportant t))
+                     "\\(?:->\\|\\.\\)[ \t]*"
+                     (rx (or "getm" "getm_s" "getm_s2" "getm_s3" "gets" "getkg" "getN" "getPa" "getK" "getrad" "getdegree" "getPas" "getCentipoise" "getm2" "getm3" "getrad_s" "getrad_s2" "getrad_s3" "getdegree_s" "getdegree_s2" "getdegree_s3"))
+                     "[ \t]*"
+                     "([ \t]*)"
+                   "\\)")
+           '(1 font-lock-semi-unimportant t))
      (list (concat "\\_<\\("
-		   (rx (or "meter" "sec" "kilogramm" "kelvin" "radian" "meter_sec" "meter_sec2" "newton" "pascal" "meter_sec3" "Pas" "meter2" "meter3" "radian_sec" "radian_sec2" "radian_sec3" "millimeter" "mikrometer" "millisec" "gramm" "centipoise" "degree" "degree_sec" "degree_sec2" "degree_sec3" "celsius" "sec"))
-		   "\\)[ \t]*\\(?:\\((\\)[ \t]*[^()\n]*[ \t]*\\()\\)\\|(\\)")
-	   '(1 font-lock-semi-unimportant t)
-	   '(2 font-lock-semi-unimportant t t)
-	   '(3 font-lock-semi-unimportant t t))
+                   (rx (or "meter" "sec" "kilogramm" "kelvin" "radian" "meter_sec" "meter_sec2" "newton" "pascal" "meter_sec3" "Pas" "meter2" "meter3" "radian_sec" "radian_sec2" "radian_sec3" "millimeter" "mikrometer" "millisec" "gramm" "centipoise" "degree" "degree_sec" "degree_sec2" "degree_sec3" "celsius" "sec"))
+                   "\\)[ \t]*\\(?:\\((\\)[ \t]*[^()\n]*[ \t]*\\()\\)\\|(\\)")
+           '(1 font-lock-semi-unimportant t)
+           '(2 font-lock-semi-unimportant t t)
+           '(3 font-lock-semi-unimportant t t))
 
      ;; namespaces
      (list "\\_<\\(\\(?:\\(?:\\w\\|\\s_\\)+\\s-*::\\s-*\\)+\\)\\(?:\\w\\|\\s_\\)+\\_>" '(1 font-lock-semi-unimportant))
@@ -234,14 +234,14 @@
      ;; trace/log/assert/result
      (list "\\_<Result[ \t]+res[ \t]*\\(?:=[ \t]*Result::Ok[ \t]*\\)?;" '(0 font-lock-semi-unimportant t))
      (cons "\\_<res[ \t]*[|&]?=" 'font-lock-semi-unimportant)
-     (list (rx (group              
+     (list (rx (group
                 (regex "\\_<")
                 (or "ASSERT" "ASSERT_ALWAYS" "TESTOMA_MESSAGE" (regex "\\(?:LOG\\|RETURN_\\)\\(?:\\w\\|_\\)*"))
-                (regex "\\s-*([^;]*)\\s-*;"))) 
+                (regex "\\s-*([^;]*)\\s-*;")))
            '(0 font-lock-semi-unimportant t))
-     (list "\\bResult::failed[ \t]*\\((.*?\\(?:\n.*?\\)*?)\\)[ \t]*;" 
+     (list "\\bResult::failed[ \t]*\\((.*?\\(?:\n.*?\\)*?)\\)[ \t]*;"
            '(1 font-lock-semi-unimportant t))
-     
+
      ;; string stuff
      (list "\\_<\\(oi18n\\)\\_>[ \t]*(" '(1 font-lock-semi-unimportant t))
      (list "\\_<\\(ti18n\\)[ \t]*([ \t]*\\(\"sw\"[\t]*,\\)" '(1 font-lock-semi-unimportant t) '(2 font-lock-semi-unimportant t)))))
@@ -251,37 +251,37 @@
 (defun nova-find-file-hook()
   (let ((buffer-name (buffer-name)))
     (when (and (eq (project-root-type) 'project-nova)
-	       (string-match "\\(.*\\)<[0-9]+>$" buffer-name)
-	       (not (string-match "makefile" buffer-name)))
+               (string-match "\\(.*\\)<[0-9]+>$" buffer-name)
+               (not (string-match "makefile" buffer-name)))
       (let* ((base-name (match-string 1 buffer-name))
-	     (other-buf (get-buffer base-name))
-	     (act-buf (current-buffer)))
-	(when other-buf
-	  (rename-buffer (concat base-name "<" (nova-build-name) ">" ) t)
-	  (set-buffer other-buf)
-	  (rename-buffer (concat base-name "<" (nova-build-name) ">" ) t)
-	  (set-buffer act-buf))))))
+             (other-buf (get-buffer base-name))
+             (act-buf (current-buffer)))
+        (when other-buf
+          (rename-buffer (concat base-name "<" (nova-build-name) ">" ) t)
+          (set-buffer other-buf)
+          (rename-buffer (concat base-name "<" (nova-build-name) ">" ) t)
+          (set-buffer act-buf))))))
 
 (defun nova-conf-mode-hook()
   (when (and (buffer-file-name) (string-match "\.env$" (buffer-file-name)))
     (let* ((known-entities '("base"
-			     "gui_bricks"
-			     "nfw"
-			     "scheduler"
-			     "drivers"
-			     "workerbh"
-			     "workersc"
-			     "workerdi"
-			     "waferhandling"
-			     "ctsdualgripper"
-			     "ischeduler_worker"
-			     "ischeduler_driver"
-			     "idriver_workerbh"
-			     "idriver_workersc"
-			     "idriver_workerdi"
-			     "idieprovider_worker"
-			     "icts_driver"))
-	   (re (concat "\\_<\\(?:" (mapconcat 'identity known-entities "\\|") "\\)\\(?:[-a-zA-Z0-9_]\\)+")))
+                             "gui_bricks"
+                             "nfw"
+                             "scheduler"
+                             "drivers"
+                             "workerbh"
+                             "workersc"
+                             "workerdi"
+                             "waferhandling"
+                             "ctsdualgripper"
+                             "ischeduler_worker"
+                             "ischeduler_driver"
+                             "idriver_workerbh"
+                             "idriver_workersc"
+                             "idriver_workerdi"
+                             "idieprovider_worker"
+                             "icts_driver"))
+           (re (concat "\\_<\\(?:" (mapconcat 'identity known-entities "\\|") "\\)\\(?:[-a-zA-Z0-9_]\\)+")))
     (font-lock-add-keywords nil (list
       (cons re 'font-lock-function-name-face)
       (list (concat "^LOCAL_ROOT\\s-*=\\s-*\\(?:" (getenv "HOME") "[ \t]*$\\|\\(.+?\\)[ \t]*$\\)") '(1 font-lock-warning-face t t))
@@ -307,7 +307,7 @@
 ;; 						"/home/emp8118035/bib/release/zorro/base"
 ;; 						)))
 
-;;; compile stuff 
+;;; compile stuff
 
 (defconst nova-comp-title-0
   "^\\(---+ +\\)\\(Masterbuild for M_.*?\\)\\( +-+ *\\)$")
@@ -328,27 +328,27 @@
   (list
    ;; sections
    (list nova-comp-title-0
-	 '(1 font-lock-unimportant)
-	 '(2 markup-title-0-face)
-	 '(3 font-lock-unimportant))
+         '(1 font-lock-unimportant)
+         '(2 markup-title-0-face)
+         '(3 font-lock-unimportant))
    (list nova-comp-title-1
-	 '(1 font-lock-unimportant)
-	 '(2 markup-title-1-face)
-	 '(3 font-lock-unimportant))
+         '(1 font-lock-unimportant)
+         '(2 markup-title-1-face)
+         '(3 font-lock-unimportant))
    (list nova-comp-title-2
-	 '(1 font-lock-unimportant)
-	 '(2 markup-title-2-face)
-	 '(3 font-lock-unimportant))
+         '(1 font-lock-unimportant)
+         '(2 markup-title-2-face)
+         '(3 font-lock-unimportant))
    (list nova-comp-title-3
-	 '(1 font-lock-unimportant)
-	 '(2 markup-title-3-face)
-	 '(3 font-lock-unimportant)
-	 '(4 markup-title-3-face)
-	 '(5 font-lock-unimportant))
+         '(1 font-lock-unimportant)
+         '(2 markup-title-3-face)
+         '(3 font-lock-unimportant)
+         '(4 markup-title-3-face)
+         '(5 font-lock-unimportant))
    (list nova-comp-title-4
-	 '(1 font-lock-unimportant)
-	 '(2 markup-title-4-face)
-	 '(3 font-lock-unimportant))
+         '(1 font-lock-unimportant)
+         '(2 markup-title-4-face)
+         '(3 font-lock-unimportant))
 
    ;; trash
    (list "^echo\\b.*$" '(0 font-lock-unimportant)))
@@ -368,11 +368,11 @@
   (font-lock-add-keywords nil nova-comp-font-lock-keywords)
   (set (make-local-variable 'outline-regexp)
        (concat "\\(?:"
-	       (mapconcat
-		'identity
-		(list nova-comp-title-0 nova-comp-title-1 nova-comp-title-2 nova-comp-title-3 nova-comp-title-4)
-		"\\|")
-	       "\\)"))
+               (mapconcat
+                'identity
+                (list nova-comp-title-0 nova-comp-title-1 nova-comp-title-2 nova-comp-title-3 nova-comp-title-4)
+                "\\|")
+               "\\)"))
   (set (make-local-variable 'outline-level) 'logfile-outline-level)
   (outline-minor-mode t)
   (font-lock-mode 1))
@@ -412,11 +412,11 @@
     (setq proj-dir (concat proj-dir "/")))
 
   (let* ((source-name (concat (downcase name) ".cpp"))
-  	 (header-name (concat (downcase name) ".h"))
-  	 (source-rel-path (concat "source/" source-name))
-  	 (source-path (concat proj-dir source-rel-path))
-  	 (header-path (concat proj-dir "include/" header-name))
-	 (make-path (concat proj-dir "makefile")))
+         (header-name (concat (downcase name) ".h"))
+         (source-rel-path (concat "source/" source-name))
+         (source-path (concat proj-dir source-rel-path))
+         (header-path (concat proj-dir "include/" header-name))
+         (make-path (concat proj-dir "makefile")))
 
     (when (file-exists-p header-path)
       (error "%s already exists" header-path))
@@ -426,12 +426,12 @@
       (error "%s does not exist" make-path))
     (when (not (file-writable-p make-path))
       (if (featurep 'mks)
-	  (progn 
-	    (message "%s is not writable, checking it out" make-path)
-	    (mks-co make-path ":head" t)
-	    (when (not (file-writable-p make-path))
-	      (error "%s still not writable, mks checkout probably failed" make-path)))
-	(error "%s is not writable and emacs mks frontend not available" make-path)))
+          (progn
+            (message "%s is not writable, checking it out" make-path)
+            (mks-co make-path ":head" t)
+            (when (not (file-writable-p make-path))
+              (error "%s still not writable, mks checkout probably failed" make-path)))
+        (error "%s is not writable and emacs mks frontend not available" make-path)))
 
     (setq nova-tempo-class-name name)
 
@@ -478,25 +478,25 @@
     (goto-char (point-min))
     (unless (re-search-forward (concat "^[ \t]*SRC_LIST[ \t]*[:+]?=[ \t]*" source-rel-path "\\_>") nil t)
       (let ((indent " "))
-	;; move point to where to insert the new entry
-	(if (re-search-forward "^[ \t]*SRC_LIST\\([ \t]*\\)[:+]?=" nil t)
-	    ;; append to an existing SRC_LIST
-	    (progn 
-	      (setq indent (match-string 1))
-	      (beginning-of-line)
-	      (while (re-search-forward "^[ \t]*SRC_LIST[ \t]*[:+]?=" nil t))
-	      (end-of-line)
-	      (insert "\n"))
-	  ;; create a new SRC_LIST - list
-	  (goto-char (point-max))
-	  (while (re-search-backward "^[ \t]*include\\b" nil t)) ;do nothing in while's body
-	  (open-line 2)
-	  (insert "SRC_LIST :=\n"))
+        ;; move point to where to insert the new entry
+        (if (re-search-forward "^[ \t]*SRC_LIST\\([ \t]*\\)[:+]?=" nil t)
+            ;; append to an existing SRC_LIST
+            (progn
+              (setq indent (match-string 1))
+              (beginning-of-line)
+              (while (re-search-forward "^[ \t]*SRC_LIST[ \t]*[:+]?=" nil t))
+              (end-of-line)
+              (insert "\n"))
+          ;; create a new SRC_LIST - list
+          (goto-char (point-max))
+          (while (re-search-backward "^[ \t]*include\\b" nil t)) ;do nothing in while's body
+          (open-line 2)
+          (insert "SRC_LIST :=\n"))
 
-	;; actually insert new line
-	(insert (concat "SRC_LIST" indent "+= " source-rel-path))))))
+        ;; actually insert new line
+        (insert (concat "SRC_LIST" indent "+= " source-rel-path))))))
 
-(defun nova-qtconfig () 
+(defun nova-qtconfig ()
   (interactive)
   (shell-command "qtconfig /home/emp8118035/prog/nova"))
 
@@ -506,32 +506,32 @@
   (save-excursion
     (goto-char (point-min))
     (if (not (re-search-forward "^/+\\s-*\n//\\s-*\\$Log:.*\\$"))
-	(message "No log found")
+        (message "No log found")
       (let ((start (match-beginning 0)))
-	(re-search-forward "^[^/]\\|\\'")
-	(delete-region start (point))))))
+        (re-search-forward "^[^/]\\|\\'")
+        (delete-region start (point))))))
 
 (defun nova-dired-jump (&optional other-window)
   (interactive "P")
   (let* ((file buffer-file-name)
          (dir (if file (file-name-directory file) default-directory))
-	 (root-dir (project-root-dir file)))
+         (root-dir (project-root-dir file)))
     (if other-window
-	(dired-other-window root-dir)
+        (dired-other-window root-dir)
       (dired root-dir))
     (dired-insert-subdir "source" nil t)
     (dired-insert-subdir "include" nil t)
     (if file
-	(or (dired-goto-file file)
-	    ;; refresh and try again
-	    (progn
-	      (dired-insert-subdir (file-name-directory file))
-	      (dired-goto-file file))
-	    ;; Toggle omitting, if it is on, and try again.
-	    (if dired-omit-mode
-		(progn
-		  (dired-omit-mode)
-		  (dired-goto-file file)))))))
+        (or (dired-goto-file file)
+            ;; refresh and try again
+            (progn
+              (dired-insert-subdir (file-name-directory file))
+              (dired-goto-file file))
+            ;; Toggle omitting, if it is on, and try again.
+            (if dired-omit-mode
+                (progn
+                  (dired-omit-mode)
+                  (dired-goto-file file)))))))
 
 ;;; file aliases / cache
 
@@ -545,8 +545,8 @@
     ("wbh". "~~workerbh_dev")
     ("wsc". "~~workersc_dev")
     ("wh". "~~waferhandling_dev")
-    
-    ;; nfw 
+
+    ;; nfw
     ("nc". "~~nfw_dev/calibration/source")
     ("nig". "~~nfw_dev/interpreter/ipsgui/source")
 
@@ -556,7 +556,7 @@
     ("dsh". "~~drivers_dev/sliderhandling/source")
     ("dsc". "~~drivers_dev/substratecamera/source")
     ("dsh". "~~drivers_dev/substratehandling/source")
-    
+
     ;; schmarrn
     ("didi". "~~idriver_workerdi_dev/interface/include/idriver_workerdi.h")))
 
@@ -576,7 +576,7 @@
    "~/prog/nova/nfw_dev/interpreter/ipsgui"
    "~/prog/nova/base_dev/docoverall"
    "~/prog/nova/base_dev/errorhandling"
-   
+
    "~/datacon/sd0/datacon/log"
 
    "~/bib/release/zorro"
@@ -602,7 +602,7 @@
   ("/calibration/source" nova-ffe-calibration)
   ("/calibration/include" nova-ffe-calibration)
   )))
-  (dolist (elt mylist) 
+  (dolist (elt mylist)
     (add-to-list 'ffe-map-map elt)))
 
 (setq nova-ffe-highspeedhandling '(
@@ -702,7 +702,7 @@
 (tempo-define-snippet "c-nova-class"
  '( &
     "/** " p "*/" > n>
-    "class " (p "classname: " class) > n> 
+    "class " (p "classname: " class) > n>
     "{" > n>
     "public:" > n>
     (s class) "();" > n>
@@ -716,7 +716,7 @@
 ;; non interactive - see nova-tempo-class-name
 (tempo-define-snippet "c-nova-class-ni"
  '( "/** " p "*/" > n>
-    "class " nova-tempo-class-name > n> 
+    "class " nova-tempo-class-name > n>
     "{" > n>
     "public:" > n>
     nova-tempo-class-name "();" > n>
@@ -765,7 +765,7 @@
     "#define _" (upcase nova-tempo-class-name) "_H_\n"
     "\n"
     "// local includes\n"
-    "// system includes\n" 
+    "// system includes\n"
     "#include \"muesli.h\"\n" p
     "// forwards\n"
     "\n"))

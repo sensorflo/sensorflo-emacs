@@ -1,9 +1,9 @@
 ;;; pm-mode.el --- a major-mode for editing personality files in emacs
 ;;
 ;;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;;; Commentary:
-;; 
+;;
 ;;; Variables:
 
 (defconst pm-mode-version "0.1")
@@ -57,32 +57,32 @@
   "Major mode for editing pm files.
 Turning on pm mode runs the normal hook `pm-mode-hook'."
   (interactive)
-  
+
   ;; syntax table
   (modify-syntax-entry ?\_ "w")
   (modify-syntax-entry ?\# "<")
   (modify-syntax-entry ?\n ">")
   (modify-syntax-entry ?\r ">")
-  
+
   ;; comments
   (set (make-local-variable 'comment-column) 0)
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-end) "")
   (set (make-local-variable 'comment-start-skip) "#\\s-*")
   (set (make-local-variable 'comment-end-skip) "\\s-*\n")
-  
-  ;; TODO: make paragraphs using blank lines / OBJ_DEF 
+
+  ;; TODO: make paragraphs using blank lines / OBJ_DEF
   ;; paragraphs
   ;;   (set (make-local-variable 'paragraph-separate) xxx)
   ;;   (set (make-local-variable 'paragraph-start) xxx )
   ;;   (set (make-local-variable 'paragraph-ignore-fill-prefix) t)
-  
+
   ;; misc
   (set (make-local-variable 'require-final-newline) t)
-  
+
   ;; font lock
   (set (make-local-variable 'font-lock-defaults) '(pm-font-lock-keywords))
-  
+
   ;; indent
   (set (make-local-variable 'indent-line-function) 'pm-indent-line)
 
@@ -95,8 +95,8 @@ Turning on pm mode runs the normal hook `pm-mode-hook'."
          (lambda()
            (cond ((looking-at l1) 1)
                  ((looking-at l2) 2)))))
-  
-  ;; 
+
+  ;;
   (run-hooks 'pm-mode-hook))
 
 (provide 'pm-mode)

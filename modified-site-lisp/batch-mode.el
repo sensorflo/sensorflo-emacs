@@ -20,7 +20,7 @@
 ;;; Comentary:
 
 ;; The batch-mode provides syntax hilighting and auto-indentation for
-;; DOS batch files (.bat).  and auto-idendation.  
+;; DOS batch files (.bat).  and auto-idendation.
 
 ;; Agnar Renolen, <agnar.renolen@emap.no>
 
@@ -57,32 +57,32 @@
 
      ; the argument of the goto statement is a label
      '( "\\<goto\\>[ \t]*\\([a-zA-Z0-9]+\\)" (1
-					      font-lock-constant-face))
-     
+                                              font-lock-constant-face))
+
      ; the keywords of batch (which are not built-in commands)
      (concat "\\<\\(cmdextversion\\|"
-	     "d\\(efined\\|isableextensions\\|o\\)\\|"
-	     "e\\(lse\\|n\\(ableextensions\\|dlocal\\)"
-	     "\\|qu\\|rrorlevel\\|xist\\)\\|for\\|"
-	     "goto\\|i[fn]\\|n\\(eq\\|ot\\)\\|setlocal\\)\\>")
+             "d\\(efined\\|isableextensions\\|o\\)\\|"
+             "e\\(lse\\|n\\(ableextensions\\|dlocal\\)"
+             "\\|qu\\|rrorlevel\\|xist\\)\\|for\\|"
+             "goto\\|i[fn]\\|n\\(eq\\|ot\\)\\|setlocal\\)\\>")
 
      ; built-in DOS commands
      (cons (concat "\\<\\(a\\(ssoc\\|t\\(\\|trib\\)\\)\\|break\\|"
-		   "c\\(a\\(cls\\|ll\\)\\|d\\|h\\(cp\\|dir\\|k\\("
-		   "dsk\\|ntfs\\)\\)\\|ls\\|md\\|o\\(lor\\|mp\\(\\|act\\)"
-		   "\\|nvert\\|py\\)\\)\\|d\\(ate\\|el\\|i\\("
-		   "r\\|skco\\(mp\\|py\\)\\)\\|oskey\\)\\|"
-		   "e\\(cho\\|rase\\|xit\\)\\|"
-		   "f\\(c\\|ind\\(\\|str\\)\\|for\\(\\|mot\\)\\|type\\)\\|"
-		   "graftabl\\|help\\|label\\|"
-		   "m\\(d\\|mkdir\\|o[dvr]e\\)\\|p\\(a\\(th\\|use\\)"
-		   "\\|opd\\|r\\(int\\|opmt\\)\\|ushd\\)\\|"
-		   "r\\(d\\|e\\(cover\\|n\\(\\|ame\\)\\|place\\)\\|mdir\\)\\|"
-		   "s\\(et\\|hift\\|ort\\|tart\\|ubst\\)\\|"
-		   "t\\(i\\(me\\|tle\\)\\|ree\\|ype\\)\\|"
-		   "v\\(er\\(\\|ify\\)\\|ol\\)\\|xcopy\\)\\>")
-	   'font-lock-builtin-face)
-     
+                   "c\\(a\\(cls\\|ll\\)\\|d\\|h\\(cp\\|dir\\|k\\("
+                   "dsk\\|ntfs\\)\\)\\|ls\\|md\\|o\\(lor\\|mp\\(\\|act\\)"
+                   "\\|nvert\\|py\\)\\)\\|d\\(ate\\|el\\|i\\("
+                   "r\\|skco\\(mp\\|py\\)\\)\\|oskey\\)\\|"
+                   "e\\(cho\\|rase\\|xit\\)\\|"
+                   "f\\(c\\|ind\\(\\|str\\)\\|for\\(\\|mot\\)\\|type\\)\\|"
+                   "graftabl\\|help\\|label\\|"
+                   "m\\(d\\|mkdir\\|o[dvr]e\\)\\|p\\(a\\(th\\|use\\)"
+                   "\\|opd\\|r\\(int\\|opmt\\)\\|ushd\\)\\|"
+                   "r\\(d\\|e\\(cover\\|n\\(\\|ame\\)\\|place\\)\\|mdir\\)\\|"
+                   "s\\(et\\|hift\\|ort\\|tart\\|ubst\\)\\|"
+                   "t\\(i\\(me\\|tle\\)\\|ree\\|ype\\)\\|"
+                   "v\\(er\\(\\|ify\\)\\|ol\\)\\|xcopy\\)\\>")
+           'font-lock-builtin-face)
+
      ; variables are embeded in percent chars
      '( "%[a-zA-Z0-9_]+%?" . font-lock-variable-name-face)
 
@@ -95,7 +95,7 @@
      ; variables set should also be hilighted with variable-name-face
      '( "\\<set\\>[ \t]*\\([a-zA-Z0-9_]+\\)" (1 font-lock-variable-name-face))
     )))
-     
+
 
 ;;;###autoload
 (defun batch-mode ()
@@ -110,42 +110,42 @@
   (set (make-local-variable 'font-lock-defaults)
        '(batch-font-lock-keywords nil t nil))
   (run-hooks 'batch-mode-hook))
-  
+
 (defun batch-indent-line ()
   "Indent current line as batch script"
   (let ((indent (batch-calculate-indent))
-	beg shift-amt 
-	(old-pos (- (point-max) (point))))
+        beg shift-amt
+        (old-pos (- (point-max) (point))))
     (beginning-of-line)
     (setq beg (point))
     (skip-chars-forward " \t")
     (if (looking-at ")")
-	(setq indent (max (- indent batch-indent-level))))
+        (setq indent (max (- indent batch-indent-level))))
     (message "prev indent: %d" indent)
     (setq shift-amt (- indent (current-column)))
     (if (not (zerop shift-amt))
-	(progn
-	  (delete-region beg (point))
-	  ; ArcView replaces tabs with single spaces, so we only insert
-	  ; spaces to make indentation correct in ArcView.
-	  (insert-char ?  indent)
-	  (if (> (- (point-max) old-pos) (point))
-	      (goto-char (- (point-max) old-pos)))))
+        (progn
+          (delete-region beg (point))
+          ; ArcView replaces tabs with single spaces, so we only insert
+          ; spaces to make indentation correct in ArcView.
+          (insert-char ?  indent)
+          (if (> (- (point-max) old-pos) (point))
+              (goto-char (- (point-max) old-pos)))))
     shift-amt))
-    
+
 (defun batch-calculate-indent ()
   "Return appropriate indentation for the current line as batch code."
   (save-excursion
     (beginning-of-line)
     (current-indentation)
     (if (bobp)
-	0
+        0
       (if (re-search-backward "^[ \t]*[^ \t\n\r]" nil t)
-	  (if (looking-at "[ \t]*\\()[ \t]*else\\|for\\|if\\)\\>")
-	      (+ (current-indentation) batch-indent-level)
-	    (current-indentation))
-	0))))
-  
+          (if (looking-at "[ \t]*\\()[ \t]*else\\|for\\|if\\)\\>")
+              (+ (current-indentation) batch-indent-level)
+            (current-indentation))
+        0))))
+
 (provide 'batch-mode)
 
 ;;; batch-mode.el ends here

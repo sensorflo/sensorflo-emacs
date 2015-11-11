@@ -27,29 +27,29 @@
   "Major mode for editing dt2 files.
 Turning on dt2 mode runs the normal hook `dt2-mode-hook'."
   (interactive)
-  
+
   ;; syntax table
   (modify-syntax-entry ?\" "\"")
   (modify-syntax-entry ?\_ "w")
-  
+
   ;; comments
   (set (make-local-variable 'comment-column) 0)
   (set (make-local-variable 'comment-start) "// ")
   (set (make-local-variable 'comment-end) "")
   (set (make-local-variable 'comment-start-skip) "//[ \t]*")
   (set (make-local-variable 'comment-end-skip) "[ \t]*\n")
-  
+
   ;; outline
   ;; (set (make-local-variable 'outline-regexp) "^[ \t]*Name[ \t]*;[^;]*?;[ \t]*\\(" dt2-re-string "\\)")
   ;; (set (make-local-variable 'outline-level) (lambda () 1))
 
   ;; misc
   (set (make-local-variable 'require-final-newline) t)
-  
+
   ;; font lock
   (set (make-local-variable 'font-lock-defaults) '(dt2-font-lock-keywords t))
-  
-  ;; 
+
+  ;;
   (run-hooks 'dt2-mode-hook))
 
 (provide 'dt2-mode)

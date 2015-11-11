@@ -7,7 +7,7 @@
  "escape")
 
 
-;;; inline text properties 
+;;; inline text properties
 (tempo-define-template "pod-code"
  '( "C<" r ">" )
  "code")
@@ -28,7 +28,7 @@
  '( "S<" r ">" )
  "nsb")
 
-;;; lists 
+;;; lists
 (tempo-define-template "pod-list"
  '( "=over" n
     r
@@ -41,7 +41,7 @@
     r )
  "item")
 
-;;; sections 
+;;; sections
 (tempo-define-template "pod-h1"
   '("=head1" r ))
 
@@ -55,7 +55,7 @@
   '("=head4" r ))
 
 
-;;; misc 
+;;; misc
 (tempo-define-template "pod-command"
  '( p "<" r ">"))
 

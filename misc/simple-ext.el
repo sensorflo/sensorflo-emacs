@@ -1,31 +1,31 @@
 ;;; simple-ext.el --- extensions to emacs' simple.el, subr.el, c source code
-;; 
+;;
 ;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; Created: 2009
-;; 
+;;
 ;; This file is not part of GNU Emacs.
-;; 
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;
-;;; Commentary: 
-;; 
+;;; Commentary:
+;;
 ;; Unordered extensions for various things within simple.el, subr.el, c source
 ;; code. See also misc-ext.el
-;; 
-;;; Code: 
+;;
+;;; Code:
 
 (defun duplicate-line (arg)
   "Duplicates the current line arg times.
@@ -74,8 +74,8 @@ same way the initial block had."
       (insert text)
       (setq arg (- arg 1)))
 
-    (push-mark (+ saved-mark insert-length))    
-    (goto-char (+ saved-point insert-length))    
+    (push-mark (+ saved-mark insert-length))
+    (goto-char (+ saved-point insert-length))
     (setq deactivate-mark nil)))
 
 (defun duplicate-line-or-region (&optional arg)
@@ -108,12 +108,12 @@ same way the initial block had."
   (exchange-point-and-mark)
   (end-of-line)
   (forward-char 1))
-  
+
 (defun mark-whole-lines (&optional point-end-of-last-line)
   "If region not active, mark whole line is point on.
 If region is active, mark all lines between point and mark."
   (interactive)
-  
+
   ;; mark region
   (if mark-active
       (let (beg)
@@ -125,7 +125,7 @@ If region is active, mark all lines between point and mark."
         (unless (eq (point) (line-beginning-position))
           (forward-line))
         (set-mark beg))
-    
+
     ;; mark line: mark to beginning, point to beginning of next line
     (beginning-of-line)
     (set-mark (point))
@@ -203,7 +203,7 @@ Behaviour of point is unspecified."
 (defun open-line-below (&optional arg)
   (interactive "*p")
   (end-of-line)
-  (when (and arg (> arg 1)) (newline (- arg 1)))  
+  (when (and arg (> arg 1)) (newline (- arg 1)))
   (newline-and-indent))
 
 (defun move-line-up ()
@@ -217,7 +217,7 @@ Behaviour of point is unspecified."
   "As \\[kill-line], but kills the whole line if it's a blank line."
   (interactive)
   (if (and (looking-at "\\s-*$") (looking-back "^\\s-*" (line-beginning-position)))
-      (beginning-of-line))  
+      (beginning-of-line))
   (call-interactively 'kill-line))
 
 (defun copy-buffer-file-name-as-kill()
@@ -230,7 +230,7 @@ Behaviour of point is unspecified."
   (cond
    ((and (equal last-command 'beginning-of-line-dwim) (looking-at "^"))
       (back-to-indentation))
-   ;; todo: this is dragon.el specific, find a way to define that functionality within dragon.el 
+   ;; todo: this is dragon.el specific, find a way to define that functionality within dragon.el
    ((and (equal last-command 'beginning-of-line-dwim) (looking-back "^[ \t]+"))
     (re-search-forward "[ \t]*\\(EHRESULT[ \t]+\\)?ehr[ \t]*\\+?=[ \t]*"))
    (t
@@ -240,14 +240,14 @@ Behaviour of point is unspecified."
   "Cycles among different positions at the end of the line.
 1) end of code
 2) start of comment, i.e. the first delimiter
-3) start of comment text 
+3) start of comment text
 4) end of comment text
 5) actual end of line
 Arg specifies how many positions to forward. Arg can be negative.
 On a line with no code, end of code is equal to start of comment.
 If point is currently on none of those specific position, point
 moves to real end of line."
-  
+
   (interactive "p")
   (let ((saved-point (point))
         points
@@ -256,21 +256,21 @@ moves to real end of line."
         beg-com       ; beginning of comment
         beg-com-text  ; beginning of comment text
         end-com-text ); end of comment text
-    
+
     ;; BUG: if comment-start-skip etc are not defined, end-of-line-dwim should
     ;; only distinguish between last non-white and real end of line If that is
     ;; done, end-of-line-dwim can be used in virtually all buffers (see
     ;; mybindings.el)
-    
+
     ;; search last non white, which will be either end of code or end of comment
     ;; text
-    (end-of-line)   
+    (end-of-line)
     (skip-syntax-backward " ")
     (setq last-non-white (point))
 
     ;; search start of comment and start of comment text
     ;; BUG: the correct thing would be to use , but
-    ;; c++-mode sets comment-start-skip incorrectly 
+    ;; c++-mode sets comment-start-skip incorrectly
     (when comment-start-skip
       (when (re-search-backward comment-start-skip (line-beginning-position) t)
         (setq beg-com (if (member major-mode (list 'c-mode 'c++-mode))
@@ -279,8 +279,8 @@ moves to real end of line."
               beg-com-text (match-end 0)
               end-com-text last-non-white)
         (goto-char beg-com)))
-    
-    ;; search end of code. 
+
+    ;; search end of code.
     (if beg-com
         (progn
           (setq end-com-text last-non-white)
@@ -288,8 +288,8 @@ moves to real end of line."
           (setq end-code (point)))
       (setq end-code last-non-white))
 
-    
-    ;; 
+
+    ;;
     (unless beg-com
       (setq beg-com end-code))
     (unless beg-com-text
@@ -299,13 +299,13 @@ moves to real end of line."
     (setq points (sort (delete-dups (list end-code beg-com beg-com-text end-com-text (line-end-position))) '<))
     (setq len (length points))
     (when (equal len 0) (error)) ; should never happen
-    
-    ;; 
+
+    ;;
     (setq arg (% arg len)) ; 5 positions -> 5 periodic
     ;;     (when (< arg 0)        ; backward n positions = forward (5-n) positions
     ;;       (setq arg (+ len arg)))
-    
-    ;; 
+
+    ;;
     (setq actual-index nil)
     (if (or (eq last-command 'end-of-line-dwim) (> arg 1))
         (progn
@@ -318,7 +318,7 @@ moves to real end of line."
                     (+ actual-index arg)
                   (- (+ actual-index arg) len))))
       (setq next-index (- len 1)))
-    
+
     (goto-char (nth next-index points))))
 
 (defun word-beginning-position ()
@@ -343,7 +343,7 @@ macro recording."
 (defun toggle-mark(&optional arg)
   "Similar to `set-mark-command', but toggles"
   (interactive "P")
-  (if (and mark-active (not arg)) 
+  (if (and mark-active (not arg))
       (setq mark-active nil)
     (call-interactively 'set-mark-command)))
 
@@ -380,39 +380,39 @@ Analogous to `capitalize-dwim'."
       (backward-word))
     (call-interactively 'upcase-word)))
 
-(defun backward-up-list-ext () 
+(defun backward-up-list-ext ()
   "As `backward-up-list', but also works within comments/strings."
   (interactive)
   (let ((ps (syntax-ppss)))
     (if (or (nth 3 ps) (nth 4 ps))
-	(goto-char (nth 8 ps))
+        (goto-char (nth 8 ps))
       (backward-up-list))))
 
-(defun down-list-ext () 
+(defun down-list-ext ()
   "As `down-list', but also works within comments/strings."
   (interactive)
   (let ((ps (syntax-ppss)))
     (if (or (nth 3 ps) (nth 4 ps))
-	(goto-char (nth 8 ps))
+        (goto-char (nth 8 ps))
       (down-list))))
 
-(defun mark-sexp-ext (&optional arg allow-extend) 
+(defun mark-sexp-ext (&optional arg allow-extend)
   "As `mark-sexp', but treat comments as an expression "
   (interactive)
   (if (and comment-start-skip (looking-at comment-start-skip))
       (mark-comment)
     (call-interactively 'mark-sexp)))
 
-(defun transpose-sexps-ext  (arg) 
+(defun transpose-sexps-ext  (arg)
   "Similar to `transpose-sexps', but can transpose around sexp at point.
 It does that when just C-u is used as prefix arg. For example
 '{foo} else {bar}' becomes '{bar} else {foo}."
   (interactive "*P")
   (let (text start)
     (if (not (equal arg '(4)))
-	(call-interactively 'transpose-sexps)
+        (call-interactively 'transpose-sexps)
       (unless (looking-at "\\_<")
-	(backward-sexp 1))
+        (backward-sexp 1))
       (setq start (point))
       (forward-sexp 2)
       (backward-sexp 1)
@@ -422,13 +422,13 @@ It does that when just C-u is used as prefix arg. For example
       (backward-sexp 1)
       (insert text))))
 
-(defun comment-dwim-ext () 
+(defun comment-dwim-ext ()
   "Extends `comment-dwim' with:
 If `comment-dwim' does not change point, `c-toggle-comment-style'
 is called."
   (interactive)
   (when (eq (point)
-	    (progn (call-interactively 'comment-dwim) (point)))
+            (progn (call-interactively 'comment-dwim) (point)))
     (c-toggle-comment-style)))
 
 (defvar next-prev-start-buffer nil)
@@ -471,7 +471,7 @@ newline of the inserted text if there is any."
   "Returns non-nil when point is on a blank line"
   (save-excursion (beginning-of-line) (looking-at "\\s-*$")))
 
-(defun kill-buffer-ext (&optional arg) 
+(defun kill-buffer-ext (&optional arg)
   "As `kill-buffer', however only when arg is non-nil, user can/must choose a buffer."
   (interactive "P")
   (if arg
@@ -499,17 +499,17 @@ newline of the inserted text if there is any."
   first."
 
   (interactive)
-  
+
   ;; commentify if point or mark are in a comment, and no more comments are
-  ;; in between 
-  
+  ;; in between
+
   ;; delete current region
   (when (and mark-active delete-selection-mode)
     (delete-region (point) (mark)))
-  
+
   ;; standard yank. That will put region around yanked text
   (call-interactively 'yank)
-  
+
   (save-excursion
     ;; ensure all lines are completely in the region, so really all lines are
     ;; indented
@@ -519,7 +519,7 @@ newline of the inserted text if there is any."
     (exchange-point-and-mark)
     (when (> (point) (line-beginning-position))
       (forward-line))
-  
+
     ;; indent region
     (exchange-point-and-mark)
     (indent-region (point) (mark t))))
@@ -529,7 +529,7 @@ newline of the inserted text if there is any."
   (save-excursion
     (let (end)
       (unless (looking-back "\\_>\\=")
-	  (forward-sexp))
+          (forward-sexp))
       (setq end (point))
       (backward-sexp)
       (buffer-substring-no-properties (point) end))))
@@ -542,11 +542,11 @@ INTERACTIVE-CALL is non-nil.
 BUG: Does not find multiple 'same' libraries within the same
 directory (i.e. the .el and the .elc, only one of the two)."
   (interactive (list (completing-read "Locate library: "
-				      (apply-partially
+                                      (apply-partially
                                        'locate-file-completion-table
                                        load-path (get-load-suffixes)))
-		     nil nil
-		     t))
+                     nil nil
+                     t))
   (let ((load-path-orig load-path)
         result-list)
     (while load-path-orig
@@ -591,7 +591,7 @@ This undoing is not itself undoable (aka redoable)."
 I.e. a match extends to the left as far as possible."
   (when (re-search-backward regexp bound noerror count)
     (while (and (or (null bound) (>= (point) bound))
-		(save-excursion (backward-char) (looking-at regexp)))
+                (save-excursion (backward-char) (looking-at regexp)))
       (backward-char))
     (point)))
 

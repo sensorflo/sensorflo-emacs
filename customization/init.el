@@ -3,7 +3,7 @@
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; URL: https://github.com/sensorflo/sensorflo-emacs then
 ;;      customization/init.el
-;; 
+;;
 ;;; Commentary:
 ;;
 ;; TODO
@@ -37,17 +37,17 @@
 ;; load-path
 (dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
   (let ((default-directory (concat user-emacs-directory x)))
-		(add-to-list 'load-path default-directory)
-    (normal-top-level-add-subdirs-to-load-path))) 
+                (add-to-list 'load-path default-directory)
+    (normal-top-level-add-subdirs-to-load-path)))
 (dolist
     (x (append
-	'("site-lisp/"
-	  "site-lisp/ecb-2.40/"
+        '("site-lisp/"
+          "site-lisp/ecb-2.40/"
           "site-lisp/vlfi/")
-	(if (not (and (>= emacs-major-version 23) (>= emacs-minor-version 2)))
-	    (mapcar
-	     (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))
-	     '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
+        (if (not (and (>= emacs-major-version 23) (>= emacs-minor-version 2)))
+            (mapcar
+             (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))
+             '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
   (add-to-list 'load-path (concat user-emacs-directory x)))
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp")
@@ -56,10 +56,10 @@
 ;; find-function-C-source-directory
 (setq find-function-C-source-directory
       (concat (getenv "HOME") "/src/emacs-"
-	      (progn
-		(string-match "[0-9]+\\.[0-9]+" emacs-version)
-		(match-string 0 emacs-version))
-	      "/src/"))
+              (progn
+                (string-match "[0-9]+\\.[0-9]+" emacs-version)
+                (match-string 0 emacs-version))
+              "/src/"))
 
 ;; Setup quick and correct (according to my personal preferences) loading of
 ;; libraries. Obviously this should be done before loading any library. It
@@ -81,10 +81,10 @@
 ;; some modes initialize stuff using their custom variables while loading, thus
 ;; load custom file before loading modes
 (setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
-(load custom-file) 
+(load custom-file)
 
 ;; aliases
-(load-library "aliases") 
+(load-library "aliases")
 
 
 
@@ -96,14 +96,14 @@
 
 (when (equal system-type 'windows-nt)
   (require 'cygwin-mount)
-  (require 'w32-symlinks)  
+  (require 'w32-symlinks)
   (require 'w32-browser))
-(require 'ido)  
+(require 'ido)
 (load-library "find-file")
 (require 'window-numbering)
 
 ;; nxhtml is not part of sensorflo-emacs git repo
-(when (file-readable-p "nxhtml/autostart.el") 
+(when (file-readable-p "nxhtml/autostart.el")
   (load-library "nxhtml/autostart.el"))
 
 (require 'server)
@@ -116,11 +116,11 @@
 (require 'markup-faces)
 
 (load-library "misc-ext")
-(load-library "simple-ext") 
-(load-library "hi-lock-ext") 
-(load-library "project") 
-(load-library "kmacro-ext") 
-(load-library "find-file-ext") 
+(load-library "simple-ext")
+(load-library "hi-lock-ext")
+(load-library "project")
+(load-library "kmacro-ext")
+(load-library "find-file-ext")
 
 
 
@@ -136,11 +136,11 @@
 ;; - indent-tabs-mode, standard-indent
 ;; - require-final-newline, mode-require-final-newline, c-require-final-newline
 
-(put 'upcase-region 'disabled nil)   
-(put 'set-goal-column 'disabled nil) 
-(put 'narrow-to-region 'disabled nil) 
-(put 'dired-find-alternate-file 'disabled nil) 
-(put 'downcase-region 'disabled nil) 
+(put 'upcase-region 'disabled nil)
+(put 'set-goal-column 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'downcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
 (setq minibuffer-max-depth nil)
 (setq find-dired-default-fn (lambda() "" "-iname ''"))
@@ -148,13 +148,13 @@
 (when (require 'speedbar nil t)
   ;; not customizeable, but maybe put it in a hook?
   (speedbar-enable-update))
-(setq-default filladapt-mode t)  
+(setq-default filladapt-mode t)
 
 ;; interpreter-mode-alist
 (dolist (x '(("perl" . cperl-mode)))
   (add-to-list 'interpreter-mode-alist x))
 
-;; magic-mode-alist 
+;; magic-mode-alist
 (dolist (x '(("\\s-*/\\*[*!][ \t]*$" . doxym-mode)
              ;; This matches my personal AsciiDoc files
              ("\\(?::encoding:.*\n\\)?//.*AsciiDoc" . adoc-mode)))
@@ -213,14 +213,14 @@
          ("\\.svg\\'" . (lambda () (if (require 'nxhtml-mode nil t) (nxhtml-mode) (sgml-mode))))
          ("CMakeLists\\.txt\\'" . cmake-mode)
          ("\\.cmake\\'" . cmake-mode)
-         ("\\.\\(frm\\|bas\\|cls\\|vb\\)$" . vbnet-mode)    
-         ("\\.sln\\'" . sln-mode)    
-         ("\\b[Aa]utoexp\\.dat\\'" . autoexp-mode)    
-         ("\\.\\(dot\\|gv\\)\\'" . graphviz-dot-mode)    
+         ("\\.\\(frm\\|bas\\|cls\\|vb\\)$" . vbnet-mode)
+         ("\\.sln\\'" . sln-mode)
+         ("\\b[Aa]utoexp\\.dat\\'" . autoexp-mode)
+         ("\\.\\(dot\\|gv\\)\\'" . graphviz-dot-mode)
          ("\\.g4?\\'" . antlr-mode)  ; default only has .g
-         ("\\.zu\\'" . zimbu-mode)    
-         ("\\.ef\\'" . ef-mode)    
-         ("\\.l\\'" . flex-mode)    
+         ("\\.zu\\'" . zimbu-mode)
+         ("\\.ef\\'" . ef-mode)
+         ("\\.l\\'" . flex-mode)
          ("\\.yy?\\'" . bison-mode)
          ("\\.ef\\'" . ef-mode)
          ("\\.ll\\'" . llvm-mode)
@@ -251,7 +251,7 @@
 ;; emacs with --debug-init has an effect. Else, modifying debug-on-error within
 ;; custom-file, which is loaded rather early within startup, would override
 ;; --debug-init.
-(setq debug-on-error nil) 
+(setq debug-on-error nil)
 
 
 ;;; init.el ends here

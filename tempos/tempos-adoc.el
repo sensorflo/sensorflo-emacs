@@ -3,7 +3,7 @@
 
 ;;; common used defuns/vars
 
-;;; actual tempos 
+;;; actual tempos
 
 (tempo-define-template "adoc-title-0" '( & "= " r))
 (tempo-define-template "adoc-title-1" '( & "== " r ))

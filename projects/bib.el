@@ -1,9 +1,9 @@
 ;;; bib.el --- customizations specific to the bib project
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;;; Commentary:
-;; 
+;;
 ;;; Code:
 (require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
 (require 'rx)

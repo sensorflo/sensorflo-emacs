@@ -1,26 +1,26 @@
 ;;; cc-mode-ext.el --- extensions to cc mode
 ;;
 ;; Copyright 2008-2012 Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;; This file is not part of GNU Emacs.
-;; 
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;; 
+;;
 ;;; Commentary:
-;; 
+;;
 ;;
 
 ;;; Variables:
@@ -47,7 +47,7 @@ the directory part and without suffix. Thus for
       ;; defun definition
       (let ((saved-point (point)))
         (c-forward-comments) ;; skip possible leading comments which belong to this defun
-        (end-of-line) 
+        (end-of-line)
         (c-beginning-of-defun)
         (unless ignore-defuns-comment
           (c-backward-single-comment-ext))
@@ -58,7 +58,7 @@ the directory part and without suffix. Thus for
 
     ;; defun declaration
     (let ((saved-point (point)) ;; because delimiter is before 'beginning-of-defin', its possible to arrived
-          delim-pos) 
+          delim-pos)
       (re-search-backward "\\(public\\|private\\|protected\\)\\s-*:\\|;\\|{") ;; should not be within comment syntax
       (setq delim-pos (point))
       (end-of-line)
@@ -102,8 +102,8 @@ the directory part and without suffix. Thus for
 (defun c-backward-single-comment-ext ()
   (interactive)
   (c-backward-single-comment)
-  (c-skip-ws-forward)      
-  (beginning-of-line))  
+  (c-skip-ws-forward)
+  (beginning-of-line))
 
 (defun c-forward-defun-name(&optional stay)
   "Move to this defun's name.
@@ -113,21 +113,21 @@ the directory part and without suffix. Thus for
   (interactive )
   (let ((saved-point (point)))
     (push-mark (point))
-    
+
     ;; move to this defun's name. A name followed by ( is either a constructor
     ;; which is ok, or a macro in which case the defun name is the first
     ;; argument of the macr
     (c-beginning-of-defun-ext t)
-    (c-forward-comments)    
+    (c-forward-comments)
     (if (and (looking-at "\\w+\\s-*(") (not (looking-at (c-class-name))))
-	(progn
-	  (down-list)
-	  (when (looking-at "\\s-") (re-search-forward "\\S-")))
+        (progn
+          (down-list)
+          (when (looking-at "\\s-") (re-search-forward "\\S-")))
       (progn
-	(re-search-forward "(")
-	(goto-char (match-beginning 0))
-	(forward-sexp -1)))
-    
+        (re-search-forward "(")
+        (goto-char (match-beginning 0))
+        (forward-sexp -1)))
+
     ;; if we where there already from the beginning
     (when (and (not stay) (equal saved-point (point)))
       (c-end-of-defun-ext)       ; move past 'scope' of this defun
@@ -161,7 +161,7 @@ the directory part and without suffix. Thus for
      ;; method parameter
      ((string-match "\\b[iox]+_" name)
       (c-forward-defun-name)
-      (re-search-forward (concat "\\b" name "\\b *[,)]")))     
+      (re-search-forward (concat "\\b" name "\\b *[,)]")))
      ;; pc ao dispatch enum
      ((string-match "\\beMSG_" name)
       (goto-char 0)
@@ -307,8 +307,8 @@ the directory part and without suffix. Thus for
   declarations, an error occures if it contains other stuff."
   (interactive)
   (let ((ext (if buffer-file-name
-		 (file-name-extension buffer-file-name)
-	       (file-name-extension (buffer-name)))))
+                 (file-name-extension buffer-file-name)
+               (file-name-extension (buffer-name)))))
     (cond
      ((and ext (string-match "^[ch]pp$" ext)) t)
      ((and ext (string-match "^\\(h\\|idl\\)$" ext)) nil)
@@ -325,14 +325,14 @@ the directory part and without suffix. Thus for
         (widen)
         (goto-char (point-min))
         (let* ((case-fold-search t)
-	       (fn-stem (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
-	  (setq name (cdr (assoc fn-stem c-class-name-alist))) 
+               (fn-stem (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
+          (setq name (cdr (assoc fn-stem c-class-name-alist)))
           (unless name
-	    (when (re-search-forward (concat "^class\\s-*\\(c?" fn-stem "\\)") nil t)
-	      (setq name (match-string-no-properties 1)))
-	  (unless name
+            (when (re-search-forward (concat "^class\\s-*\\(c?" fn-stem "\\)") nil t)
+              (setq name (match-string-no-properties 1)))
+          (unless name
             (when (re-search-forward "^class\\s-*\\(\\(?:\\sw\\|\\s_\\)+\\)\\(?:\\s-\\|\n\\)*[:{]")
-	      (setq name (match-string-no-properties 1))))))))
+              (setq name (match-string-no-properties 1))))))))
     (when switch-buffer
       (ff-get-other-file))
     (when (null name)
@@ -349,20 +349,20 @@ the directory part and without suffix. Thus for
   (save-excursion
     (c-goto-class-declaration)
     (let* (bases
-	   (whites "\\(?:[ \t\n]+\\)")
-	   (span-comment "\\(?:/\\*[^*]*\\(?:\\*[^/][^*]*\\)*\\*/\\)")
-	   (line-comment "\\(?://.*\n\\)")
-	   (comment (concat "\\(?:" span-comment "\\|" line-comment "\\)"))
-	   (tmp (concat "\\(?:\\(?:" whites "\\|" comment "\\)")) 
-	   (skip+ (concat tmp "+\\)"))	;exclusive empty string
-	   (skip* (concat tmp "*\\)"))	;inclusive empty string
-	   (identifier "\\(?:[_A-Za-z][_A-Za-z0-9]+\\)"))
+           (whites "\\(?:[ \t\n]+\\)")
+           (span-comment "\\(?:/\\*[^*]*\\(?:\\*[^/][^*]*\\)*\\*/\\)")
+           (line-comment "\\(?://.*\n\\)")
+           (comment (concat "\\(?:" span-comment "\\|" line-comment "\\)"))
+           (tmp (concat "\\(?:\\(?:" whites "\\|" comment "\\)"))
+           (skip+ (concat tmp "+\\)"))	;exclusive empty string
+           (skip* (concat tmp "*\\)"))	;inclusive empty string
+           (identifier "\\(?:[_A-Za-z][_A-Za-z0-9]+\\)"))
       (re-search-forward (concat "\\=" skip* "\\([:{]\\)" skip*))
       (setq stop (string= (match-string 1) "{"))
       (while (not stop)
-      	(if (re-search-forward (concat "\\=" skip* "\\(?:public\\|private\\|protected\\)" skip+ "\\(?:virtual" skip+ "\\)?" "\\(" identifier "\\)" skip* ",?" ) nil t)
-      	    (add-to-list 'bases (match-string-no-properties 1))
-      	  (setq stop t)))
+        (if (re-search-forward (concat "\\=" skip* "\\(?:public\\|private\\|protected\\)" skip+ "\\(?:virtual" skip+ "\\)?" "\\(" identifier "\\)" skip* ",?" ) nil t)
+            (add-to-list 'bases (match-string-no-properties 1))
+          (setq stop t)))
       bases)))
 
 (defun c-derived-class-names ()
@@ -385,16 +385,16 @@ the directory part and without suffix. Thus for
   empty."
   (interactive)
   (let (decl-comment-start
-        decl-comment-end        
+        decl-comment-end
         defunname
         comment
         beginning-of-defun
         beginning-of-comment
         decl-has-comment)
-    
-    ; get defunname 
+
+    ; get defunname
     (setq defunname (c-defun-name))
-    
+
     ; get comment. if its empty or inexistent, delete it and exit
     (c-beginning-of-defun-ext)
     (set-mark (point))
@@ -408,14 +408,14 @@ the directory part and without suffix. Thus for
       (delete-region (point) (mark))
       (setq mark-active nil)
       (throw 'skip t))
-    
+
     ; ask user wheter he really wants to copy
     (mark-whole-lines)
     (setq mark-active t)
     (setq comment (buffer-substring-no-properties (point) (mark)))
     (unless (y-or-n-p "I'll copy this comment. Ok? ")
       (throw 'skip t))
-         
+
      ; goto declaration buffer and search declaration of defun
     (ff-get-other-file)
     (setq mark-active nil)
@@ -426,12 +426,12 @@ the directory part and without suffix. Thus for
     (beginning-of-line)
     (setq beginning-of-defun (point))
     (setq decl-has-comment (c-backward-single-comment))
-    (c-skip-ws-forward)    
+    (c-skip-ws-forward)
     (when decl-has-comment
       (setq beginning-of-comment (point))
       (set-mark (point))
       (goto-char beginning-of-defun)
-      (unless (c-looking-at-empty-comment)        
+      (unless (c-looking-at-empty-comment)
         (unless (y-or-n-p "Replace the existing non-empty comment? ")
             (throw 'skip t)))
       (delete-region (point) beginning-of-comment))
@@ -463,38 +463,38 @@ the directory part and without suffix. Thus for
   (save-excursion
     (cond
      ((save-excursion
-	(beginning-of-line)
-	(looking-at "\\s-*\\(\\w\\|_\\)*TRACE"))
+        (beginning-of-line)
+        (looking-at "\\s-*\\(\\w\\|_\\)*TRACE"))
       (beginning-of-line)
       (re-search-forward "::")
       (cond
        ((looking-at "\\(\\w\\|_\\)*::")
-	(delete-region (word-beginning-position) (word-end-position))
-	(delete-region (point) (progn (forward-word) (point))))
+        (delete-region (word-beginning-position) (word-end-position))
+        (delete-region (point) (progn (forward-word) (point))))
        ((looking-back "::\\(\\w\\|_\\)*")
-	(delete-region (word-beginning-position) (word-end-position))
-	(delete-region (point) (progn (backward-word) (point)))))
+        (delete-region (word-beginning-position) (word-end-position))
+        (delete-region (point) (progn (backward-word) (point)))))
       (insert-class-and-defun-name))
 
      ((save-excursion
-	(beginning-of-line)
-	(looking-at "\\s-*\\(\\w\\|_\\)*EASSERT"))
-      (beginning-of-line)      
+        (beginning-of-line)
+        (looking-at "\\s-*\\(\\w\\|_\\)*EASSERT"))
+      (beginning-of-line)
       (when (re-search-forward "_T(\"")
-	(when (looking-at "\\(\\w\\|_\\)*::\\(\\w\\|_\\)*")
-	  (delete-region (match-beginning 0) (match-end 0)))
-	(insert-class-and-defun-name)))
-     
+        (when (looking-at "\\(\\w\\|_\\)*::\\(\\w\\|_\\)*")
+          (delete-region (match-beginning 0) (match-end 0)))
+        (insert-class-and-defun-name)))
+
      ((save-excursion
-	(beginning-of-line)
-	(looking-at "EHRESULT\\s-+\\(\\(?:\\w\\|_\\)*\\)\\s-*::\\s-*\\(?:\\w\\|_\\)"))
+        (beginning-of-line)
+        (looking-at "EHRESULT\\s-+\\(\\(?:\\w\\|_\\)*\\)\\s-*::\\s-*\\(?:\\w\\|_\\)"))
       (goto-char (match-beginning 1))
       (delete-region (match-beginning 1) (match-end 1))
       (insert-class-name))
 
      ((save-excursion
-	(beginning-of-line)
-	(looking-at "\\s-*\\(?:WRITE\\|READ\\)_METHOD_IMPL\\s-*(\\s-*\\(.*?\\)\\_>"))
+        (beginning-of-line)
+        (looking-at "\\s-*\\(?:WRITE\\|READ\\)_METHOD_IMPL\\s-*(\\s-*\\(.*?\\)\\_>"))
       (goto-char (match-beginning 1))
       (delete-region (match-beginning 1) (match-end 1))
       (insert-class-name))
@@ -502,12 +502,12 @@ the directory part and without suffix. Thus for
      ((looking-at "\\(\\w\\|_\\)*::")
       (delete-region (word-beginning-position) (word-end-position))
       (insert-class-name))
-     
+
      ((looking-back "::\\(\\w\\|_\\)*")
       (backward-word (if (looking-at "\\_<") 1 2))
       (delete-region (point) (word-end-position))
       (insert-class-name))
-     
+
      (t
       (insert-class-name)))))
 
@@ -531,7 +531,7 @@ the directory part and without suffix. Thus for
   (interactive)
   (let ((bases (c-base-class-names)))
     (if (null bases)
-	(error "No base classes"))
+        (error "No base classes"))
     (insert (car (c-base-class-names)) "::")))
 
 (defun c-copy-param-list ()
@@ -548,12 +548,12 @@ the directory part and without suffix. Thus for
     (if (c-src-buffer-p)
       (setq param-list (replace-regexp-in-string "\\s-*/\\*\\s-*=\\s-*\\(.*?\\)\\s-*\\*/\\s-*\\([,)]\\)" " = \\1 \\2" param-list))
       (setq param-list (replace-regexp-in-string "\\s-*=\\s-*\\([^,)]*?\\)\\s-*\\([,)]\\)" " /* = \\1 */\\2" param-list)))
-    
+
     ;; delete old param list of same method in other file (source/header)
     (c-goto-other-defun t)
     (c-mark-param-list)
     (delete-region (mark) (point))
-  
+
     ;; insert new param list
     (insert param-list)
     (setq mark-active t)
@@ -574,7 +574,7 @@ the directory part and without suffix. Thus for
     (if (c-src-buffer-p)
       (setq signature (replace-regexp-in-string "\\s-*/\\*\\s-*=\\s-*\\(.*?\\)\\s-*\\*/\\s-*\\([,)]\\)" " = \\1 \\2" signature))
       (setq signature (replace-regexp-in-string "\\s-*=\\s-*\\([^,)]*?\\)\\s-*\\([,)]\\)" " /* = \\1 */\\2" signature)))
-    
+
     (if (c-src-buffer-p)
       (setq signature (replace-regexp-in-string "/\\*+\\s-*virtual\\s-*\\*+/" "virtual" signature))
       (setq signature (replace-regexp-in-string "virtual" "/* virtual */" signature)))
@@ -587,7 +587,7 @@ the directory part and without suffix. Thus for
     (c-goto-other-defun t)
     (c-mark-signature)
     (delete-region (mark) (point))
-  
+
     ;; insert new param list
     (insert signature)
     (setq mark-active t)
@@ -616,7 +616,7 @@ the directory part and without suffix. Thus for
   c-recenter-defun. If region is not active, recenter region, see
   c-recenter-region. To recenter point, make a small region,
   e.g. just one char."
-  
+
   (interactive)
   (if mark-active
       (c-recenter-region)
@@ -664,20 +664,20 @@ the directory part and without suffix. Thus for
 ;;  if removed block is an "else if", let preceding "}" stay and let the optional trailing "else ..." stay
 (defun remove-parentheses ()
   (interactive)
-  (let ((open-paren-pos) 
+  (let ((open-paren-pos)
         (close-paren-pos) ;; pos of closing paranthesis
         (delstart)) ;; start pos of region to be deleted
-    
-    ;; get position of enclosing opening- and closing-paranthesis 
+
+    ;; get position of enclosing opening- and closing-paranthesis
     (unless (looking-at "[[({]")
       (backward-up-list))
     (setq open-paren-pos (point))
     (forward-sexp)
     (setq close-paren-pos (point))
-    
+
     ;; curly braces on different lines, i.e. C function blocks, are a special case
     (if (and (equal (char-before) ?} ) (/= 0 (count-lines open-paren-pos close-paren-pos)))
-        (progn 
+        (progn
           ;; remove all white space around clocing }. If a blank line would
           ;; result, delete it.
           (backward-char 1)
@@ -686,7 +686,7 @@ the directory part and without suffix. Thus for
           (replace-match "")
           (move-beginning-of-line 1)
           (if (looking-at "$") (delete-char 1))
-              
+
           ;; remove everything from start of line to opening { and remove
           ;; trailing white spaces. If a blank line would result, delete it
           (goto-char open-paren-pos)
@@ -695,13 +695,13 @@ the directory part and without suffix. Thus for
           (replace-match "")
           (move-beginning-of-line 1)
           (if (looking-at "$") (delete-char 1)))
-      
+
       ;; delete the two parentheses
-      (progn 
+      (progn
         (backward-delete-char 1)
         (goto-char open-paren-pos)
         (delete-char 1)))
-    
+
     ;; indent the region that was enclosed by the parentheses
     (set-mark close-paren-pos)
     (setq mark-active t)
@@ -715,12 +715,12 @@ the directory part and without suffix. Thus for
   (c-beginning-of-statement-1)
   (re-search-forward "\\=\\(.*?=\\|return\\)?\\(\\(?:.\\|\n\\)*?\\)\\?\\(\\(?:.\\|\n\\)*?\\):\\(\\(?:.\\|\n\\)*?\\);")
   (let ((start (c-strip (match-string 1)))
-	(condition (c-strip (match-string 2)))
-	(a (c-strip (match-string 3)))
-	(b (c-strip (match-string 4))))
+        (condition (c-strip (match-string 2)))
+        (a (c-strip (match-string 3)))
+        (b (c-strip (match-string 4))))
 
     (insert (concat "if ( " condition ") {\nreturn " a ";\n} else {\nreturn" b ";\n}"))
-    
+
   ))
 
 (defun c-electric-left-brace ()
@@ -735,7 +735,7 @@ the directory part and without suffix. Thus for
 (defun c-toggle-comment-style ()
   ""
   (interactive)
-  (re-search-forward "\\s-*" (line-end-position) t) 
+  (re-search-forward "\\s-*" (line-end-position) t)
   (re-search-backward "//\\|/\\*" (line-beginning-position) t)
   (cond
    ((not (looking-back "^\\s-*" (line-beginning-position)))

@@ -2,14 +2,14 @@
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; URL: https://github.com/sensorflo/sensorflo-emacs/, then
-;;      projects/dragon.el 
+;;      projects/dragon.el
 ;;
 ;;; Commentary:
 ;;
 ;;; Code:
 (require 'project)         ; https://github.com/sensorflo/sensorflo-emacs/
 (require 're)              ; https://github.com/sensorflo/sensorflo-emacs/
-(require 'tempo-ext) 	   ; https://gitorious.org/tempo-ext
+(require 'tempo-ext)       ; https://gitorious.org/tempo-ext
 (require 'tempo-snippets)  ; http://nschum.de/src/emacs/tempo-snippets/
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
 
@@ -38,23 +38,23 @@
     ;; MPS specific
     (let ((actual-fn (or (buffer-file-name) default-directory)))
       (when (string-match "/DieCarrier/" actual-fn)
-	(set (make-local-variable 'tempos-c++-open-brace-style) 'new-line)
-	(set (make-local-variable 'dragon-method-decl-empty-comment) t)))
+        (set (make-local-variable 'tempos-c++-open-brace-style) 'new-line)
+        (set (make-local-variable 'dragon-method-decl-empty-comment) t)))
 
     ;; todo: maybe its cleaner to make dragon-abbrev-table the
     ;; local-abbrev-table, and the ex local-abbrev-table a parent of it
     (abbrev-mode 1)
     ;; (when (or (not (listp local-abbrev-table))
-    ;; 	      (not (member dragon-abbrev-table local-abbrev-table)))
+    ;;        (not (member dragon-abbrev-table local-abbrev-table)))
     ;;   (if (not (listp local-abbrev-table))
-    ;; 	  (setq local-abbrev-table (list local-abbrev-table dragon-abbrev-table))
+    ;;    (setq local-abbrev-table (list local-abbrev-table dragon-abbrev-table))
     ;; 	(setq local-abbrev-table (list local-abbrev-table dragon-abbrev-table))))
-    (dolist (x dragon-abbrev-table) 	
+    (dolist (x dragon-abbrev-table)
       (when (nth 2 x)
-	(put (nth 2 x) 'no-self-insert t))
+        (put (nth 2 x) 'no-self-insert t))
       (define-abbrev local-abbrev-table (nth 0 x) (nth 1 x) (nth 2 x)
-	:enable-function (dragon-create-abbrev-enable-function (nth 3 x))
-	:case-fixed t))
+        :enable-function (dragon-create-abbrev-enable-function (nth 3 x))
+        :case-fixed t))
     (abbrev-table-put local-abbrev-table
                       :regexp "\\(\\(?:^\\|#\\|\\_<\\)\\(?:\\s_\\|\\sw\\)+\\)")
 
@@ -77,7 +77,7 @@
   (local-set-key [(control ?\,)(d)(d)] 'tempo-template-dragon-method-std) ;d because its fast
 
   ;; control flow
-  (local-set-key [(control ?\,)(c)(t)] 'tempo-template-dragon-try-catch-std) 
+  (local-set-key [(control ?\,)(c)(t)] 'tempo-template-dragon-try-catch-std)
 
   ;; statements
   (local-set-key [(control ?\,)(s)] (make-sparse-keymap))
@@ -119,16 +119,16 @@
     ;; style
     (when (not (dragon-coding-system-p))
       (if (y-or-n-p (format "%s: change coding system from %S to windows-1252-dos? "
-			    (buffer-name) buffer-file-coding-system))
+                            (buffer-name) buffer-file-coding-system))
           (setq buffer-file-coding-system 'windows-1252-dos)
         (if (y-or-n-p "abort saving? ") (error "user aborted abort aving"))))
 
     ;; autocorrect whitespace erros
     (when (member major-mode '(c++-mode idl-mode dt2-mode stream-mode doxym-mode))
       (save-restriction
-	(widen)
-	(untabify (point-min) (point-max))
-	(delete-trailing-whitespace)))))
+        (widen)
+        (untabify (point-min) (point-max))
+        (delete-trailing-whitespace)))))
 
 (add-hook 'before-save-hook 'dragon-before-save-hook t)
 
@@ -162,14 +162,14 @@
 ;;   (when (string-match "^//eseczgbuilds\\.esec\\.com/" (buffer-file-name))
 ;;     (setq buffer-read-only t))
 
-;;   ;; 
+;;   ;;
 ;;   (when (and (equal major-mode 'c++-mode)
 ;;              (string-match "^//eseczgbuilds\\.esec\\.com/\\|^W:" (buffer-file-name)))
 
 (defun flf-helper(func end)
   (let (found)
     (while (and (< (point) end)
-		(not (setq found (funcall func end))))
+                (not (setq found (funcall func end))))
       (forward-char 1))
     found))
 
@@ -177,91 +177,91 @@
   "Returns t if between point and END is an issue concerning a method.
 Additionaly match data is set to mark the culprit by match group 1."
   (let ((method-start-pos t)
-	(method-end-pos t)
-	an-issue-found) 
+        (method-end-pos t)
+        an-issue-found)
     ;; iterate over methods and search for issues in each method
     (while (and method-start-pos
-		method-end-pos
-		(not an-issue-found)
-    		(< (point) (1- end)))
+                method-end-pos
+                (not an-issue-found)
+                (< (point) (1- end)))
       (setq method-start-pos
-	    (text-property-any (point) end 'face 'font-lock-function-name-face))
+            (text-property-any (point) end 'face 'font-lock-function-name-face))
       (when method-start-pos
-	(setq method-end-pos
-	      (text-property-not-all method-start-pos end 'face
-				     'font-lock-function-name-face)))
+        (setq method-end-pos
+              (text-property-not-all method-start-pos end 'face
+                                     'font-lock-function-name-face)))
       (when (and method-start-pos method-end-pos)
-	;; -- getters should be const
-	(when (not an-issue-found)
-	  (save-excursion
-	    (let (
+        ;; -- getters should be const
+        (when (not an-issue-found)
+          (save-excursion
+            (let (
                   (is-getter
-		   (progn
-		     (goto-char method-start-pos)
-		     (or (looking-at (concat "i?\\(?:Get\\|Show\\|Display\\|Print\\|Trace\\|Log\\)"
+                   (progn
+                     (goto-char method-start-pos)
+                     (or (looking-at (concat "i?\\(?:Get\\|Show\\|Display\\|Print\\|Trace\\|Log\\)"
                                              "\\(?:[A-Z_0-9]\\|\\b\\)"))
                          (looking-at (concat "[a-zA-Z_0-9]*\\(?:Is\\|Has\\|Was\\|Had\\|Contains\\)"
                                              "\\(?:[A-Z_0-9]\\|\\b\\)")))))
-		  (is-static
-		   (progn
-		     (beginning-of-line)
-		     (looking-at "\\s-*static\\b")))
-		  (is-const
-		   (progn
-		     (goto-char method-end-pos)
-		     (forward-list 1)
-		     (looking-at "\\s-*\\(?:=\\s-*0\\s-+\\)?const\\b")))
-		  (is-surpressed
-		   (progn
-		     (goto-char method-end-pos)
-		     (forward-list 1)
-		     (looking-at (concat "\\s-*\\(=\\s-*const\\s-*\\)?;"
-		        		 "?\\s-*\\(?://\\|/\\*+\\)\\s-*"
-		        		 "cppcheck-suppress")))))
-	      (when (and is-getter (not is-const)
-			 (not is-static) (not is-surpressed))
-		;; set match data for group 1 beginning at closing paranthesis
-		;; of argument list
-		(goto-char method-end-pos)
-		(forward-list 1)
-		(re-search-backward ")")
-		(looking-at "\\()\\(?:[ \t]*;\\)?[ \t]*\\)") 
-		(setq an-issue-found t)))))
+                  (is-static
+                   (progn
+                     (beginning-of-line)
+                     (looking-at "\\s-*static\\b")))
+                  (is-const
+                   (progn
+                     (goto-char method-end-pos)
+                     (forward-list 1)
+                     (looking-at "\\s-*\\(?:=\\s-*0\\s-+\\)?const\\b")))
+                  (is-surpressed
+                   (progn
+                     (goto-char method-end-pos)
+                     (forward-list 1)
+                     (looking-at (concat "\\s-*\\(=\\s-*const\\s-*\\)?;"
+                                         "?\\s-*\\(?://\\|/\\*+\\)\\s-*"
+                                         "cppcheck-suppress")))))
+              (when (and is-getter (not is-const)
+                         (not is-static) (not is-surpressed))
+                ;; set match data for group 1 beginning at closing paranthesis
+                ;; of argument list
+                (goto-char method-end-pos)
+                (forward-list 1)
+                (re-search-backward ")")
+                (looking-at "\\()\\(?:[ \t]*;\\)?[ \t]*\\)")
+                (setq an-issue-found t)))))
 
-	;; -- declarations & specifications must have space between name and
-	;;    opening paranthesis. methods declared via macros are excluded
-	(when (and (not an-issue-found)
+        ;; -- declarations & specifications must have space between name and
+        ;;    opening paranthesis. methods declared via macros are excluded
+        (when (and (not an-issue-found)
                    (not (string-match "/Dispenser/" (or buffer-file-name ""))))
-	  (save-excursion
-	    (goto-char method-end-pos)
-	    (setq an-issue-found
-		  (and (not (looking-back "^[A-Z0-9_]+"))
-		       (re-search-forward "\\=\\((\\|\\s-\\s-+(\\)" end t)))))
+          (save-excursion
+            (goto-char method-end-pos)
+            (setq an-issue-found
+                  (and (not (looking-back "^[A-Z0-9_]+"))
+                       (re-search-forward "\\=\\((\\|\\s-\\s-+(\\)" end t)))))
 
-	;; next iter
-	(goto-char method-end-pos)))
+        ;; next iter
+        (goto-char method-end-pos)))
     an-issue-found))
 
 (defun dragon-font-lock-add-keywords ()
   (font-lock-add-keywords
    nil
    (list
-    ;; 
-    (list 'dragon-looking-at-method-issues '(1 font-lock-warning-face append t)) 
+    ;;
+    (list 'dragon-looking-at-method-issues '(1 font-lock-warning-face append t))
 
     ;; white space errors
     (list "^[ ]*\t[ \t]*" '(0 font-lock-warning-face append t))
     (list "[ \t]+$" '(0 font-lock-warning-face append t))
 
-    ;; empty comments 
-    (list "/\\*+\\s-*\\*+/\\|//+\\s-*$" '(0 font-lock-unimportant t)) 
-    
+    ;; empty comments
+    (list "/\\*+\\s-*\\*+/\\|//+\\s-*$" '(0 font-lock-unimportant t))
+
     ;; acess to well known objects/classes
     (list "\\b\\(\\(CPPSeqMeth\\|CPPSeqRTOSBase\\|CPPSeqIfc\\|CPPSeqMatMgmtDieLocDef\\)::\\(Inst()\\.\\)?\\)" '(1 font-lock-semi-unimportant t))
     (list "\\bCPPSeqIfc::\\w+()\\." '(0 font-lock-semi-unimportant t))
     (list "\\bCPPSeqIfc::Inst().Get\\w+Wrp()\\." '(0 font-lock-semi-unimportant t))
     (list "m_pMenuAccess->Get\\w*()\\." '(0 font-lock-semi-unimportant t))
-    
+
     (list "^\\s-*EHRESULT\\s-+ehr\\s-*[;=]" '(0 font-lock-semi-unimportant t))
     (list "^\\s-*ehr\\s-*\\+=" '(0 font-lock-semi-unimportant t))
     ;; dont gray out CPPUNIT_ASSERT, thus EASSERT instead ASSERT
@@ -274,15 +274,15 @@ Additionaly match data is set to mark the culprit by match group 1."
     (list "\\be[PBDE]VIGraphicalObject" '(0 font-lock-semi-unimportant t))
     (list "\\bscIID_\\(\\(sSI\\|sMS\\)[a-zA-Z0-9]*_\\([a-zA-Z0-9]+_\\)?\\)?" '(0 font-lock-semi-unimportant t))
     (list "\\beMCACSetup" '(0 font-lock-semi-unimportant t))
-    
+
     (list "^\\s-*ETRACE[a-zA-Z0-9_]+.*" '(0 font-lock-semi-unimportant t))
     (list "^\\s-*UNREFERENCED_PARAMETER.*" '(0 font-lock-warning-face t))
-    
+
     (list "\\w+_cast\\s-*<[^>\n]*>" '(0 font-lock-semi-unimportant t))
-    
+
     ;; object names
     ;; collections object names are nouns in plural, i.e. ending in s
-    (list (lambda (end) 
+    (list (lambda (end)
             (when (re-search-forward
                    (concat "\\b\\(?:list\\|map\\|vector\\|map\\|array\\|stack"
                            "\\|deque\\|queue\\|set\\|unordered_set\\|unordered_map\\)"
@@ -327,10 +327,10 @@ Additionaly match data is set to mark the culprit by match group 1."
     (list "^\\s-*//\\.+\\s-*\\(begin\\|end\\)\\b.*\n" '(0 font-lock-unimportant t))
     (list "^\\s-*\\(#define\\s-*\\)?_\\(START\\|STOP\\)_SKIP.*" '(0 font-lock-unimportant t))
     ;; eol DCID info
-    (list "//\\(\\s-*DC\\w+\\s-*=\\)?\\s-*0[xX][0-9a-fA-F]\\{8\\};?\\s-*\n" '(0 font-lock-unimportant t)) 
+    (list "//\\(\\s-*DC\\w+\\s-*=\\)?\\s-*0[xX][0-9a-fA-F]\\{8\\};?\\s-*\n" '(0 font-lock-unimportant t))
     ;; "} // end if"  bullshit
-    (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\|switch\\|case\\|default\\|catch\\)\\s-*\\(\n\\|\\*/\\)" '(0 font-lock-unimportant t)) 
-    ;; 
+    (list "/[/*]+\\s-*\\(end\\s-*\\)?\\(if\\|else\\|for\\|while\\|do\\|try\\|switch\\|case\\|default\\|catch\\)\\s-*\\(\n\\|\\*/\\)" '(0 font-lock-unimportant t))
+    ;;
     ;; (list 'dragon-font-lock-method '(2 font-lock-warning-face t))
     )
    t))
@@ -363,7 +363,7 @@ Additionaly match data is set to mark the culprit by match group 1."
 (defun doxygen-run()
   "Generates doxygen documentation for the current's buffer project, pc or rtos."
   (interactive)
-  
+
   ;; save all buffers without query
   (save-some-buffers t)
 
@@ -387,7 +387,7 @@ Additionaly match data is set to mark the culprit by match group 1."
   then put the buffer into grep mode. With arg, first a new
   buffer is created and the content of the clipboard is
   inserted."
-  
+
   (interactive "P")
   (when arg
     (set-buffer (get-buffer-create "*dragon dc*"))
@@ -402,7 +402,7 @@ Additionaly match data is set to mark the culprit by match group 1."
   "Runs the content of the current buffer through qn and then put
   the buffer into grep mode. With arg, first a new buffer is
   created and the content of the clipboard is inserted."
-  
+
   (interactive "P")
   (when arg
     (set-buffer (get-buffer-create "*quality notices*"))
@@ -447,7 +447,7 @@ sure what the good decisions are."
    (concat
     "find "
     (if (eq (project-root-type) 'project-diebonder-pc)
-        (concat 
+        (concat
          default-directory "../Sources "
          default-directory "../UnitTest "
          default-directory "../UnitTest2 "
@@ -483,7 +483,7 @@ sure what the good decisions are."
    "\\(?:const\\s-*\\)?"
    "\\(?:"
    (regexp-opt
-    '("int" "double" "char" "uint32" "real64" 
+    '("int" "double" "char" "uint32" "real64"
       "HRESULT" "EHRESULT"
       "tPST_ExtInteger" "tPST_ExtReal" "tPST_ExtStruct" "tPST_INDELInteger" "tPST_INDELReal" "tPST_INDELStruct"
       "tPstContainerInteger" "tPstContainerIterator" "tPstContainerReal" "tPstContainerStruct" "tPstContainerText" "tPstDynEnumTransient" "tPstInteger" "tPstReal" "tPstStruct" "tPstText"))
@@ -496,23 +496,23 @@ sure what the good decisions are."
   (or
    (when
        (save-excursion
-	 (beginning-of-line)
-	 (or (looking-at "\\s-*\\(?:class\\|struct\\)\\s-+\\(.*?\\)\\_>")
-	     (looking-at "\\s-*static\\s-+const\\s-+\\(?:tDiagCondId\\|tItemId\\)\\s-+\\(.*?\\)\\_>")
-	     (looking-at "\\s-*SetBaseItemID\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>\\s-*)")
-	     (looking-at ".*PRS_INIT\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
-	     (looking-at ".*ACTUALS_INIT\\s-*(\\s-*\\(.*?\\)\\_>")
-	     (looking-at "\\s-*REGISTER_KEY_COMMAND\\s-*([^,\n]*,[^,\n]*,\\s-*&\\w+::\\(.*?\\)\\_>")
-	     (looking-at "\\s-*DECLARE_\\(?:READ\\|WRITE\\)_METHOD\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
-	     (and (looking-at "\\s-*\\(?:virtual\\s-+\\)?\\(?:EHRESULT\\|int32\\|void\\|double\\)\\(?:\\s-+\\|\\s-*&\\s-*\\)\\(\\(?:\\w\\|_\\)+\\)\\(.\\)")
-		  (not (string= ":" (match-string 2)))
-		  (not (string= "ehr" (match-string 1))))
-	     (looking-at (concat dragon-well-known-types "\\s-*\\(?:\\w\\|_\\)+::\\(\\(?:\\w\\|_\\)+\\)"))
-	     (and (looking-at (concat "\\s-*" dragon-well-known-types "\\s-*\\(\\(?:\\w\\|_\\)+\\)"))
-		  (not (string= "ehr" (match-string 1))))))
+         (beginning-of-line)
+         (or (looking-at "\\s-*\\(?:class\\|struct\\)\\s-+\\(.*?\\)\\_>")
+             (looking-at "\\s-*static\\s-+const\\s-+\\(?:tDiagCondId\\|tItemId\\)\\s-+\\(.*?\\)\\_>")
+             (looking-at "\\s-*SetBaseItemID\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>\\s-*)")
+             (looking-at ".*PRS_INIT\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
+             (looking-at ".*ACTUALS_INIT\\s-*(\\s-*\\(.*?\\)\\_>")
+             (looking-at "\\s-*REGISTER_KEY_COMMAND\\s-*([^,\n]*,[^,\n]*,\\s-*&\\w+::\\(.*?\\)\\_>")
+             (looking-at "\\s-*DECLARE_\\(?:READ\\|WRITE\\)_METHOD\\s-*([^,\n]*,\\s-*\\(.*?\\)\\_>")
+             (and (looking-at "\\s-*\\(?:virtual\\s-+\\)?\\(?:EHRESULT\\|int32\\|void\\|double\\)\\(?:\\s-+\\|\\s-*&\\s-*\\)\\(\\(?:\\w\\|_\\)+\\)\\(.\\)")
+                  (not (string= ":" (match-string 2)))
+                  (not (string= "ehr" (match-string 1))))
+             (looking-at (concat dragon-well-known-types "\\s-*\\(?:\\w\\|_\\)+::\\(\\(?:\\w\\|_\\)+\\)"))
+             (and (looking-at (concat "\\s-*" dragon-well-known-types "\\s-*\\(\\(?:\\w\\|_\\)+\\)"))
+                  (not (string= "ehr" (match-string 1))))))
      (concat "\\b" (match-string-no-properties 1) "\\b"))
    (when (and (save-excursion (beginning-of-line) (looking-at "\\s-*ehr\\s-*\\+?=\\s-\\(\\(?:\\w\\|_\\)+\\)"))
-	      (<= (point) (match-end 1)))
+              (<= (point) (match-end 1)))
      (concat "\\b" (match-string-no-properties 1) "\\b"))))
 
 (defun dragon-dwim ()
@@ -520,16 +520,16 @@ sure what the good decisions are."
   (cond
    ((save-excursion (beginning-of-line) (looking-at "\\s-*return\\s-+\\(S_OK\\|ehr\\)\\s-*;"))
     (save-excursion
-      (let ((replacement (if (string= (match-string 1) "S_OK") "ehr" "S_OK"))) 
-	(goto-char (match-beginning 1))
-	(delete-region (point) (match-end 1))
-	(insert replacement))))
+      (let ((replacement (if (string= (match-string 1) "S_OK") "ehr" "S_OK")))
+        (goto-char (match-beginning 1))
+        (delete-region (point) (match-end 1))
+        (insert replacement))))
    ((save-excursion (beginning-of-line) (looking-at "\\s-*\\(ERETURN_IF_FAILED\\|ETHROW_IF_FAILED\\)\\b"))
     (save-excursion
-      (let ((replacement (if (string= (match-string 1) "ERETURN_IF_FAILED") "ETHROW_IF_FAILED" "ERETURN_IF_FAILED"))) 
-	(goto-char (match-beginning 1))
-	(delete-region (point) (match-end 1))
-	(insert replacement))))))
+      (let ((replacement (if (string= (match-string 1) "ERETURN_IF_FAILED") "ETHROW_IF_FAILED" "ERETURN_IF_FAILED")))
+        (goto-char (match-beginning 1))
+        (delete-region (point) (match-end 1))
+        (insert replacement))))))
 
 ;; types
 ;; - interface
@@ -537,7 +537,7 @@ sure what the good decisions are."
 ;; - test case
 ;; - test helpers
 ;; - associated data/bussiness-logic class
-;; 
+;;
 ;; ortoghonal to type
 ;; - header file
 ;; - source file
@@ -604,7 +604,7 @@ void foo(int /*i*/) {
     (goto-char (match-beginning 0))
     (unless (looking-back "/\\*+\\s-*")
       (insert "/*"))
-        
+
     (goto-char argument-pos)
     (delete-region (line-beginning-position)
                    (progn (forward-line) (point)))))
@@ -626,7 +626,7 @@ void foo(int /*i*/) {
   ;; -- syntax
   ;; canonicalize Doxygen comment start delimiter to java style (/**)
   (dragon-dired-do-query-replace-regexp "/\\*!" "/**")
-  ;; canonicalize Doxygen keywords to \mykeyword 
+  ;; canonicalize Doxygen keywords to \mykeyword
   ;; TODO: search for '@\w' (perl regexp) and inspect findings
   (dragon-dired-do-query-replace-regexp "@\\(param\\|return\\|pre\\|post\\|warning\\|bug\\|note\\|caution\\|name\\)\\b" "\\\\\\1")
 
@@ -642,7 +642,7 @@ void foo(int /*i*/) {
 
   ;; -- param paragraph
   ;; canonicalize to '\param id decription' (also note exactly one space before & after id)
-  ;; i.e. no '\param [in] id description' or '\param id: description' 
+  ;; i.e. no '\param [in] id description' or '\param id: description'
   (dragon-dired-do-query-replace-regexp "\\([\\@]param\\s-*\\)\\[.*?\\]" "\\1")
   (dragon-dired-do-query-replace-regexp "\\([\\@]param\\s-+[a-zA-Z0-9_]+\\)\\s-*:\\s-*" "\\1 ")
   (dragon-dired-do-query-replace-regexp "\\([\\@]param\\s-+[a-zA-Z0-9_]+\\)\\s-*[oi]f\\s-+type\\s-+\\S-+\\s-*\\(?::\\s-*\\)" "\\1 ")
@@ -709,13 +709,13 @@ void foo(int /*i*/) {
 
   ;; no blank lines between #includes/#imports/forward declarations
   ;; todo
-  ) 
+  )
 
 (defun dragon-fix-file-general-comments ()
   (interactive)
   (dired-do-query-replace-regexp
    ;; file banners, different styles
-   ;; 
+   ;;
    ;; ! The found matches can also be section comments instead truly only file
    ;; banners !
    (concat
@@ -765,7 +765,7 @@ void foo(int /*i*/) {
       "\\([ \t]*//.*\n\\)+"
       "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
     ;; only leading
-    "\\|"  
+    "\\|"
       "\\([ \t]*/\\{5,\\}[ \t]*\n\\)"
       "\\([ \t]*//.*\n\\)+"
     "\\)"
@@ -806,8 +806,8 @@ void foo(int /*i*/) {
   ("r" "real64")
   ("ui" "uint32")
   ("i" "int32")
-  ("E" "EHRESULT")		
-  ("up" "std::unique_ptr<>")		
+  ("E" "EHRESULT")
+  ("up" "std::unique_ptr<>")
 
   ;; sequencer types
   ("cdbm" "CPPSeqDBMenu")
@@ -898,7 +898,7 @@ void foo(int /*i*/) {
 Arg is the 3rd items of a dragon-abbrev-table item"
   `(lambda () (dragon-abbrev-enable-function ,arg)))
 
-(defun dragon-abbrev-enable-function (arg) 
+(defun dragon-abbrev-enable-function (arg)
   (and
    ;; Inserting characters with symbol syntax shall not trigger checking for
    ;; possible abbrev-expansion.
@@ -923,9 +923,9 @@ Arg is the 3rd items of a dragon-abbrev-table item"
        ;; within comment/strings, prevent expansion if 'abbrev' is preceded by '
        ;; or . or \
        (if in-code t
-	 (save-excursion
-	   (backward-word)
-	   (looking-back "[^.'\\]"))))))))
+         (save-excursion
+           (backward-word)
+           (looking-back "[^.'\\]"))))))))
 
 ;;; file aliases / cache
 (setq filealias-default-root-dir "W:")
@@ -934,7 +934,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("p"  . "~~DieBonder/PC/")
   ("r"   . "~~DieBonder/RTOS/")
   ("re"  . "~~DieBonder/rtosexprt/")
-  
+
   ("ppp"  . "~~DieBonder/PC/PickPlace/")
   ("pfc"  . "~~DieBonder/PC/flipchip/")
   ("psh"  . "~~DieBonder/PC/substrathandler/")
@@ -946,7 +946,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("rdc"  . "~~DieBonder/RTOS/diecarrier/")
   ("rvi"  . "~~DieBonder/RTOS/vision/")
   ("rge"  . "~~DieBonder/RTOS/generics/")
-  
+
   ("pmcac" . "~~DieBonder/PC/Controllers/MCAssistController")
   ("pac"   . "~~DieBonder/PC/Controllers/MCAssistController")
 
@@ -954,7 +954,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("ptst"  . "~~DieBonder/PC/Services/TeachServiceType")
   ("pcs"  . "~~DieBonder/PC/Services/CalibrationServices/CalibrationService")
   ("pcst"  . "~~DieBonder/PC/Services/CalibrationServices/CalibrationServiceType")
-  
+
   ("pde" . "~~DieBonder/PC/PickPlace/dcdemod/")
   ("pfo"  . "~~DieBonder/PC/PickPlace/ppforcemod/")
   ("pba" . "~~DieBonder/PC/PickPlace/ppbamod/")
@@ -963,7 +963,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("pfx" . "~~DieBonder/PC/flipchip/ppfxmod/")
   ("pca" . "~~DieBonder/PC/PickPlace/PPCalibMod/")
   ("pse" . "~~DieBonder/PC/PickPlace/PPSeqBaseLib/")
-  
+
   ("rca" . "~~DieBonder/RTOS/PickPlace/ppcalibmod/sources/")
   ("rde" . "~~DieBonder/RTOS/PickPlace/dcdemod/sources/")
   ("rba" . "~~DieBonder/RTOS/PickPlace/ppbamod/sources/")
@@ -998,20 +998,20 @@ Arg is the 3rd items of a dragon-abbrev-table item"
    (("PC" ("p"))
     ("RTOS" ("r"))
     ("RTOSExport" ("re"))))
-			
+
   ;; Level MPS
   ("W:/DieBonder/PC"
    (("PickPlace" ("pp" "p"))
     ("DieCarrier" ("dc" "d"))
     ("DataMgmt" ("dm"))
     ("SubstrateHandler" ("sh" "s"))))
-  
+
   ("W:/DieBonder/RTOS"
    (("PickPlace" ("pp" "p"))
     ("DieCarrier" ("dc" "d"))
     ("DataMgmt" ("dm"))
     ("SubstrateHandler" ("sh" "s"))))
-  
+
   ;; Level Components
   ("W:/DieBonder/PC/PickPlace"
    (("PPBAMod" ("ba" "bam"))
@@ -1029,28 +1029,28 @@ Arg is the 3rd items of a dragon-abbrev-table item"
     ("PPSequencer/Sources" ("s"))))))
 
 (let ((mylist '(
-		("/UST/PersistentContainer/PstCnt" ust-ffe-pstcnt)
-		("/DieBonder/PC/Services/CalibrationServices/CalibrationService" dragon-ffe-pc-calibsrv)
-		("/DieBonder/PC/Services/GlobalServices" dragon-ffe-pc-globalservices)
-		("/DieBonder/PC/SubstrateHandler/SHSTHModule" dragon-ffe-pc-sh-sth-mod)
-		("/DieBonder/PC/SubstrateHandler/SHSTHSequencer" dragon-ffe-pc-sh-sth-seq)
-		("/DieBonder/PC/Dispenser/DIDispenserMod" dragon-ffe-pc-di-mod)
-		("/DieBonder/PC/Dispenser/DIDispenserSeq" dragon-ffe-pc-di-seq)
-		("/DieBonder/PC/PickPlace/PpcalibMod" dragon-ffe-pc-calib)
-		("/DieBonder/PC/PickPlace/DCDEMod" dragon-ffe-pc-de)
-		("/DieBonder/PC/PickPlace/PPBAMod" dragon-ffe-pc-ba)
-		("/DieBonder/PC/PickPlace/PPBHMod" dragon-ffe-pc-bh)
-		("/DieBonder/PC/PickPlace/PPForceMod" dragon-ffe-pc-force)
-		("/DieBonder/PC/PickPlace/PPSeqBaseLib" dragon-ffe-pc-seq)
-		("/DieBonder/RTOS/DieCarrier/DCWaferHdlMod" dragon-ffe-rtos-dcwaferhdlmod)
-		("/DieBonder/RTOS/PickPlace/PPCalibMod" dragon-ffe-rtos-calib)
-		("/DieBonder/RTOS/PickPlace/PPSequencer/Sources/SeqV2" dragon-ffe-rtos-seqv2)
-		("/DieBonder/RTOS/PickPlace/PPSequencer" dragon-ffe-rtos-seq)
-		("/DieBonder/RTOS/PickPlace/DCDEMod" dragon-ffe-rtos-de)
-		("/DieBonder/RTOS/PickPlace/PPBAMod" dragon-ffe-rtos-ba)
-		("/DieBonder/RTOS/PickPlace/PPForceMod" dragon-ffe-rtos-force)
-		("/DieBonder/RTOS/PickPlace/PPModProxy" dragon-ffe-rtos-proxy))))
-  (dolist (elt mylist) 
+                ("/UST/PersistentContainer/PstCnt" ust-ffe-pstcnt)
+                ("/DieBonder/PC/Services/CalibrationServices/CalibrationService" dragon-ffe-pc-calibsrv)
+                ("/DieBonder/PC/Services/GlobalServices" dragon-ffe-pc-globalservices)
+                ("/DieBonder/PC/SubstrateHandler/SHSTHModule" dragon-ffe-pc-sh-sth-mod)
+                ("/DieBonder/PC/SubstrateHandler/SHSTHSequencer" dragon-ffe-pc-sh-sth-seq)
+                ("/DieBonder/PC/Dispenser/DIDispenserMod" dragon-ffe-pc-di-mod)
+                ("/DieBonder/PC/Dispenser/DIDispenserSeq" dragon-ffe-pc-di-seq)
+                ("/DieBonder/PC/PickPlace/PpcalibMod" dragon-ffe-pc-calib)
+                ("/DieBonder/PC/PickPlace/DCDEMod" dragon-ffe-pc-de)
+                ("/DieBonder/PC/PickPlace/PPBAMod" dragon-ffe-pc-ba)
+                ("/DieBonder/PC/PickPlace/PPBHMod" dragon-ffe-pc-bh)
+                ("/DieBonder/PC/PickPlace/PPForceMod" dragon-ffe-pc-force)
+                ("/DieBonder/PC/PickPlace/PPSeqBaseLib" dragon-ffe-pc-seq)
+                ("/DieBonder/RTOS/DieCarrier/DCWaferHdlMod" dragon-ffe-rtos-dcwaferhdlmod)
+                ("/DieBonder/RTOS/PickPlace/PPCalibMod" dragon-ffe-rtos-calib)
+                ("/DieBonder/RTOS/PickPlace/PPSequencer/Sources/SeqV2" dragon-ffe-rtos-seqv2)
+                ("/DieBonder/RTOS/PickPlace/PPSequencer" dragon-ffe-rtos-seq)
+                ("/DieBonder/RTOS/PickPlace/DCDEMod" dragon-ffe-rtos-de)
+                ("/DieBonder/RTOS/PickPlace/PPBAMod" dragon-ffe-rtos-ba)
+                ("/DieBonder/RTOS/PickPlace/PPForceMod" dragon-ffe-rtos-force)
+                ("/DieBonder/RTOS/PickPlace/PPModProxy" dragon-ffe-rtos-proxy))))
+  (dolist (elt mylist)
     (add-to-list 'ffe-map-map elt)))
 
 (setq ust-ffe-pstcnt `(
@@ -1187,12 +1187,12 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPCalibModule" ("idl") "idl")
   ("PPCalibDoxygen" ("doxy") "h")
   ("stdafx" ("afx" "std") "h")
-  
+
   ("PPCalibJob" ("j"))
   ("PPCalibJobList" ("jl"))
   ("PPCalibJobListManager" ("jlm"))
   ("PPCalibData" ("d"))
-  
+
   ("PPCalibJobListProcModDataBase" ("lpmb") "h")
   ("PPCalibJobListProcModData" ("lpm") "h")
   ("PPCalibJobListProcModDataImpl" ("lpmi") "h")
@@ -1204,16 +1204,16 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPCalibJobListPPAxesEncoder" ("le"))
   ("PPCalibJobListRotAxisPos" ("lrap" "lra" "lr"))
   ("PPCalibJobListWaferTable" ("lwt" "lw"))
-  
+
   ("PPCalibPCEDieEjector" ("pcede" "pde"))
   ("PPCalibPCECalibDie" ("pcecd" "pcd"))
-  
+
   ("PPCalibDynCalib" ("dc"))
   ("PPCalibForceCalibUnit" ("fcu"))
   ("PPCalibBondForceUtils" ("fu" "frc"))
-  
+
   ("PPCalibNotifyCBMgr" ("ncbm" "n" "nm" "cbm"))
-  
+
   ("PPCalibJobCalibDiePicktoolTilt" ("cdpt" "cdptt" "ptt" "pt"))
   ("PPCalibJobCalibDiePicktoolZ" ("cdptz" "cdpz" "ptz" "pz"))
   ("PPCalibJobDEHeightBase" ("dehb" "dhb" "hb"))
@@ -1357,7 +1357,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqWVIBondVisionSeq" ("wbvis" "wbvi"))
   ("PPSeqWVIPickVisionSeq" ("wpvis" "wpvi"))
   ("PPSeqWDCWaferProcessingSeq" ("wwps" "wws" "ww" "wdc"))
-  
+
   ;; teach base
   ("PPSeqPCProcessCalculations" ("pcpc"))
   ("PPSeqTeachDataProcessBase" ("tdpb" "dpb"))
@@ -1378,7 +1378,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqTeachCoordinator" ("tc"))
   ("PPSeqTeachDataDSBase" ("tdsb" "ddsb" "dsb"))
   ("PPSeqForceData" ("fd"))
-  
+
   ;; setup base
   ("IPPSeqToolSetupMenuHandler" ("itsmh") "h")
   ("PPSeqToolSetupMenuHandler" ("tsmh"))
@@ -1394,24 +1394,24 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ;; --------------------------
 
   ;; setup / insert tools
-  ("PPSeqToolSetupDataPI7_InsertPPTools" ("tsdi" "sdi")) 
-  ("PPSeqToolSetupMenuPI7_InsertPPTools" ("tsmi" "smi")) 
-  
+  ("PPSeqToolSetupDataPI7_InsertPPTools" ("tsdi" "sdi"))
+  ("PPSeqToolSetupMenuPI7_InsertPPTools" ("tsmi" "smi"))
+
   ;; setup / optimize and change tools
-  ("PPSeqToolSetupDataPI4_NeedleAndPepperPot" ("tsdnapp" "sdnapp" "sdn")) 
-  ("PPSeqToolSetupMenuPI4_NeedleAndPepperPot" ("tsmnapp" "smnapp" "smn")) 
-  ("PPSeqToolSetupDataPI4_PickUpTool" ("tsdp" "sdp")) 
-  ("PPSeqToolSetupMenuPI4_PickUpTool" ("tsmp" "smp")) 
-  
+  ("PPSeqToolSetupDataPI4_NeedleAndPepperPot" ("tsdnapp" "sdnapp" "sdn"))
+  ("PPSeqToolSetupMenuPI4_NeedleAndPepperPot" ("tsmnapp" "smnapp" "smn"))
+  ("PPSeqToolSetupDataPI4_PickUpTool" ("tsdp" "sdp"))
+  ("PPSeqToolSetupMenuPI4_PickUpTool" ("tsmp" "smp"))
+
   ;; setup / optimize process
-  ("PPSeqBondProcessSetupDataPI_5_4" ("bopsd")) 
-  ("PPSeqBondProcessSetupMenuPI_5_4" ("bopmd")) 
-  ("PPSeqPickProcessSetupDataPI_5_3" ("ppsd")) 
-  ("PPSeqPickProcessSetupMenuPI_5_3" ("ppsm")) 
-  
+  ("PPSeqBondProcessSetupDataPI_5_4" ("bopsd"))
+  ("PPSeqBondProcessSetupMenuPI_5_4" ("bopmd"))
+  ("PPSeqPickProcessSetupDataPI_5_3" ("ppsd"))
+  ("PPSeqPickProcessSetupMenuPI_5_3" ("ppsm"))
+
   ;; teach specialized classes
   ;; ---------------------------
-  
+
   ;; base classes
   ("PPSeqTeachMenuPickProcessBase" ("tmppb" "mppb"))
   ("PPSeqTeachDataPickProcessBase" ("tdppb" "mppb"))
@@ -1421,21 +1421,21 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqTeachDataBAProcessBase" ("tdbapb" "dbapb"))
   ("PPSeqTeachMenuMFDieSenBase" ("tmmfdsb" "mmfdsb" "mmfb"))
   ("PPSeqTeachDataMFDieSenBase" ("tdmfdsb" "dmfdsb" "dmfb" "mfb"))
-  
-  ;; teach / new recipe & install 
+
+  ;; teach / new recipe & install
   ("PPSeqTeachMenuA51InsertAndDefinePPTools" ("tmiadppt" "tmippt" "tmipt" "tmit" "tmi" "ma51"))
   ("PPSeqTeachDataA51InsertAndDefinePPTools" ("tdiadppt" "tdippt" "tdipt" "tdit" "tdi" "da51" "a51"))
 
   ;; function selection
-  ("PPSeqTeachMenuE11FunctionSelection" ("tmpfs" "mfsp" "me11")) 
-  ("PPSeqTeachDataE11FunctionSelection" ("tdpfs" "dfsp" "de11" "e11")) 
-  ("PPSeqTeachMenuK21FunctionSelection" ("tmbfs" "tmbofs" "mfsbo" "mk21")) 
-  ("PPSeqTeachDataK21FunctionSelection" ("tdbfs" "tdbofs" "dfsbo" "dk21" "k21")) 
+  ("PPSeqTeachMenuE11FunctionSelection" ("tmpfs" "mfsp" "me11"))
+  ("PPSeqTeachDataE11FunctionSelection" ("tdpfs" "dfsp" "de11" "e11"))
+  ("PPSeqTeachMenuK21FunctionSelection" ("tmbfs" "tmbofs" "mfsbo" "mk21"))
+  ("PPSeqTeachDataK21FunctionSelection" ("tdbfs" "tdbofs" "dfsbo" "dk21" "k21"))
   ("PPSeqTeachMenuE31DSFuncSel" ("tmdsfs" "mdsfs" "mfsds" "me31"))
   ("PPSeqTeachDataE31DSFuncSel" ("tddsfs" "ddsfs" "dfsds" "de31" "e31"))
   ("PPSeqTeachMenuS21FunctionSelection" ("tms21" "ms21"))
   ("PPSeqTeachDataS21FunctionSelection" ("tds21" "ds21" "s21"))
-  
+
   ;; process
   ("PPSeqTeachMenuE17PeelProcess" ("tmpep" "mpep" "me17"))
   ("PPSeqTeachDataE17PeelProcess" ("tdpep" "mpep" "de17" "e17"))
@@ -1463,7 +1463,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqTeachDataK24BondProcess" ("tdbp" "dbp" "tdbop" "dbop" "dk24" "k24"))
   ("PPSeqTeachMenuS22TakeProcess" ("tmtp" "tms22" "mtp" "ms22"))
   ("PPSeqTeachDataS22TakeProcess" ("tdtp" "tds22" "dtp" "ds22" "s22"))
-  
+
   ;; verify
   ("PPSeqTeachMenuE14PickProcessVerify" ("tmppv"))
   ("PPSeqTeachDataE14PickProcessVerify" ("tdppv"))
@@ -1471,7 +1471,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqTeachDataK25BondProcessVerify" ("tdbpv"))
   ("PPSeqTeachMenuE33DSVerify" ("tmdsv" "mdsv"))
   ("PPSeqTeachDataE33DSVerify" ("tddsv" "ddsv"))
-  
+
   ;; optimize
   ("PPSeqTeachMenuPickOptimizeBase" ("tmpob" "mpob" "pob"))
   ("PPSeqTeachDataPickOptimizeBase" ("tdpob" "dpob"))
@@ -1513,8 +1513,8 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ;; misc
   ("CalibSrvInterfaceContainer" ("csifc" "ifc"))
   ("CalibStateHolder" ("csh" "sh"))
-  ("EnumItemIdMapper" ("eiim"))      
-  
+  ("EnumItemIdMapper" ("eiim"))
+
   ;; services: implemenation of interfaces
   ("PPFCCalibSrv" ("ppfccs" "pps"))
   ("SubstrateHdlCalibSrv" ("shcs" "shs"))
@@ -1522,7 +1522,7 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("DieCarrierCalibSrv" ("dccs" "dcs"))
   ("DispenserCalibSrv" ("dics" "dis"))
 
-  ;; proxies: 
+  ;; proxies:
   ("PPFCModulesProxyBase" ("ppfcmpb" "pb" "bp"))
   ("PPModulesProxy" ("ppmp" "ppp"))
   ("PPFCModulesProxy" ("ppfcmp" "fcp"))
@@ -1639,10 +1639,10 @@ Arg is the 3rd items of a dragon-abbrev-table item"
   ("PPSeqNotification" ("n") )
   ("PPSeqNotificationHandler" ("nh") )
   ("FastDelegate" ("fd") )
-  
+
   ("PPSeqElementBase" ("eb") )
   ("PPSeqElementMove" ("em") )
-  
+
   ("PPSeqElementBHBlow" ("bhb") )
   ("PPSeqElementBHVac" ("bhv") )
   ("PPSeqElementBHVacOffPrestart" ("bhvoffp") )
@@ -1740,9 +1740,9 @@ Arg is the 3rd items of a dragon-abbrev-table item"
  '( lws
     '(progn
        (when dragon-method-decl-empty-comment
-	 (insert "/** */")
-	 (indent-according-to-mode)
-	 (insert "\n")))
+         (insert "/** */")
+         (indent-according-to-mode)
+         (insert "\n")))
     "EHRESULT " p " (" p ");" > % ))
 
 ;; implement such that it can be called when point is at the beginning of an

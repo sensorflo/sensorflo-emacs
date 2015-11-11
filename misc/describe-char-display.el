@@ -1,13 +1,13 @@
-;;; describe-char-display.el --- 
+;;; describe-char-display.el ---
 ;;
 ;; Copyright 2010-2013 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; Created: 2015
 ;; Keywords: faces, i18n, Unicode, multilingual
-;; 
+;;
 ;; This file is not part of GNU Emacs.
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2, or (at your option)
@@ -49,8 +49,8 @@ off display.
 If ARG is anything else, turn on display."
   (interactive "P")
   (if (if arg
-	  (> (prefix-numeric-value arg) 0)
-	(not dcd-display))
+          (> (prefix-numeric-value arg) 0)
+        (not dcd-display))
       (dcd-on)
     (dcd-off)))
 
@@ -60,7 +60,7 @@ If ARG is anything else, turn on display."
   (interactive)
   (unless nil
     (setq dcd-display         t
-	  dcd-reference-count (1+ dcd-reference-count))
+          dcd-reference-count (1+ dcd-reference-count))
     ;; local hooks
     (add-hook 'post-command-hook 'dcd-post-command nil t)
     (add-hook 'kill-buffer-hook 'dcd-off nil t)
@@ -75,20 +75,20 @@ If ARG is anything else, turn on display."
   (interactive)
   (when t
     (setq dcd-display         nil
-	  dcd-reference-count (1- dcd-reference-count))
+          dcd-reference-count (1- dcd-reference-count))
     (remove-hook 'post-command-hook 'dcd-post-command t)
     (remove-hook 'kill-buffer-hook 'dcd-off t)
     (if (> dcd-reference-count 0)
-	;; at least one buffer with dcd activated
-	(dcd-hide-table)
+        ;; at least one buffer with dcd activated
+        (dcd-hide-table)
       ;; *no* buffer with dcd activated
       (and dcd-overlay
-	   (delete-overlay dcd-overlay))
+           (delete-overlay dcd-overlay))
       (let ((buffer (get-buffer dcd-buffer-name)))
-	(and buffer
-	     (save-excursion
-	       (delete-windows-on buffer)
-	       (kill-buffer buffer)))))))
+        (and buffer
+             (save-excursion
+               (delete-windows-on buffer)
+               (kill-buffer buffer)))))))
 
 
 (defun dcd-post-command ()

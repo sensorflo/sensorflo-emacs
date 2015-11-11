@@ -2,7 +2,7 @@
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; URL: https://github.com/sensorflo/sensorflo-emacs/, then
-;;      projects/misc-small-projects.el 
+;;      projects/misc-small-projects.el
 ;;
 ;;; Code:
 

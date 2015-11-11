@@ -1,5 +1,5 @@
 ;;; sed-mode.el --- a major-mode for editing sed scripts in emacs
-;; 
+;;
 ;; Copyright 2009-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Filename: sed-mode.el
@@ -7,19 +7,19 @@
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
 ;; Created: 2009
 ;; Keywords: languages
-;; 
+;;
 ;; This file is not part of GNU Emacs.
-;; 
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;
@@ -35,7 +35,7 @@
 (defvar sed-mode-map nil "Keymap for sed-mode.")
 (unless sed-mode-map
   (setq sed-mode-map (make-sparse-keymap)))
- 
+
 (defun sed-mode-regex-cust (arg)
   ;; not quite true because its possible that delimiter is part of regex
   (concat "\\\\\\(.\\)\\(?:[^\\\n]\\|\\\\.\\)*?\\" arg))
@@ -58,16 +58,16 @@
 
 (defconst sed-mode-font-lock-keywords
   (let* ((fulladdr (concat "\\(?:[;{}]\\|^\\)[ \t]*\\(" (sed-mode-addr) "?\\)\\(\\(?:[ \t]*!\\)?\\)[ \t]*")))
-         
+
     ;; todo:
     ;; - custom delimter for regex addr, s, y
     ;; - multiline schmarrn for a c e i
     ;; - be independent of hi-lock-ext
     ;; - use variables instead faces to customice which faces are used for which syntax elements
     ;;
-         
+
     ;; does }, as ;, also delimit certain arguments?
-    
+
   (list
    ;; ordered after occurence probability for a small performance improvement
    (list (concat fulladdr "\\([sy]\\)\\(/\\)\\(\\(?:[^\\/]\\|\\\\.\\)*\\)\\(/\\)\\(\\(?:[^\\/]\\|\\\\.\\)*\\)\\(/\\)\\(\\sw*\\)") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face) '(4 font-lock-unimportant) '(5 font-lock-constant-face) '(6 font-lock-unimportant) '(7 font-lock-constant-face) '(8 font-lock-unimportant))
@@ -78,25 +78,25 @@
    (list (concat fulladdr "[{}]") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face))
    (list (concat fulladdr "\\([acei]\\)[ \t]*\\(\\(?:[^\\\n]\\|\\\\\\(.\\|\n\\)\\)*\\)$") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face) '(4 font-lock-string-face))
    (list (concat fulladdr "\\([rRwW]\\)[ \t]*\\([^\n]+\\)") '(1 font-lock-variable-name-face) '(2 font-lock-negation-char-face) '(3 font-lock-keyword-face) '(4 font-lock-constant-face))
-   
-   ;; comment.  
-   (list "\\(#\\)\\(.*\\)$" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face)) 
+
+   ;; comment.
+   (list "\\(#\\)\\(.*\\)$" '(1 font-lock-comment-delimiter-face) '(2 font-lock-comment-face))
    )))
 
 (defun sed-mode()
   (interactive)
   (kill-all-local-variables)
-  
-  (use-local-map sed-mode-map)  
-        
+
+  (use-local-map sed-mode-map)
+
   (set (make-local-variable 'comment-start) "# ")
   (set (make-local-variable 'comment-end) "")
   (set (make-local-variable 'comment-start-skip) "#+[ \t]*")
-  
+
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults
-	'(sed-mode-font-lock-keywords t nil nil nil))
-  
+        '(sed-mode-font-lock-keywords t nil nil nil))
+
   (setq major-mode 'sed-mode mode-name "sed")
 
   (run-hooks 'sed-mode-hook))

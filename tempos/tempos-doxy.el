@@ -18,7 +18,7 @@
     (setq doxy-sec-prefix-base (read-string "section prefix: ")))
   (doxym-sec-prefix doxy-sec-prefix-base))
 
-;;; actual tempos 
+;;; actual tempos
 
 (tempo-define-template
  "doxy-section"

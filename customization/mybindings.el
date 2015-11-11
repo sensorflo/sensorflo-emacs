@@ -127,16 +127,16 @@
 ;; ------------------------------------------------------------------
 (defun my-common-mode-bindings ()
   (local-set-key [(control f)]       (make-sparse-keymap))
-  
+
   ;; redefine with similar functionality
   (local-set-key [remap mark-paragraph]          'mark-paragraph-ext)
   (local-set-key [remap newline]                 'indent-new-comment-line)
   (local-set-key [remap move-beginning-of-line]  'beginning-of-line-dwim )
   (local-set-key [remap move-end-of-line]        'end-of-line-dwim       )
-  
+
   ;; add new bindings "near" similar funcionality
   (local-set-key [(control meta backspace)] 'backward-kill-sexp) ; M-DEL is backward-kill-word
-  
+
   ;; new bindings
   (local-set-key [(control return)]        'open-line-below) ; Actually C-e C-j or C-n C-o would be convenient enough
   (local-set-key [(control f)(control d)]  'duplicate-line-or-region)

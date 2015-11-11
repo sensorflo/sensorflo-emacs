@@ -44,7 +44,7 @@ plain-c++: /* ... */
 java-doc: /** ... */
 qt: /*! ... */"
   :type '(choice (const :tag "Plain C++: /*" plain-c++)
-	         (const :tag "Java Doc: /**" java-doc)
+                 (const :tag "Java Doc: /**" java-doc)
                  (const :tag "Qt: /*!" qt))
   :group 'tempos-c++)
 
@@ -66,13 +66,13 @@ qt: /*! ... */"
   (insert "}")
   (indent-according-to-mode)
   (if (not (or (eolp)
-	       (save-excursion
-		 (re-search-forward
-		  "\\=\\s-*$" nil t))))
+               (save-excursion
+                 (re-search-forward
+                  "\\=\\s-*$" nil t))))
       (insert "\n")))
 
 (defun tempos-c++-between-keyword-parenthesis ()
-  (if tempos-c++-space-between-keyword-parenthesis    
+  (if tempos-c++-space-between-keyword-parenthesis
     (insert " ")
     ""))
 
@@ -116,7 +116,7 @@ qt: /*! ... */"
 (tempos-c++-std "while" "\\bw\\(i\\sw*\\)?" t "while")
 
 (tempo-define-template "c-else"
- '( (progn (tempo-entry "\\be\\(l\\(r\\sw*\\)?\\)?") "") 
+ '( (progn (tempo-entry "\\be\\(l\\(r\\sw*\\)?\\)?") "")
    "else"
    (tempos-c++-open-brace)
    r-or-blank-line>
@@ -169,7 +169,7 @@ qt: /*! ... */"
     > n>
     "case " p ": " > n>
     p > n>
-    "break;" > n>    
+    "break;" > n>
     > n>
     "default :" > n>
     p > n>
@@ -240,19 +240,19 @@ qt: /*! ... */"
 
 ;; header file
 (tempo-define-snippet "cpp-h-file"
-  '("#ifndef " (upcase (tempo-lookup-named 'class)) "__H_\n" 
-    "#define " (upcase (tempo-lookup-named 'class)) "__H_\n" 
-    "\n" 
-    (tempos-c++-block-comment-start) " */\n" 
+  '("#ifndef " (upcase (tempo-lookup-named 'class)) "__H_\n"
+    "#define " (upcase (tempo-lookup-named 'class)) "__H_\n"
+    "\n"
+    (tempos-c++-block-comment-start) " */\n"
     "class " (p "classname: \n" class) ".\n"
-    "{\n" 
-    "  public:\n" 
-    "    " (s class) "();\n" 
-    "    ~" (s class) "();\n" 
-    "\n" 
-    "  private:\n" 
-    "\n" 
-    "};\n" 
+    "{\n"
+    "  public:\n"
+    "    " (s class) "();\n"
+    "    ~" (s class) "();\n"
+    "\n"
+    "  private:\n"
+    "\n"
+    "};\n"
     "\n"
     "#endif // " (upcase (tempo-lookup-named 'class)) "__H_\n"))
 
@@ -266,7 +266,7 @@ qt: /*! ... */"
 
 ;; doxygen group
 (tempo-define-template "c-member-group-named"
- '( lws 
+ '( lws
     (tempos-c++-block-comment-start) " @name " p " */" >n
     "/*------------------------------------------------------------------*/" >n
     "//@{" >n
@@ -282,14 +282,14 @@ qt: /*! ... */"
 
 ;; comment block
 (tempo-define-template "c-if0"
- '( &    
+ '( &
     "#if 0" > n>
     r> n>
     "#endif" > )
  "")
 
 (tempo-define-template "c-delete"
- '( lws    
+ '( lws
     "if" (tempos-c++-between-keyword-parenthesis) "(" ( p "ptr: " ptr ) ")"
     (tempos-c++-open-brace)
     "delete " (s ptr) ";" >n

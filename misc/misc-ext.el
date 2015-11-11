@@ -1,28 +1,28 @@
 ;;; misc-ext.el --- miscellaneous extensions for various standart modes/features
-;; 
+;;
 ;; Copyright 2011-2012 Florian Kaufmann <sensorflo@gmail.com>
 ;;
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;; This file is not part of GNU Emacs.
-;; 
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;; 
-;;; Commentary: 
 ;;
-;;; Code: 
-;; 
+;;; Commentary:
+;;
+;;; Code:
+;;
 
 
 ;;; grep
@@ -41,7 +41,7 @@
   (if my-grep-stack
       (let ((buffer (pop my-grep-stack)))
         (switch-to-buffer buffer)
-        (message "Grep buffer popped from stack.")))) 
+        (message "Grep buffer popped from stack."))))
 
 (defvar grep-find-ext-regexp-function nil
   "Function returning regexp for `grep-find-ext'.
@@ -62,15 +62,15 @@ searched for. `grep-find-ext-command-function' is used to
 determine the whole shell command used to search."
   (interactive "P")
   (let* ((regexp (cond ((equal arg '(16)) "")
-		       (mark-active (regexp-quote (buffer-substring-no-properties (point) (mark))))
-		       (t (or (and grep-find-ext-regexp-function (funcall grep-find-ext-regexp-function))
-			      (concat "\\b" (regexp-quote (buffer-substring-sexp-no-properties)) "\\b")))))
-	 (gfc (or (and grep-find-ext-command-function (funcall grep-find-ext-command-function regexp))
-		  grep-find-command))) ; grep-find-command
+                       (mark-active (regexp-quote (buffer-substring-no-properties (point) (mark))))
+                       (t (or (and grep-find-ext-regexp-function (funcall grep-find-ext-regexp-function))
+                              (concat "\\b" (regexp-quote (buffer-substring-sexp-no-properties)) "\\b")))))
+         (gfc (or (and grep-find-ext-command-function (funcall grep-find-ext-command-function regexp))
+                  grep-find-command))) ; grep-find-command
     (if (and (listp arg) (not (null arg)))
-	(progn
-	  (grep-apply-setting 'grep-find-command gfc)
-	  (call-interactively 'grep-find))
+        (progn
+          (grep-apply-setting 'grep-find-command gfc)
+          (call-interactively 'grep-find))
       (grep-find gfc))))
 
 
@@ -84,7 +84,7 @@ determine the whole shell command used to search."
 
 (defalias 'browse-kill-ring-ext-insert-then-goto-prev
   (read-kbd-macro "C-x o i n C-x o"))
-  
+
 (defun browse-kill-ring-insert-as-separated (items)
   (let ((count 0))
     (while (cdr items)
@@ -98,7 +98,7 @@ determine the whole shell command used to search."
 (defun eval-last-sexp-to-kill-ring()
   "Similar to `eval-last-sexp', but additionaly adds it to kill ring."
   (interactive)
-  (let ((val (format "%s" (eval (preceding-sexp))))) 
+  (let ((val (format "%s" (eval (preceding-sexp)))))
     (kill-new val)
     (message val)))
 
@@ -135,36 +135,36 @@ determine the whole shell command used to search."
     (call-interactively 'indent-region))
   (print-kill-ring))
 
-(defun print-kill-ring () 
+(defun print-kill-ring ()
   "Prints `kill-ring' near `kill-ring-yank-pointer'."
   (interactive)
   (unless (minibufferp)
     (let* (elt
-	   (cnt (min (length kill-ring) 7))
-	   (end (/ cnt 2))
-	   (i (- end))
-	   (pointer (nthcdr (mod (- i (length kill-ring-yank-pointer))
-				 (length kill-ring))
-			    kill-ring))
-	   result)
+           (cnt (min (length kill-ring) 7))
+           (end (/ cnt 2))
+           (i (- end))
+           (pointer (nthcdr (mod (- i (length kill-ring-yank-pointer))
+                                 (length kill-ring))
+                            kill-ring))
+           result)
       (while (< i end)
-	(setq elt (car pointer)
-	      elt (if (string= elt "") "<empty string>" elt)
-	      elt (if (string-match "^[ \t\n]+$" elt) "<only blanks>" elt)
-	      elt (replace-regexp-in-string "^[ \t]+" "" elt)
-	      elt (replace-regexp-in-string "\n" "\\\\n" elt)
-	      elt (if (> (length elt) 50) (concat (substring elt 0 50) "...") elt)
-	      elt (concat (if (eq i 0) ">" " ") elt))	      
-	(setq result (concat result
-			     (if result "\n")
-			     (if (eq pointer kill-ring) "----- kill-ring start ------\n")
-			     elt) 
-	      pointer (or (cdr pointer) kill-ring)
-	      i (1+ i)))
+        (setq elt (car pointer)
+              elt (if (string= elt "") "<empty string>" elt)
+              elt (if (string-match "^[ \t\n]+$" elt) "<only blanks>" elt)
+              elt (replace-regexp-in-string "^[ \t]+" "" elt)
+              elt (replace-regexp-in-string "\n" "\\\\n" elt)
+              elt (if (> (length elt) 50) (concat (substring elt 0 50) "...") elt)
+              elt (concat (if (eq i 0) ">" " ") elt))
+        (setq result (concat result
+                             (if result "\n")
+                             (if (eq pointer kill-ring) "----- kill-ring start ------\n")
+                             elt)
+              pointer (or (cdr pointer) kill-ring)
+              i (1+ i)))
       (set-text-properties 0 (length result) nil result)
       (message "%s" result))))
 
-(defun backward-delete-word () 
+(defun backward-delete-word ()
   ""
   (interactive)
   (let ()
@@ -217,9 +217,9 @@ not already done so."
 (defun make-backup()
   (interactive)
   (let ((old-name (buffer-file-name))
-	(bak-name (let ((version-control nil))
-		    (car (find-backup-file-name (buffer-file-name)))))
-	(bak-buffer))
+        (bak-name (let ((version-control nil))
+                    (car (find-backup-file-name (buffer-file-name)))))
+        (bak-buffer))
     (write-file bak-name)
     (setq bak-buffer (current-buffer))
     (find-file old-name)
@@ -234,10 +234,10 @@ not already done so."
      (file-modes-symbolic-to-number (if buffer-read-only "-w" "+w") (file-modes buffer-file-name)))))
 
 
-;;; dired & buffer 
+;;; dired & buffer
 ;; ----------------------------------------------------------------------
 (defun dired-mark-extension-dwim (ext-list)
-  "Similar to dired-mark-extension. 
+  "Similar to dired-mark-extension.
 However, not a 'direct' regex is given, but a pipe (|) separated
 list of regexps. A prefix argument unmarks the matching files
 instead of marking them. A dot is interpreted as regular
@@ -253,9 +253,9 @@ and '.h' matches files ending in 'ch' where c is any character."
   (interactive)
   (let ((file (dired-get-file-for-visit)))
     (if (file-directory-p file)
-	(or (and (cdr dired-subdir-alist)
-		 (dired-goto-subdir file))
-	    (dired file))
+        (or (and (cdr dired-subdir-alist)
+                 (dired-goto-subdir file))
+            (dired file))
       (view-file-other-window file))))
 
 (defun dired-first-file-line ()
@@ -278,24 +278,24 @@ and '.h' matches files ending in 'ch' where c is any character."
   (call-interactively 'dired-next-line)
   (if (not (dired-move-to-filename))
       (dired-next-file-line)))
- 
+
 (defun dired-previous-file-line ()
   "Moves to the previous dired line that have a file or directory name on it."
   (interactive)
   (call-interactively 'dired-previous-line)
   (if (not (dired-move-to-filename))
       (dired-previous-file-line)))
-  
+
 (defun dired-ediff-marked-files ()
   "Run ediff on marked ediff files."
   (interactive)
   (set 'marked-files (dired-get-marked-files))
   (when (= (safe-length marked-files) 2)
     (ediff-files (nth 0 marked-files) (nth 1 marked-files)))
-  
+
   (when (= (safe-length marked-files) 3)
     (ediff3 (buffer-file-name (nth 0 marked-files))
-            (buffer-file-name (nth 1 marked-files)) 
+            (buffer-file-name (nth 1 marked-files))
             (buffer-file-name (nth 2 marked-files)))))
 
 (defun dired-do-delete-ext (&optional arg)
@@ -303,12 +303,12 @@ and '.h' matches files ending in 'ch' where c is any character."
   (interactive "P")
   (let ((marked-files (dired-get-marked-files)))
     (when (or (not (and
-		    ;; ???
-		    (or (cdr marked-files) (not (string= (car marked-files) (dired-get-filename))))
-		    ;; current line and line before are both not marked
-		    (save-excursion (and (progn (beginning-of-line) (not (looking-at dired-re-mark)))
-					 (progn (forward-line -1) (beginning-of-line) (not (looking-at dired-re-mark)))))))
-	      (y-or-n-p "Point is on an unmarked files. You want to delete the marked files? "))
+                    ;; ???
+                    (or (cdr marked-files) (not (string= (car marked-files) (dired-get-filename))))
+                    ;; current line and line before are both not marked
+                    (save-excursion (and (progn (beginning-of-line) (not (looking-at dired-re-mark)))
+                                         (progn (forward-line -1) (beginning-of-line) (not (looking-at dired-re-mark)))))))
+              (y-or-n-p "Point is on an unmarked files. You want to delete the marked files? "))
       (call-interactively 'dired-do-delete))))
 
 (defun dired-update-file-autoloads ()
@@ -318,7 +318,7 @@ and '.h' matches files ending in 'ch' where c is any character."
         (update-file-autoloads file)
       (error (setq failure err)))
     (if (not failure)
-	nil
+        nil
       (dired-log "update-file-autoloads error for %s:\n%s\n" file failure)
       (dired-make-relative file))))
 
@@ -335,7 +335,7 @@ and '.h' matches files ending in 'ch' where c is any character."
           (c-convert-ifndef-to-pragma-once))
       (error (setq failure err)))
     (if (not failure)
-	nil
+        nil
       (dired-log "c-convert-ifndef-to-pragma-once error for %s:\n%s\n" file failure)
       (dired-make-relative file))))
 
@@ -423,7 +423,7 @@ column for rectangle commands. "
       (let* ((help column-right)
              (column-right column-left)
              (column-left help))))
-    
+
     ;; set point at start
     (beginning-of-line)
     (while (looking-at paragraph-rect-regex)
@@ -431,7 +431,7 @@ column for rectangle commands. "
     (forward-line)
     (move-to-column column-right)
     (set-mark (point))
-    
+
     ;; set mark at end
     (goto-char saved-point)
     (while (looking-at paragraph-rect-regex)
@@ -459,7 +459,7 @@ column for rectangle commands. "
     (delete-rectangle (point) edge)))
 
 
-;;; external tools 
+;;; external tools
 ;; ----------------------------------------------------------------------
 (defun flyspell-ext-buffer ()
   (interactive)
@@ -474,7 +474,7 @@ column for rectangle commands. "
         ;(end-of-line)
         ;(setq reg-end (point))
         ;(goto-char reg-beg)
-        
+
         ; flyspell the defined region
         ;(flyspell-region reg-beg reg-end)
         (flyspell-goto-next-error)
@@ -509,7 +509,7 @@ read only flag is automatically unset."
   (interactive "P")
   (if arg
       (call-interactively 'ediff-revision)
-      (ediff-vc-internal "" "" nil))) 
+      (ediff-vc-internal "" "" nil)))
 
 (defun woman-goto-option (name)
   ""
@@ -623,7 +623,7 @@ To select a previous/following comment, move point out of comment"
   (let (point-mark-exchanged)
 
     ;; canonicalize: point <= mark
-    (when (and mark-active (> (point) (mark))) 
+    (when (and mark-active (> (point) (mark)))
       (exchange-point-and-mark)
       (setq point-mark-exchanged t))
 
@@ -651,7 +651,7 @@ To select a previous/following comment, move point out of comment"
      ;; marks whole previous comment
      (t
       (unless (looking-at comment-start-skip)
-	(re-search-backward comment-start-skip))
+        (re-search-backward comment-start-skip))
       (push-mark (save-excursion (re-search-forward comment-end-skip)))))
 
     (when point-mark-exchanged
@@ -664,29 +664,29 @@ To select a previous/following comment, move point out of comment"
 (defun custom-prompt-value (var prompt-val &optional comment)
   "Similar to `custom-prompt-variable' but only for value of a given VAR"
   (let* ((minibuffer-help-form '(describe-variable var))
-	 (val
-	  (let ((prop (get var 'variable-interactive))
-		(type (get var 'custom-type))
-		(prompt (format prompt-val var)))
-	    (unless (listp type)
-	      (setq type (list type)))
-	    (cond (prop
-		   ;; Use VAR's `variable-interactive' property
-		   ;; as an interactive spec for prompting.
-		   (call-interactively `(lambda (arg)
-					  (interactive ,prop)
-					  arg)))
-		  (type
-		   (widget-prompt-value type
-					prompt
-					(if (boundp var)
-					    (symbol-value var))
-					(not (boundp var))))
-		  (t
-		   (eval-minibuffer prompt))))))
+         (val
+          (let ((prop (get var 'variable-interactive))
+                (type (get var 'custom-type))
+                (prompt (format prompt-val var)))
+            (unless (listp type)
+              (setq type (list type)))
+            (cond (prop
+                   ;; Use VAR's `variable-interactive' property
+                   ;; as an interactive spec for prompting.
+                   (call-interactively `(lambda (arg)
+                                          (interactive ,prop)
+                                          arg)))
+                  (type
+                   (widget-prompt-value type
+                                        prompt
+                                        (if (boundp var)
+                                            (symbol-value var))
+                                        (not (boundp var))))
+                  (t
+                   (eval-minibuffer prompt))))))
     (if comment
- 	(list var val
- 	      (read-string "Comment: " (get var 'variable-comment)))
+        (list var val
+              (read-string "Comment: " (get var 'variable-comment)))
       (list var val))))
 
 (defmacro custom-set-value-prompt (variable &optional comment)
@@ -710,7 +710,7 @@ To select a previous/following comment, move point out of comment"
 
 ;;; indent / tabify / whites
 ;; ----------------------------------------------------------------------
-(defun column (&optional pos) 
+(defun column (&optional pos)
   "Returns the column pos is at. If pos is nil, point is taken."
   (save-excursion
     (goto-char (or pos (point)))
@@ -737,10 +737,10 @@ and (buffer-size) respectively is used."
       (goto-char start)
       (beginning-of-line)
       (let ((indent-tabs-mode t))
-	(while (re-search-forward "^\\([ \t]+\\)" end t)
-	  (let ((end-col (current-column)))
-	    (delete-region (match-beginning 0) (point))
-	    (indent-to end-col)))))))
+        (while (re-search-forward "^\\([ \t]+\\)" end t)
+          (let ((end-col (current-column)))
+            (delete-region (match-beginning 0) (point))
+            (indent-to end-col)))))))
 
 ;; todo: sent to maintainer of tabify.el
 (defun untabify-indentation (start end)
@@ -754,11 +754,11 @@ and (buffer-size) respectively is used."
   (save-excursion
     (save-restriction
       (let ((tab-replacement (make-string tab-width ?\ )))
-	(goto-char start)
-	(while (re-search-forward "^[\t ]+" end t)
-	  (let ((old-indent-str (match-string 0)))
-	    (delete-region (match-beginning 0) (match-end 0))
-	    (insert (replace-regexp-in-string "\t" tab-replacement old-indent-str))))))))
+        (goto-char start)
+        (while (re-search-forward "^[\t ]+" end t)
+          (let ((old-indent-str (match-string 0)))
+            (delete-region (match-beginning 0) (match-end 0))
+            (insert (replace-regexp-in-string "\t" tab-replacement old-indent-str))))))))
 
 (defun replace-by-space ()
   (interactive)
@@ -768,25 +768,25 @@ and (buffer-size) respectively is used."
 
 (defvar indent-rigidly-backward t)
 
-(defun indent-for-tab-command-ext (arg) 
+(defun indent-for-tab-command-ext (arg)
   (interactive "*P")
   (let ((same (member last-command '(indent-rigidly-ext indent-for-tab-command-ext))))
     (if (not same)
-	(setq indent-rigidly-backward (equal arg '(4)))
+        (setq indent-rigidly-backward (equal arg '(4)))
       (if (equal arg '(4))
-	  (setq indent-rigidly-backward (not indent-rigidly-backward))))
+          (setq indent-rigidly-backward (not indent-rigidly-backward))))
     (if same
-	(indent-rigidly-ext indent-rigidly-backward)
+        (indent-rigidly-ext indent-rigidly-backward)
       (indent-for-tab-command))
     (setq deactivate-mark nil)))
 
-(defun indent-rigidly-ext (backward) 
+(defun indent-rigidly-ext (backward)
   (interactive "P")
   (save-excursion
   (mark-whole-lines)
   (let* ((beg (if (< (point) (mark)) (point) (mark)))
-	 (end (if (< (point) (mark)) (mark) (point)))
-	 (end (1- end)))
+         (end (if (< (point) (mark)) (mark) (point)))
+         (end (1- end)))
     (indent-rigidly beg end (if backward (- standard-indent) standard-indent))
     (setq deactivate-mark nil))))
 
@@ -866,7 +866,7 @@ and (buffer-size) respectively is used."
   (interactive)
   (let ((has-preceding-item (not (looking-back "\\s-*[[({]")))
         (has-trailing-item (not (looking-at "\\s-*[])}]"))))))
-  
+
 (defun chmod (mode &optional file)
   "Change the MODE of the visited file (or FILE, if called pragmatically).
 MODE can be any format supported by the system `chmod` command, e.g. \"664\"
@@ -952,16 +952,16 @@ sequence."
       (goto-char 0)
       ;; To understand the following, looking at an ascii control code chart may
       ;; help, e.g. http://en.wikipedia.org/wiki/Ascii#ASCII_control_code_chart
-      ;; 
+      ;;
       ;; Search for \001-\037 but exclusive \011-\015. \011-\015 = \t \n \v \f \r
       ;; = ^I - ^M are allowed to occur in a text (i.e. non-binary) file.
       (while (re-search-forward "[\001-\010]\\|[\016-\037]" nil t)
-	(let* ((ctrl-char (string-to-char (match-string 0)))
-	       ;; map \001-\032 to a-z, and \033-037 to [ - _. This is like
-	       ;; mapping \001-\037 to A-_ however lowercase for the latin
-	       ;; characters
-	       (replacement (concat "\\C-" (char-to-string (downcase (+ ctrl-char (- ?A ?\1)))))))
-	  (replace-match replacement t t))))))
+        (let* ((ctrl-char (string-to-char (match-string 0)))
+               ;; map \001-\032 to a-z, and \033-037 to [ - _. This is like
+               ;; mapping \001-\037 to A-_ however lowercase for the latin
+               ;; characters
+               (replacement (concat "\\C-" (char-to-string (downcase (+ ctrl-char (- ?A ?\1)))))))
+          (replace-match replacement t t))))))
 
 (defun mode-message-start (element)
   ;; (message (concat "<" element

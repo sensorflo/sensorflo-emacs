@@ -6,31 +6,31 @@
 ;; Description: find files by aliases
 ;; Created: 2009
 ;; Author: Florian Kaufmann <sensorflo@gmail.com>
-;; 
+;;
 ;; This file is not part of GNU Emacs.
-;; 
+;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;; 
+;;
 ;;; Commentary:
-;;  
+;;
 ;;; Installation:
-;;  
+;;
 ;;  Optional:
 ;;  (add-hook 'find-file-hook 'file-alias-show-aliases)
 ;;  (define-key minibuffer-local-filename-must-match-map [(backtab)] 'file-alias-minibuffer-complete)
 ;;  (define-key minibuffer-local-completion-map          [(backtab)] 'file-alias-minibuffer-complete)
-;;  
+;;
 ;;; Todo:
 ;; - customization more conventient & outside this file - here only the code should be
 ;; - file-alias-add-abbrev: add an abbrev for the current file/dir
@@ -41,7 +41,7 @@
 ;; the 'namespace' ) find-file-ext aliases, which are used more often
 
 (defvar file-alias-default-ext nil)
-  
+
 (defvar file-alias-root-alist)
 
 (defvar file-alias-dir-alist nil
@@ -69,7 +69,7 @@
 
 (defvar file-alias-single-alias-is-file-alias t
   "If the full-alias contains no file-alias-separator, shoult it be
-  a dir-alias or a file-alias ?") 
+  a dir-alias or a file-alias ?")
 
 (defun file-alias-find-file()
   "As find-file, however the file to be opened is given as an full alias.
@@ -81,7 +81,7 @@
   replaced by the found entry
 
   FileBaseAlias: If given, t"
-  
+
   (interactive)
   (error "to be implemented"))
 
@@ -97,30 +97,30 @@
   ;; definitions:
   ;;                              path
   ;;          dir-path                                  file-name
-  ;; root-dir-path  rel-dir-path        file-name-sans-ext   file-name-ext    
-  
+  ;; root-dir-path  rel-dir-path        file-name-sans-ext   file-name-ext
+
   (let* ((tmp (file-alias-split-full-alias full-alias))
          (root-alias (nth 0 tmp))
          (dir-alias (nth 1 tmp))
          (file-base-alias (nth 2 tmp))
          (file-ext-alias (nth 3 tmp))
          real-root-path
-         real-dir-path 
-         real-file-name 
+         real-dir-path
+         real-file-name
          file-alias-map ;; actual used map (filesys-filename to abbreviationlist)
          )
-    
+
     ;; what if root-alias is ""
     ;; 1) also "" can be a valid root-alias which is looked up
     ;; 2) use root part of current working directory
     ;; 3) use path given by minibuffer as root
     (setq root-path (file-alias-expand-root-alias root-alias))
-    
+
     (setq real-dir-path (file-alias-expand-dir-alias dir-alias root-path))
 
     ;; note that file-alias can be "", in which case the default, i.e. the
     ;; first file in the map will be opened
-    
+
     ;; find file-alias-map to be used to find real-file-name
     (let ((iter file-alias-map-map))
       (while iter
@@ -129,10 +129,10 @@
           (setq iter nil))
         (setq iter (cdr iter))))
     (unless file-alias-map (error))
-    
+
     ;; determine real-file-name
     (let* ((alias-file-name-sans-ext (file-name-sans-extension file-alias))
-           (file-alias-struct (file-alias-struct-by-alias alias-file-name-sans-ext file-alias-map))           
+           (file-alias-struct (file-alias-struct-by-alias alias-file-name-sans-ext file-alias-map))
            (real-file-name-sans-ext (file-alias-struct-real-name file-alias-struct))
            (alias-file-name-ext (file-name-extension file-alias))
            (real-ext (or
@@ -152,7 +152,7 @@
          (file-alias "")
          (file-base-alias "")
          (file-ext-alias ""))
-    
+
     (setq tmp (split-string full-alias (regexp-quote file-alias-separator)))
     (cond
      ((equal (length tmp) 3)
@@ -165,7 +165,7 @@
      ((equal (length tmp) 1)
       (setq file-alias (nth 0 tmp)))
      (t (error "Either only 1 or then more than 2 separators")))
-      
+
     (setq tmp (split-string file-alias "\\."))
     (file-base-alias (nth 0 tmp))
     (cond
@@ -173,7 +173,7 @@
      ((equal (length tmp) 2)
       (setq file-ext-alias (nth 1 tmp)))
      (t (error "More than 1 file ext seperators")))
-    
+
     (list root-alias dir-alias file-base-alias file-ext-alias))))
 
 (defun file-alias-expand-root-alias (root-alias)
@@ -224,7 +224,7 @@
         alias-list
         alias-list-str
         (wd (file-name-directory (buffer-file-name))))
-    
+
     ;; find map to be used using current working directory
     (let ((iter file-alias-map-map))
       (while iter
@@ -237,11 +237,11 @@
     (when file-alias-map-map
       ;; name only = directories and extension striped: /foo/bar.cpp -> bar
       (setq name-only (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
-      
-      
+
+
       (setq alias-list (file-alias-struct-alias-list (file-alias-struct-by-name name-only file-alias-map)))
       (setq alias-list-str (mapconcat (lambda(x) x) alias-list ", "))
-       
+
       (message (concat "Alias are: " alias-list-str)))))
 
 (defun file-alias-struct-by-alias (alias map)
@@ -275,7 +275,7 @@
     (while iter
       (if (string-match (regexp-quote real-rel-dir-path) (caar iter))
           (setq found-map (nth 1 (car iter))
-                iter nil))        
+                iter nil))
       (setq iter (cdr iter)))
     found-map))
 
@@ -293,4 +293,3 @@
   (nth 2 mapelt))
 
 ;;; file-alias.el ends here
-

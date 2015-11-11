@@ -1,37 +1,37 @@
 ;;; aliases.el --- sensorflo's aliases
 ;;
-;;; Variables: 
+;;; Variables:
 
-;;; misc commands: ... 
-(defalias 'bkr 'browse-kill-ring) 
+;;; misc commands: ...
+(defalias 'bkr 'browse-kill-ring)
 (defalias 'ir 'indent-region) 		; also on C-M-\
-(defalias 'fr 'fill-region) 
-(defalias 'ufp 'unfill-paragraph) 
-(defalias 'gf 'grep-find) 
-(defalias 'fgd 'find-grep-dired) 
-(defalias 'fd 'find-dired) 
-(defalias 'cg 'customize-group) 
+(defalias 'fr 'fill-region)
+(defalias 'ufp 'unfill-paragraph)
+(defalias 'gf 'grep-find)
+(defalias 'fgd 'find-grep-dired)
+(defalias 'fd 'find-dired)
+(defalias 'cg 'customize-group)
 (defalias 'cv 'customize-variable)       ; with custimize buffer
 (defalias 'csv 'customize-save-variable)  ; with minibuffer, save for future sessions
 (defalias 'csev 'customize-set-variable)  ; with minibuffer, only for this session
-(defalias 'cf 'customize-face) 
-(defalias 'sv 'set-variable) 
-(defalias 'lsk 'local-set-key) 
-(defalias 'gsk 'global-set-key) 
-(defalias 'fb 'font-lock-fontify-buffer) 
-(defalias 'ar 'align-regexp) 
-(defalias 'fl 'find-library) 
-(defalias 'll 'load-library)  
+(defalias 'cf 'customize-face)
+(defalias 'sv 'set-variable)
+(defalias 'lsk 'local-set-key)
+(defalias 'gsk 'global-set-key)
+(defalias 'fb 'font-lock-fontify-buffer)
+(defalias 'ar 'align-regexp)
+(defalias 'fl 'find-library)
+(defalias 'll 'load-library)
 (defalias 'ff 'find-file) ; C-x f is quick, but sometimes my mind thinks I ought to start with M-x f(ind)...
 (defalias 'ffl 'find-file-literally)
-(defalias 'id 'insert-date) 
-(defalias 'iid 'insert-initials-date) 
-(defalias 'url 'browse-url-at-point) 
-(defalias 'urlr 'browse-url-of-region) 
-(defalias 'afc 'c-align-function-call) 
-(defalias 'rbs 'replace-by-space) 
-(defalias 'dq 'xdict-query) 
-(defalias 'er 'eval-region) 
+(defalias 'id 'insert-date)
+(defalias 'iid 'insert-initials-date)
+(defalias 'url 'browse-url-at-point)
+(defalias 'urlr 'browse-url-of-region)
+(defalias 'afc 'c-align-function-call)
+(defalias 'rbs 'replace-by-space)
+(defalias 'dq 'xdict-query)
+(defalias 'er 'eval-region)
 (defalias 'isb 'ispell-buffer)
 (defalias 'isr 'ispell-region)
 (defalias 'isw 'ispell-word)
@@ -69,17 +69,17 @@
 (defalias 'fsb 'flyspell-buffer)
 (defalias 'wc 'whitespace-cleanup)
 
-;;; toggle: t... 
+;;; toggle: t...
 (defalias 'ttl 'toggle-truncate-lines)
 (defalias 'tww 'toggle-word-wrap)
 (defalias 'tbc 'toggle-background-color)
 (defalias 'wet 'whitespace-ext-toggle)
 
-;;; list: l... 
-(defalias 'lp 'list-processes) 
-(defalias 'lcd 'list-colors-display) 
-(defalias 'lfd 'list-faces-display) 
-(defalias 'lb 'list-bookmarks) 
+;;; list: l...
+(defalias 'lp 'list-processes)
+(defalias 'lcd 'list-colors-display)
+(defalias 'lfd 'list-faces-display)
+(defalias 'lb 'list-bookmarks)
 
 ;;; apropos: a...
 (defalias 'a 'apropos)
@@ -97,9 +97,9 @@
 (defalias 'dc 'describe-char)
 
 ;;; file: ...file
-(defalias 'bcf 'byte-compile-file) 
-(defalias 'lf 'load-file) 
-(defalias 'rnf 'rename-file) 
+(defalias 'bcf 'byte-compile-file)
+(defalias 'lf 'load-file)
+(defalias 'rnf 'rename-file)
 (defalias 'sfm 'set-file-modes) ; see also cm=chmod
 
 ;;; modes: ...m
@@ -113,8 +113,8 @@
 (defalias 'mbm 'menu-bar-mode)
 (defalias 'tbm 'tool-bar-mode)
 (defalias 'sbm 'scroll-bar-mode)
-(defalias 'hlp 'highlight-parentheses-mode) 
-(defalias 'ssm 'shell-script-mode) 
+(defalias 'hlp 'highlight-parentheses-mode)
+(defalias 'ssm 'shell-script-mode)
 (defalias 'wm 'whitespace-mode)
 (defalias 'vm 'view-mode)
 (defalias 'afm 'auto-fill-mode)
@@ -138,12 +138,12 @@
 (defalias 'lnm 'line-number-mode)
 
 ;;; marker pen: mp...
-(defalias 'mp0 'markerpen0) 
-(defalias 'mp1 'markerpen1) 
-(defalias 'mp2 'markerpen2) 
-(defalias 'mp3 'markerpen3) 
-(defalias 'mpmr 'markerpen-mark-region) 
-(defalias 'mpcr 'markerpen-clear-region) 
+(defalias 'mp0 'markerpen0)
+(defalias 'mp1 'markerpen1)
+(defalias 'mp2 'markerpen2)
+(defalias 'mp3 'markerpen3)
+(defalias 'mpmr 'markerpen-mark-region)
+(defalias 'mpcr 'markerpen-clear-region)
 
 ;;; hide show: hs...
 (defalias 'hshl 'hs-hide-level)
@@ -160,14 +160,14 @@
 (defalias 'edd 'ediff-directories)
 (defalias 'edf3 'ediff-files3) ;; diff 3
 (defalias 'edb3 'ediff-buffers3)
-(defalias 'edd3 'ediff-directories3)      
+(defalias 'edd3 'ediff-directories3)
 (defalias 'emf3 'ediff-merge-files-with-ancestor) ;; merge 3
 (defalias 'emb3 'ediff-merge-buffers-with-ancestor)
-(defalias 'emd3 'ediff-merge-directories-with-ancestor)      
+(defalias 'emd3 'ediff-merge-directories-with-ancestor)
 (defalias 'edfr 'ediff-revision)        ;; diff revisions
-(defalias 'eddr 'ediff-directory-revisions)      
+(defalias 'eddr 'ediff-directory-revisions)
 (defalias 'emfr 'ediff-merge-revisions-with-ancestor) ;; merge revisions
-(defalias 'emdr 'ediff-merge-directory-revisions-with-ancestor)      
+(defalias 'emdr 'ediff-merge-directory-revisions-with-ancestor)
 
 ;;; icicles: i...
 (defalias 'ick 'icicle-complete-keys)

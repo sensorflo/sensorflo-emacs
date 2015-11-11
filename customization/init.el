@@ -236,7 +236,7 @@
   ("dt2" ("d"))
   ("stream" ("s"))))
 
-(dolist (x '(".html" ".htm" ".x" ".s" ".str" ".map" ".pj" ".mpd" ".603" ".bmp" ".jpg" ".jpeg" "_"))
+(dolist (x '(".bmp" ".jpg" ".jpeg"))
   (add-to-list 'completion-ignored-extensions x))
 
 (load-library "mybindings")

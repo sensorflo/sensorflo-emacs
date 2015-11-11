@@ -12,7 +12,7 @@
 	update = merge
 [submodule "textmodes/doxym-mode"]
 	path = textmodes/doxym-mode
-	url = https://sensorflo@git.gitorious.org/doxym-mode/doxym-mode.git
+	url = https://github.com/sensorflo/doxym-mode.git
 	update = merge
 [submodule "misc/mks"]
 	path = misc/mks
@@ -20,7 +20,7 @@
 	update = merge
 [submodule "misc/tempo-ext"]
 	path = misc/tempo-ext
-	url = https://sensorflo@git.gitorious.org/tempo-ext/tempo-ext.git
+	url = https://github.com/sensorflo/tempo-ext.git
 	update = merge
 [submodule "progmodes/doxymacs"]
 	path = progmodes/doxymacs
@@ -32,11 +32,11 @@
 	update = merge
 [submodule "misc/logfile-mode"]
 	path = misc/logfile-mode
-	url = https://sensorflo@git.gitorious.org/logfile-mode/logfile-mode.git
+	url = https://github.com/sensorflo/logfile-mode.git
 	update = merge
 [submodule "misc/find-file-ext"]
 	path = misc/find-file-ext
-	url = https://sensorflo@git.gitorious.org/logfile-mode/find-file-ext.git
+	url = https://github.com/sensorflo/find-file-ext.git
 	update = merge
 [submodule "misc/icicles"]
 	path = misc/icicles

@@ -1,73 +1,84 @@
 [submodule "textmodes/adoc-mode"]
 	path = textmodes/adoc-mode
 	url = https://sensorflo@github.com/sensorflo/adoc-mode.git
-	update = merge
+	update = rebase
 [submodule "textmodes/bbcode"]
 	path = textmodes/bbcode
 	url = https://sensorflo@github.com/sensorflo/bbcode.git
-	update = merge
+	update = rebase
 [submodule "textmodes/markup-faces"]
 	path = textmodes/markup-faces
 	url = https://sensorflo@github.com/sensorflo/markup-faces.git
-	update = merge
+	update = rebase
 [submodule "textmodes/doxym-mode"]
 	path = textmodes/doxym-mode
 	url = https://github.com/sensorflo/doxym-mode.git
-	update = merge
+	update = rebase
 [submodule "misc/mks"]
 	path = misc/mks
 	url = https://sensorflo@github.com/sensorflo/mks.git
-	update = merge
+	update = rebase
 [submodule "misc/tempo-ext"]
 	path = misc/tempo-ext
 	url = https://github.com/sensorflo/tempo-ext.git
-	update = merge
+	update = rebase
 [submodule "progmodes/doxymacs"]
 	path = progmodes/doxymacs
 	url = https://sensorflo@git.code.sf.net/p/doxymacs-fork/code
-	update = merge
+	update = rebase
 [submodule "misc/font-lock-ext"]
 	path = misc/font-lock-ext
 	url = https://sensorflo@github.com/sensorflo/font-lock-ext.git
-	update = merge
+	update = rebase
 [submodule "misc/logfile-mode"]
 	path = misc/logfile-mode
 	url = https://github.com/sensorflo/logfile-mode.git
-	update = merge
+	update = rebase
 [submodule "misc/find-file-ext"]
 	path = misc/find-file-ext
 	url = https://github.com/sensorflo/find-file-ext.git
-	update = merge
+	update = rebase
 [submodule "misc/icicles"]
 	path = misc/icicles
 	url = https://sensorflo@github.com/sensorflo/icicles.git
+	update = rebase
 [submodule "misc/tempo"]
 	path = misc/tempo
 	url = https://sensorflo@github.com/sensorflo/tempo.git
+	update = rebase
 [submodule "progmodes/autoexp-mode"]
 	path = progmodes/autoexp-mode
 	url = https://github.com/sensorflo/autoexp-mode.git
+	update = rebase
 [submodule "progmodes/sln-mode"]
 	path = progmodes/sln-mode
 	url = https://github.com/sensorflo/sln-mode.git
+	update = rebase
 [submodule "misc/multiple-cursors"]
 	path = misc/multiple-cursors
 	url = https://github.com/magnars/multiple-cursors.el.git
+	update = rebase
 [submodule "textmodes/xmlunicode"]
 	path = textmodes/xmlunicode
 	url = https://github.com/sensorflo/xmlunicode.git
+	update = rebase
 [submodule "progmodes/git-modes"]
 	path = progmodes/git-modes
 	url = https://github.com/sensorflo/git-modes.git
+	update = rebase
 [submodule "progmodes/info-mode"]
 	path = progmodes/info-mode
 	url = https://gist.github.com/a6299a9cd0563abdc02d.git
+	update = rebase
 [submodule "progmodes/cppkoans-mode"]
 	path = progmodes/cppkoans-mode
 	url = https://github.com/sensorflo/cppkoans-mode.git
+	update = rebase
 [submodule "misc/magit"]
 	path = misc/magit
 	url = https://github.com/sensorflo/magit.git
+	update = rebase
 [submodule "textmodes/mediawiki"]
 	path = textmodes/mediawiki
 	url = https://github.com/sensorflo/mediawiki-el.git
+	update = rebase

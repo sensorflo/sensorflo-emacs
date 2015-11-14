@@ -30,6 +30,25 @@ A major mode for viewing gstack output
 
 ;;;***
 
+;;;### (autoloads nil "../misc/find-file-ext/find-file-ext" "../misc/find-file-ext/find-file-ext.el"
+;;;;;;  (22087 27588 972149 28000))
+;;; Generated autoloads from ../misc/find-file-ext/find-file-ext.el
+
+(autoload 'ffe-find-file "../misc/find-file-ext/find-file-ext" "\
+As find-file, however the file to be opened is given as an
+  abbreviation.
+
+\(fn ABBREV-PATH)" t nil)
+
+(autoload 'ffe-show-abbrevs "../misc/find-file-ext/find-file-ext" "\
+Shows in the echo area the list of abbrevs for the current
+file. If there exists no map for the current directory, do
+nothing.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "../misc/hi-lock-ext" "../misc/hi-lock-ext.el"
 ;;;;;;  (20741 14150 0 0))
 ;;; Generated autoloads from ../misc/hi-lock-ext.el

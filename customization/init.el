@@ -32,10 +32,22 @@
 
 ;;; Code:
 
+(defconst message2-enabled nil)
+(defvar message2-last-time nil)
+(defun message2 (msg)
+  "As `message', but additionally prints time since last call.
+Meant to profile startup time."
+  (when message2-enabled
+    (let ((duration (if (null message2-last-time)
+                        0
+                      (- (float-time) message2-last-time))))
+      (setq message2-last-time (float-time))
+      (message (concat (number-to-string duration) "\n\n" msg)))))
+
 
 ;;; stettings part 1 - before loading libraries
 ;; ==================================================
-(message "init file: settings part 1")
+(message2 "init file: settings part 1")
 
 ;; load-path
 (dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
@@ -80,19 +92,24 @@
 
 ;; autoload
 ;; intendet for own libraries
+(message2 "autoload loaddefs-custom")
 (load-library "loaddefs-custom")
 ;; intendet for system wide libraries
+(message2 "autoload loaddefs-site-lisp")
 (load-library "loaddefs-site-lisp")
 ;; intendet for libraries in .emacs.d/site-lisp
+(message2 "autoload loaddefs-local-site-lisp")
 (load-library "loaddefs-local-site-lisp")
 
 ;; custom-file
 ;; some modes initialize stuff using their custom variables while loading, thus
 ;; load custom file before loading modes
+(message2 "custom-file")
 (setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
 (load custom-file)
 
 ;; aliases
+(message2 "aliasses")
 (load-library "aliases")
 
 (require 'powerkey)
@@ -117,17 +134,22 @@
 ;; 'markup-faces). So it's done once here.
 (require 'markup-faces)
 
+(message2 "misc-ext")
 (load-library "misc-ext")
+(message2 "simple-ext")
 (load-library "simple-ext")
+(message2 "project")
 (load-library "project")
+(message2 "mybindings")
 (load-library "mybindings")
+(message2 "mode-hooks")
 (load-library "mode-hooks")
 
 
 
 ;;; settings part 2
 ;; =======================================================
-(message "init file: settings part 2")
+(message2 "init file: settings part 2")
 
 ;; notable variables defined with custom, i.e. they don't need to be set
 ;; elsewhere:
@@ -244,7 +266,7 @@
 
 ;;; autostart
 ;; ----------
-(message "init file: autostart")
+(message2 "init file: autostart")
 
 ;; put here at the end of the startup instead within custom-file so starting up
 ;; emacs with --debug-init has an effect. Else, modifying debug-on-error within
@@ -252,5 +274,5 @@
 ;; --debug-init.
 (setq debug-on-error nil)
 
-
+(message2 "init file done")
 ;;; init.el ends here

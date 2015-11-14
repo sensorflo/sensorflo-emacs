@@ -68,6 +68,7 @@
 (defalias 'cm 'chmod)
 (defalias 'fsb 'flyspell-buffer)
 (defalias 'wc 'whitespace-cleanup)
+(defalias 'ufal 'update-file-autoloads)
 
 ;;; toggle: t...
 (defalias 'ttl 'toggle-truncate-lines)

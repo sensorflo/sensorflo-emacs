@@ -75,6 +75,24 @@ Unhighlight all highlightened sexp in current buffer
 
 ;;;***
 
+;;;### (autoloads nil "../misc/kmacro-ext" "../misc/kmacro-ext.el"
+;;;;;;  (22087 27269 357197 804000))
+;;; Generated autoloads from ../misc/kmacro-ext.el
+
+(autoload 'kmacro-start-stop-macro-ext "../misc/kmacro-ext" "\
+If currently defining a macro, end it, else start defining a new.
+For how exactly the macro is ended, see
+`end-and-global-set-key-kbd-macro'.
+
+\(fn)" t nil)
+
+(autoload 'end-and-global-set-key-kbd-macro "../misc/kmacro-ext" "\
+Ends recording of a kbd-macro and lets you assign the new macro a local key sequence.
+
+\(fn ARG)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "../misc/multiple-cursors/mc-edit-lines" "../misc/multiple-cursors/mc-edit-lines.el"
 ;;;;;;  (21137 60452 341375 985000))
 ;;; Generated autoloads from ../misc/multiple-cursors/mc-edit-lines.el

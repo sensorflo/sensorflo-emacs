@@ -121,7 +121,6 @@
 (load-library "simple-ext")
 (load-library "hi-lock-ext")
 (load-library "project")
-(load-library "kmacro-ext")
 (load-library "find-file-ext")
 (load-library "mybindings")
 (load-library "mode-hooks")

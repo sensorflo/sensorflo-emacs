@@ -25,6 +25,7 @@
 ;;
 ;;; Code:
 
+;;;###autoload
 (defun kmacro-start-stop-macro-ext ()
   "If currently defining a macro, end it, else start defining a new.
 For how exactly the macro is ended, see
@@ -34,6 +35,7 @@ For how exactly the macro is ended, see
       (call-interactively 'kmacro-start-macro)
     (call-interactively 'end-and-global-set-key-kbd-macro)))
 
+;;;###autoload
 (defun end-and-global-set-key-kbd-macro(arg)
   "Ends recording of a kbd-macro and lets you assign the new macro a local key sequence."
   (interactive "cAssign to M-m M-(h|j|k|l): ")

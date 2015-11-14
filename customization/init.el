@@ -119,7 +119,6 @@
 
 (load-library "misc-ext")
 (load-library "simple-ext")
-(load-library "hi-lock-ext")
 (load-library "project")
 (load-library "mybindings")
 (load-library "mode-hooks")

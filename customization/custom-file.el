@@ -136,7 +136,6 @@
  '(dabbrev-case-replace nil)
  '(dabbrev-upcase-means-case-search t)
  '(default-gutter-position (quote bottom))
- '(default-major-mode (quote text-mode) t)
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
  '(dired-listing-switches "-lhgG")

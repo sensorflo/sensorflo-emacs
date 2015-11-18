@@ -533,7 +533,7 @@ read only flag is automatically unset."
 (add-to-list
  'compilation-error-regexp-alist-alist
  '(gnu-sensorflo
-   "^\\(?:[^ \t:]+:[ \t]+\\)?\\(.*?[^0-9\n]\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|\\( *required from\\| *note\\)\\|[^0-9\n]\\)"
+   "^\\(?:[^ \t:]+:[ \t]+\\|[ \t]*[a-zA-Z0-9_]+=\\)?\\(.*?[^0-9\n]\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|\\( *required from\\| *note\\)\\|[^0-9\n]\\)"
    1 2 3 (4 . 5)))
 
 ;; The vanila gcc-include does not make the type unconditionally 'warning' as I

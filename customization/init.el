@@ -64,6 +64,11 @@
                 (match-string 0 emacs-version))
               "/src/"))
 
+
+;;; required libraries
+;; ==================================================
+(message "init file: required libraries")
+
 ;; Setup quick and correct (according to my personal preferences) loading of
 ;; libraries. Obviously this should be done before loading any library. It
 ;; woudn't be an error if a library was loaded before.
@@ -89,12 +94,6 @@
 
 ;; aliases
 (load-library "aliases")
-
-
-
-;;; required libraries
-;; ==================================================
-(message "init file: required libraries")
 
 (require 'powerkey)
 
@@ -124,6 +123,8 @@
 (load-library "project")
 (load-library "kmacro-ext")
 (load-library "find-file-ext")
+(load-library "mybindings")
+(load-library "mode-hooks")
 
 
 
@@ -242,8 +243,6 @@
 (dolist (x '(".bmp" ".jpg" ".jpeg"))
   (add-to-list 'completion-ignored-extensions x))
 
-(load-library "mybindings")
-(load-library "mode-hooks")
 
 
 ;;; autostart

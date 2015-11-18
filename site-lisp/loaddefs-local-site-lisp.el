@@ -3140,6 +3140,20 @@ Here an example:
 
 ;;;***
 
+;;;### (autoloads ((quote info-mode)) "progmodes/info-mode/info-mode"
+;;;;;;  "../progmodes/info-mode/info-mode.el" (22092 10972 892316
+;;;;;;  321000))
+;;; Generated autoloads from ../progmodes/info-mode/info-mode.el
+
+(autoload 'info-mode "info-mode" "\
+A mode for info files
+
+\(fn)" t nil)
+
+(add-to-list 'auto-mode-alist (cons "\\.info\\'" 'info-mode))
+
+;;;***
+
 ;;;### (autoloads nil "project-buffer-mode" "project-buffer-mode.el"
 ;;;;;;  (20741 14136 0 0))
 ;;; Generated autoloads from project-buffer-mode.el

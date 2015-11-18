@@ -15,6 +15,9 @@
 ;;   - Init file (~/.emacs.d/init.el). Run only once at Emacs' startup.
 ;;   - Customization variables (in file denoted by `custom-file'). Loaded within
 ;;     my init file.
+;;     - custom themes
+;;   - file local variables
+;;   - directory variables
 ;;
 ;; - find-file-hook. I used to use that earlier, but no longer. One of the
 ;;   reasons is that `normal-mode' naturally doesn't run it.

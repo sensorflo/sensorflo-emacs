@@ -82,3 +82,7 @@
 	path = textmodes/mediawiki
 	url = https://github.com/sensorflo/mediawiki-el.git
 	update = rebase
+[submodule "misc/gstack-mode"]
+	path = misc/gstack-mode
+	url = https://github.com/sensorflo/gstack-mode.git
+	update = rebase

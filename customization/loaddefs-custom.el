@@ -16,6 +16,20 @@ Turning on EF mode runs the normal hook `ef-mode-hook'.
 
 ;;;***
 
+;;;### (autoloads (gstack-mode) "../misc/gstack-mode/gstack-mode"
+;;;;;;  "../misc/gstack-mode/gstack-mode.el" (22093 63435 410499
+;;;;;;  631000))
+;;; Generated autoloads from ../misc/gstack-mode/gstack-mode.el
+
+(autoload 'gstack-mode "gstack-mode" "\
+A major mode for viewing gstack output
+
+\(fn)" t nil)
+
+(add-to-list 'auto-mode-alist (cons "/gstack[^/.]*\\'" 'gstack-mode))
+
+;;;***
+
 ;;;### (autoloads nil "../misc/hi-lock-ext" "../misc/hi-lock-ext.el"
 ;;;;;;  (20741 14150 0 0))
 ;;; Generated autoloads from ../misc/hi-lock-ext.el

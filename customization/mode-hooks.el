@@ -15,7 +15,6 @@
 ;;
 ;;; Code
 
-(require 'rx)
 (require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
 
 

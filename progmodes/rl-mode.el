@@ -88,9 +88,7 @@ Turning on rl mode runs the normal hook `rl-mode-hook'."
   ;; text that is also in the output.
   ;; spell: is it possible to attach an additional dictionary to certain files,
   ;; i.e. to dragon projects words as pp dc mc would be added.
-
-  ;;
-  (run-hooks 'rl-mode-hook))
+  )
 
 (add-to-list 'auto-mode-alist '("\\.?inputrc\\'" . rl-mode))
 

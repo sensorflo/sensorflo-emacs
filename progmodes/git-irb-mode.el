@@ -29,8 +29,6 @@
 ;;
 ;;
 ;;; Code:
-(defvar git-irb-mode-hook nil)
-
 (defconst git-irb-font-lock-keywords
   (list
    ;; commit lines which need attention
@@ -115,10 +113,7 @@ See (finder-commentary \"git-irb-mode\")."
        '(git-irb-font-lock-keywords))
 
   ;; misc
-  (setq mode-name "git-irb")
-
-  ;; auto runned stuff
-  (run-hooks 'git-irb-mode-hook))
+  (setq mode-name "git-irb"))
 
 (provide 'git-irb-mode)
 

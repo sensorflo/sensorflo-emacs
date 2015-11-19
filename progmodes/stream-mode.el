@@ -29,9 +29,6 @@
 
 (defconst stream-mode-version "0.1")
 
-(defvar stream-mode-hook nil
-  "Normal hook run when entering stream mode.")
-
 ;;; Code
 
 (defconst stream-font-lock-keywords
@@ -74,10 +71,7 @@ Turning on stream mode runs the normal hook `stream-mode-hook'."
   (set (make-local-variable 'require-final-newline) t)
 
   ;; font lock
-  (set (make-local-variable 'font-lock-defaults) '(stream-font-lock-keywords))
-
-  ;;
-  (run-hooks 'stream-mode-hook))
+  (set (make-local-variable 'font-lock-defaults) '(stream-font-lock-keywords)))
 
 (provide 'stream-mode)
 

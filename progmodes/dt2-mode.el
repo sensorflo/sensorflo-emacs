@@ -4,9 +4,6 @@
 
 (defconst dt2-mode-version "0.1")
 
-(defvar dt2-mode-hook nil
-  "Normal hook run when entering dt2 mode.")
-
 ;;; Code
 
 (defconst dt2-re-string "\"[^\"\\\n]*\\(?:\\.[^\"\\\n]*\\)*\"" )
@@ -47,10 +44,7 @@ Turning on dt2 mode runs the normal hook `dt2-mode-hook'."
   (set (make-local-variable 'require-final-newline) t)
 
   ;; font lock
-  (set (make-local-variable 'font-lock-defaults) '(dt2-font-lock-keywords t))
-
-  ;;
-  (run-hooks 'dt2-mode-hook))
+  (set (make-local-variable 'font-lock-defaults) '(dt2-font-lock-keywords t)))
 
 (provide 'dt2-mode)
 

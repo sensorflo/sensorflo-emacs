@@ -8,9 +8,6 @@
 
 (defconst pm-mode-version "0.1")
 
-(defvar pm-mode-hook nil
-  "Normal hook run when entering pm mode.")
-
 (defvar pm-bold 'bold)
 
 ;;; Code
@@ -94,10 +91,7 @@ Turning on pm mode runs the normal hook `pm-mode-hook'."
     (set (make-local-variable 'outline-level)
          (lambda()
            (cond ((looking-at l1) 1)
-                 ((looking-at l2) 2)))))
-
-  ;;
-  (run-hooks 'pm-mode-hook))
+                 ((looking-at l2) 2))))))
 
 (provide 'pm-mode)
 

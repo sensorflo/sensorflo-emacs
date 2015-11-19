@@ -6,10 +6,6 @@
 ;;
 ;;; Commentary:
 ;;
-;; TODO
-;; - Try to avoid require. Try to insert all into mode hooks.
-;; - have a look at Drew Adam's init: site-lisp/emacs-init.el
-;;
 ;; Summary of how to customize Emacs:
 ;; - Emacs' customization
 ;;   - Init file (~/.emacs.d/init.el). Run only once at Emacs' startup.

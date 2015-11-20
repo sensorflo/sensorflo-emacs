@@ -69,6 +69,10 @@
     (c-set-offset 'member-init-intro '++)
     (c-set-offset 'topmost-intro-cont '++) ; note that elements in ctor initializer list after an element initialized with {...} have that
 
+    (make-local-variable 'cc-other-file-alist)
+    (add-to-list 'cc-other-file-alist '("\\.boh$" (".boc")))
+    (add-to-list 'cc-other-file-alist '("\\.boc$" (".boh")))
+
     (xentis-font-lock-add-keywords)
     (mode-message-end "xentis-c-mode-common-hook")))
 

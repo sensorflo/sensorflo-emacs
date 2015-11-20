@@ -58,32 +58,6 @@
      (arglist-close . +)
      (cpp-macro . 0))))
  '(case-fold-search t)
- '(cc-other-file-alist
-   (quote
-    (("\\.cc$"
-      (".hh" ".h"))
-     ("\\.hh$"
-      (".cc" ".C"))
-     ("\\.c$"
-      (".h"))
-     ("\\.h$"
-      (".cpp" ".c" ".cc" ".C" ".CC" ".cxx" ".CPP"))
-     ("\\.C$"
-      (".H" ".hh" ".h"))
-     ("\\.H$"
-      (".C" ".CC"))
-     ("\\.CC$"
-      (".HH" ".H" ".hh" ".h"))
-     ("\\.HH$"
-      (".CC"))
-     ("\\.cxx$"
-      (".hh" ".h"))
-     ("\\.cpp$"
-      (".hh" ".h"))
-     ("\\.boh$"
-      (".boc"))
-     ("\\.boc$"
-      (".boh")))))
  '(cc-search-directories
    (quote
     ("." "/usr/include" "/usr/local/include/*" "../source" "../include" "../src" "../inc")))

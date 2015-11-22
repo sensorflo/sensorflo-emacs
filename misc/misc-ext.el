@@ -979,16 +979,19 @@ sequence."
   ;;                  ">"))
   )
 
-;; heuristic slighlt similar as in ws-trim-mode-heuristic: if more than 5 keys
-;; in A-Z are not bound to self-insert-command then it's not an edit mode.
 (defun is-edit-mode ()
-  (let ((ch ?A)
-        (bogous-cnt 0))
-    (while (<= ch ?Z)
-      (when (not (equal 'self-insert-command (key-binding (make-string 1 ch) t)))
-        (setq bogous-cnt (1+ bogous-cnt)))
-      (setq ch (1+ ch)))
-    (< bogous-cnt 5)))
+  (and
+   ;; if more than 5 keys in A-Z are not bound to self-insert-command then
+   ;; it's not an edit mode
+   (let ((ch ?A)
+         (bogous-cnt 0))
+     (while (<= ch ?Z)
+       (when (not (equal 'self-insert-command (key-binding (make-string 1 ch) t)))
+         (setq bogous-cnt (1+ bogous-cnt)))
+       (setq ch (1+ ch)))
+     (< bogous-cnt 5))
+
+   (not (derived-mode-p 'comint-mode))))
 
 (defun is-a-minibufer-mode ()
   (string-match "minibuffer" (symbol-name major-mode)))

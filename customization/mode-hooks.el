@@ -1260,9 +1260,14 @@
 (defun my-edit-mode-hook ()
   (mode-message-start "my-edit-mode-hook")
   (show-paren-mode t)
-  (whitespace-mode t)
   (ws-trim-mode)
-  (fci-mode t)
+  (if (> (buffer-size) 100000)
+      (message "Large buffer, not enabling: fci-mode, whitespace-mode")
+    ;; see chapter 'other options' in fill-column-indicator's commentary
+    ;; section.
+    (when truncate-lines
+      (fci-mode t))
+    (whitespace-mode t))
   (mode-message-end "my-edit-mode-hook"))
 
 (defun my-text-mode-hook ()

@@ -62,7 +62,7 @@ Meant to profile startup time."
   (add-to-list 'load-path (concat user-emacs-directory x)))
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
+(add-to-list 'load-path "/usr/share/emacs24/site-lisp/emacs-goodies-el")
 
 ;; find-function-C-source-directory
 (setq find-function-C-source-directory
@@ -87,6 +87,7 @@ Meant to profile startup time."
 (auto-compile-on-save-mode 1)
 
 ;; autoload
+(load-library "emacs-goodies-loaddefs")
 ;; intendet for own libraries
 (message2 "autoload loaddefs-custom")
 (load-library "loaddefs-custom")

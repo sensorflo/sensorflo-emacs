@@ -32,8 +32,6 @@
 (require 'meta-syntax-faces) ; https://github.com/sensorflo/sensorflo-emacs/,
                              ; then progmodes/meta-syntax-faces.elo
 
-(defvar yas-mode-hook nil)
-
 (defvar yas-mode-map nil "Keymap for yas-mode.")
 (unless yas-mode-map
   (setq yas-mode-map (make-sparse-keymap)))
@@ -78,14 +76,8 @@
   (forward-line -1))
 
 ;;;###autoload
-(defun yas-mode()
-  (interactive)
-  (kill-all-local-variables)
-
-  ;; TODO: syntax table
-
-  (use-local-map yas-mode-map)
-
+(define-derived-mode yas-mode prog-mode "yas"
+  "Major mode for editing Yasmala grammar files"
   (set (make-local-variable 'comment-start) "## ")
   (set (make-local-variable 'comment-end) "")
   (set (make-local-variable 'comment-start-skip) "#[#*]+\\s-*")
@@ -93,13 +85,8 @@
   (set (make-local-variable 'beginning-of-defun-function) 'yas-beginning-of-defun)
   (set (make-local-variable 'end-of-defun-function) 'yas-end-of-defun)
 
-  (make-local-variable 'font-lock-defaults)
-  (setq font-lock-defaults
-        '(yas-mode-font-lock-keywords t nil nil nil))
-
-  (setq major-mode 'yas-mode mode-name "yas")
-
-  (run-hooks 'yas-mode-hook))
+  (set (make-local-variable 'font-lock-defaults)
+        '(yas-mode-font-lock-keywords t nil nil nil)))
 
 (provide 'yas-mode)
 

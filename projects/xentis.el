@@ -645,7 +645,7 @@ void foo(int /*i*/) {
         (my-dired-do-query-replace-regexp "\\(#endif\\)[ \t]*//.*" "\\1")
 
         ;; remove blank lines before closing brace
-        ;; (my-dired-do-query-replace-regexp "^\\(?:[ \t]*\n\\)+\\([ \t]*}\\)" "\\1")
+        (my-dired-do-query-replace-regexp "^\\(?:[ \t]*\n\\)+\\([ \t]*}\\)" "\\1")
 
         ;; replace tabs by spaces after comment-start delimiters
         (my-dired-do-query-replace-regexp "//\t" "// ")
@@ -667,7 +667,7 @@ void foo(int /*i*/) {
         ;; (xentis-dired-do-query-replace-regexp "/\\*+[ \t\n]\\{2,\\}\\*+/" "/** */")
 
         ;; todo:
-        ;; search for //-- and //== banners ("^[ 	]*//[-=]+") and modify manually
+        ;; search for //-- and //== banners ("^[ 	]*//[ \t]*[-=/]\{3,\}") and modify manually
         ;; search for overly long lines: "^.\{110,\}"
 
         ;; new commit

@@ -81,7 +81,7 @@
     (mode-message-start "xentis-c-mode-common-hook")
     (set (make-local-variable 'tempos-c++-open-brace-style) 'behind-conditional)
 
-    (setq c-basic-offset 4)
+    (set (make-local-variable 'c-basic-offset) 4)
     (c-set-offset 'access-label '-)
     (c-set-offset 'innamespace 0)
     (c-set-offset 'inclass '+)

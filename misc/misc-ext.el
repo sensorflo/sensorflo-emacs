@@ -990,4 +990,7 @@ sequence."
       (setq ch (1+ ch)))
     (< bogous-cnt 5)))
 
+(defun is-a-minibufer-mode ()
+  (string-match "minibuffer" (symbol-name major-mode)))
+
 ;;; misc-ext.el ends here

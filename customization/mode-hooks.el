@@ -1221,9 +1221,10 @@
 
 (defun my-change-major-mode-after-body-hook ()
   (mode-message-start "my-change-major-mode-after-body-hook")
-  (unless (string-match "minibuffer" (symbol-name major-mode))
-    ;; nop yet
-    )
+  (when (not (is-a-minibufer-mode))
+    (when (is-edit-mode)
+      (my-edit-mode-hook))
+    (my-common-mode-bindings))
   (mode-message-end "my-change-major-mode-after-body-hook"))
 
 (add-hook 'change-major-mode-after-body-hook 'my-change-major-mode-after-body-hook)
@@ -1231,16 +1232,6 @@
 (defun my-after-change-major-mode-hook ()
   (mode-message-start "my-after-change-major-mode-hook")
   (unless (string-match "minibuffer" (symbol-name major-mode))
-    (when (is-edit-mode)
-      (my-edit-mode-hook))
-    (my-common-mode-bindings)
-
-    ;; projects. Probably project.el should offer an project-hook.
-    ;; nothing yet
-
-    ;; the following is the last thing that is executed from all the mode
-    ;; related hooks.
-
     ;; Make sure whitespace picks up the actual value of indent-tabs-mode /
     ;; tab-width. A better solution would probably be to modify whitespace.el
     ;; such that it accesses `whitespace-indent-tabs-mode' /

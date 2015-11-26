@@ -12,13 +12,33 @@
 (require 'tempo-ext)       ; https://gitorious.org/tempo-ext
 (require 'tempo-snippets)  ; http://nschum.de/src/emacs/tempo-snippets/
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
+(require 'find-file-ext)   ; https://github.com/sensorflo/find-file-ext/
 
 ;;; misc settings
+
+;;;###autoload
+(defvar xentis-file-name-regex "/src/[^/]*xentis[^/]*/"
+  "Files matching this regexp belong to xentis project")
+
+;; TODO: Actually I don't want to _define_ the coding system to be used, I
+;; want to prefer it over other possible alternatives.
+;;;###autoload
+(add-to-list 'file-coding-system-alist (list xentis-file-name-regex 'iso-latin-1-unix))
+
+;;;###autoload
+(add-hook 'change-major-mode-after-body-hook 'xentis-hook)
+
+;;;###autoload
+(add-hook 'c-mode-common-hook 'xentis-c-mode-common-hook)
+
 ;;;###autoload
 (defun xentis-hook()
   (when (eq (project-root-type) 'project-xentis)
     (mode-message-start "xentis-hook")
-    (message "hello world")
+
+    ;; some of these variables might only make sense in within an is-edit-mode
+    ;; buffer, but it's more simple to do all in one place and it doesn't
+    ;; hurt.
     (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|boc\\|boh\\|msg\\)")
     (set (make-local-variable 'require-final-newline) nil)
     (set (make-local-variable 'fill-column) 100)
@@ -30,9 +50,7 @@
     (set (make-local-variable 'compile-command) "sshx pdxenlin52 buildxentis")
     (set (make-local-variable 'grep-find-ext-command-function) 'xentis-grep-find-command)
     (set (make-local-variable 'grep-find-ext-regexp-function) 'xentis-grep-find-regexp)
-
     (set (make-local-variable 'compilation-skip-threshold) 2)
-
     ;; is also used by non-c[++] (minor) modes, e.g. find other file
     (set (make-local-variable 'cc-search-directories) nil)
     (dolist (x '("include" "include/investment_compliance"
@@ -47,13 +65,14 @@
                  "include/xml" "source/libs/xml"))
       (add-to-list 'cc-search-directories (concat (eamis-root-dir) "/" x)))
 
-    (prefer-coding-system 'iso-latin-1-unix)
-    (when (and (xentis-file-p) (not (xentis-coding-system-p)))
-      (message (concat "%s: encoding system is %S which is not one of Xentiss's "
-                       "encoding systems, see xentis-coding-system-p")
-               (buffer-name) buffer-file-coding-system)
-      (shell-command (concat "notify-send -t 1000 "
-                             "'" (buffer-name) " has invalid encoding system!'")))
+    (when (and (not (is-a-minibufer-mode)) (is-edit-mode))
+      (when (not (xentis-coding-system-p))
+        (message (concat "%s: encoding system is %S which is not one of Xentiss's "
+                         "encoding systems, see xentis-coding-system-p")
+                 (buffer-name) buffer-file-coding-system)
+        (shell-command (concat "notify-send -t 1000 "
+                               "'" (buffer-name) " has invalid encoding system!'"))))
+
     (mode-message-end "xentis-hook")))
 
 ;;;###autoload
@@ -97,27 +116,18 @@
          (string-match "/eamis/test/unit/\\([^/]+\\)/" bfnd))
         (concat (match-string 1 bfnd)))))
 
+;;;###autoload
 (defun xentis-before-save-hook ()
-  ;; (when (and (or (eq (project-root-type) 'project-diebonder-pc)
-  ;;                (eq (project-root-type) 'project-diebonder-rtos))
-  ;;            (xentis-file-p))
+  (when (and
+         (eq (project-root-type) 'project-xentis)
+         (not (xentis-coding-system-p)))
+    (if (y-or-n-p (format "%s is encoded in %S. Change coding to Xentis' requirement being iso-latin-1-unix?"
+                          (buffer-name) buffer-file-coding-system))
+        (setq buffer-file-coding-system 'iso-latin-1-unix)
+      (if (y-or-n-p "abort saving? ")
+          (error "user aborted abort aving")))))
 
-  ;;   ;; ensure character encoding is windows-1252, and end-of-line char is DOS
-  ;;   ;; style
-  ;;   (when (not (xentis-coding-system-p))
-  ;;     (if (y-or-n-p (format "%s: change coding system from %S to windows-1252-dos? "
-  ;;                        (buffer-name) buffer-file-coding-system))
-  ;;         (setq buffer-file-coding-system 'windows-1252-dos)
-  ;;       (if (y-or-n-p "abort saving? ") (error "user aborted abort aving"))))
-
-  ;;   ;; autocorrect whitespace erros
-  ;;   (when (member major-mode '(c++-mode idl-mode dt2-mode stream-mode doxym-mode))
-  ;;     (save-restriction
-  ;;       (widen)
-  ;;       (untabify (point-min) (point-max))
-  ;;       (delete-trailing-whitespace))))
-  )
-
+;;;###autoload
 (add-hook 'before-save-hook 'xentis-before-save-hook t)
 
 (defun xentis-looking-at-method-issues (end)
@@ -344,12 +354,7 @@ Additionaly match data is set to mark the culprit by match group 1."
   ;;   ISO-8859-1 by using displayable characters rather than control characters
   ;;   in the 80 to 9F (hex) range...
   (member buffer-file-coding-system
-          '(iso-latin-1-unix undecided-unix)))
-
-;; note that this should somehow belong to the
-(defun xentis-file-p ()
-  "Returns non-nil if the file visited by the current buffer belongs to the xentis project."
-  (not (string-match "\\(^\\|/\\)\\.\\(git\\|svn\\)" (fucker))))
+          '(iso-latin-1-unix us-ascii-unix)))
 
 (defun xentis-create-tags-table()
   (interactive)

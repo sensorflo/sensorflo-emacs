@@ -789,6 +789,38 @@ Turning on zimbu mode runs the normal hook `zimbu-mode-hook'.
 
 ;;;***
 
+;;;### (autoloads nil "../projects/xentis" "../projects/xentis.el"
+;;;;;;  (22102 56367 261745 53000))
+;;; Generated autoloads from ../projects/xentis.el
+
+(defvar xentis-file-name-regex "/src/xentis[^/]*/" "\
+Files matching this regexp belong to xentis project")
+
+(add-to-list 'file-coding-system-alist (list xentis-file-name-regex 'iso-latin-1-unix))
+
+(add-hook 'change-major-mode-after-body-hook 'xentis-hook)
+
+(add-hook 'c-mode-common-hook 'xentis-c-mode-common-hook)
+
+(autoload 'xentis-hook "../projects/xentis" "\
+
+
+\(fn)" nil nil)
+
+(autoload 'xentis-c-mode-common-hook "../projects/xentis" "\
+
+
+\(fn)" nil nil)
+
+(autoload 'xentis-before-save-hook "../projects/xentis" "\
+
+
+\(fn)" nil nil)
+
+(add-hook 'before-save-hook 'xentis-before-save-hook t)
+
+;;;***
+
 ;;;### (autoloads nil "../site-lisp/fill-column-indicator" "../site-lisp/fill-column-indicator.el"
 ;;;;;;  (21143 32520 849501 109000))
 ;;; Generated autoloads from ../site-lisp/fill-column-indicator.el
@@ -1004,23 +1036,6 @@ off in buffers depending on their major modes.  The behavior is
 controlled by the `ws-trim-global-modes' variable.
 
 \(fn &optional ARG)" t nil)
-
-;;;***
-
-;;;### (autoloads (xentis-c-mode-common-hook xentis-cperl-mode-hook
-;;;;;;  xentis-find-file-hook) "../projects/xentis" "../projects/xentis.el"
-;;;;;;  (21808 45796 719479 448000))
-;;; Generated autoloads from ../projects/xentis.el
-
-(autoload 'xentis-hook "../projects/xentis" "\
-
-
-\(fn)" nil nil)
-
-(autoload 'xentis-c-mode-common-hook "../projects/xentis" "\
-
-
-\(fn)" nil nil)
 
 ;;;***
 

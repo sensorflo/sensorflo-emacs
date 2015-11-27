@@ -105,7 +105,7 @@
  '(default-gutter-position (quote bottom))
  '(delete-by-moving-to-trash t)
  '(delete-selection-mode t)
- '(dired-listing-switches "-lhgG")
+ '(dired-listing-switches "-lhgGa")
  '(dired-no-confirm
    (quote
     (byte-compile chgrp chmod chown compress copy delete hardlink load move print shell symlink touch uncompress)))
@@ -131,6 +131,7 @@
  '(eol-mnemonic-undecided "(eol is ?)")
  '(eol-mnemonic-unix "(unix)")
  '(eval-expression-print-level nil)
+ '(fci-rule-color "#aaaaaa")
  '(ffe-show-abbrev-upon-find t)
  '(file-cache-completion-ignore-case t)
  '(file-cache-ignore-case t)

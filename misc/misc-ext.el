@@ -532,8 +532,21 @@ read only flag is automatically unset."
 ;; my uses of gcc.
 (add-to-list
  'compilation-error-regexp-alist-alist
- '(gnu-sensorflo
-   "^\\(?:[^ \t:]+:[ \t]+\\|[ \t]*[a-zA-Z0-9_]+=\\)?\\(.*?[^0-9\n]\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?\\(?: *error\\|\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|\\( *required from\\| *note\\)\\|[^0-9\n]\\)"
+ `(gnu-sensorflo
+   ,(concat
+    "^\\(?:"                                           ; - intro
+      "[^ \t:]+:[ \t]+\\|"
+      "[ \t]*[a-zA-Z0-9_]+="
+    "\\)?"
+    "\\(.*?[^0-9\n]\\):"                               ; 1 file name
+    "\\([0-9]+\\):"                                    ; 2 line no
+    "\\(?:\\([0-9]+\\):\\)?"                           ; 3 column no
+    "\\(?:"                                            ; - message
+      " *error\\|"                                     ;   - error
+      "\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|"             ;   4 warn
+      "\\( *required from\\| *note\\)\\|"              ;   5 info
+      "[^0-9\n]"                                       ;   - ??
+    "\\)")
    1 2 3 (4 . 5)))
 
 ;; The vanila gcc-include does not make the type unconditionally 'warning' as I

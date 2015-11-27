@@ -182,18 +182,6 @@
  '(hl-paren-colors (quote ("black")))
  '(ibuffer-always-show-last-buffer nil)
  '(ibuffer-deletion-face (quote font-lock-warning-face))
- '(ibuffer-directory-abbrev-alist
-   (quote
-    (("^w:/DieBonder/PC/pickplace/ppseqbaselib" . "<p_seq>")
-     ("^w:/DieBonder/RTOS/pickplace/ppsequencer/sources" . "<r_seq>")
-     ("^w:/DieBonder/PC/pickplace/PPCalibMod" . "<p_cal>")
-     ("^w:/DieBonder/RTOS/pickplace/PPCalibMod/sources" . "<r_cal>")
-     ("^w:/DieBonder/PC/pickplace/PPBHMod" . "<p_bh>")
-     ("^w:/DieBonder/RTOS/pickplace/PPBHMod/Sources" . "<r_bh>")
-     ("^w:/DieBonder/PC/pickplace/PPBAMod" . "<p_ba>")
-     ("^w:/DieBonder/RTOS/pickplace/PPBAMod/Sources" . "<r_ba>")
-     ("^w:/DieBonder/PC/pickplace" . "<p_pp>")
-     ("^w:/DieBonder/RTOS/pickplace" . "<r_pp>"))))
  '(ibuffer-display-summary t)
  '(ibuffer-elide-long-columns t)
  '(ibuffer-expert t)
@@ -233,27 +221,11 @@
        (filename . "/.emacs.d/"))
       ("bin"
        (filename . "/bin/"))
-      ("pc ppseqbaselib unittest"
-       (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/UnitTest"))
-      ("pc ppseqbaselib"
-       (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/"))
-      ("VSS pc ppseqbaselib~vss unittest VSS"
-       (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib~vss/UnitTest"))
-      ("VSS pc ppseqbaselib~vss VSS"
-       (filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib~vss/"))
-      ("pc ppcalibmod"
-       (filename . "/src/DieBonder/PC/PickPlace/PPCalibMod/"))
-      ("rtos ppcalibmod"
-       (filename . "/src/DieBonder/RTOS/PickPlace/PPCalibMod/"))
-      ("nova"
-       (filename . "/src/nova/"))
       ("guesel"
        (name . "^\\*.*\\*$"))))))
  '(ibuffer-saved-filters
    (quote
-    (("pc ppseqbaselib"
-      ((filename . "/src/DieBonder/PC/PickPlace/PPSeqBaseLib/")))
-     ("dired"
+    (("dired"
       ((used-mode . dired-mode)))
      ("myfilters"
       ((mode . c++-mode)

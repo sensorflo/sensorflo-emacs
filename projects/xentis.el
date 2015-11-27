@@ -33,7 +33,10 @@
 
 ;;;###autoload
 (defun xentis-hook()
-  (when (eq (project-root-type) 'project-xentis)
+  (when (and
+         (not (is-a-minibufer-mode))
+         (not (large-buffer-p))
+         (eq (project-root-type) 'project-xentis))
     (mode-message-start "xentis-hook")
 
     ;; some of these variables might only make sense in within an is-edit-mode

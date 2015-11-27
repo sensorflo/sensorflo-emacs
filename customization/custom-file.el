@@ -274,6 +274,7 @@
  '(ispell-program-name "aspell")
  '(ispell-silently-savep t)
  '(kill-ring-max 30)
+ '(large-file-warning-threshold 1000000)
  '(linkd-icons-directory "~/.emacs.d/site-lisp/.linkd-icons")
  '(linkd-use-icons t)
  '(list-directory-verbose-switches "-lhgG")

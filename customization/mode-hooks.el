@@ -1221,7 +1221,9 @@
 
 (defun my-change-major-mode-after-body-hook ()
   (mode-message-start "my-change-major-mode-after-body-hook")
-  (when (not (is-a-minibufer-mode))
+  (when (and
+         (not (is-a-minibufer-mode))
+         (not (large-buffer-p)))
     (when (is-edit-mode)
       (my-edit-mode-hook))
     (my-common-mode-bindings))

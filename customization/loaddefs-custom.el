@@ -112,6 +112,27 @@ Ends recording of a kbd-macro and lets you assign the new macro a local key sequ
 
 ;;;***
 
+;;;### (autoloads nil "../misc/large-file-mode" "../misc/large-file-mode.el"
+;;;;;;  (22104 23992 325792 872000))
+;;; Generated autoloads from ../misc/large-file-mode.el
+
+(autoload 'large-buffer-p "../misc/large-file-mode" "\
+True when current buffer is considered large.
+
+\(fn)" nil nil)
+
+(autoload 'large-file-mode "../misc/large-file-mode" "\
+Major mode for viewing large files.
+
+It turns off many things that might make Emacs slow down so much
+that working with the file becomes very cumbersome.
+
+\(fn)" t nil)
+
+(add-hook 'magic-mode-alist (cons 'large-buffer-p 'large-file-mode))
+
+;;;***
+
 ;;;### (autoloads nil "../misc/multiple-cursors/mc-edit-lines" "../misc/multiple-cursors/mc-edit-lines.el"
 ;;;;;;  (21137 60452 341375 985000))
 ;;; Generated autoloads from ../misc/multiple-cursors/mc-edit-lines.el

@@ -373,16 +373,6 @@
  '(show-paren-priority 1000)
  '(show-paren-style (quote parenthesis))
  '(size-indication-mode nil)
- '(ss-database-alist
-   (("^W:/DieBonder/PC" . "\\\\swsources.esec.com\\VSSDB\\DB_Dragon\\PC Development")
-    ("^W:/DieBonder/RTOS" . "\\\\swsources.esec.com\\VSSDB\\DB_Dragon\\RTOS Development")))
- '(ss-program
-   "C:\\Program Files\\Microsoft Visual Studio\\Common\\VSS\\win32\\SS.EXE" t)
- '(ss-project-dirs
-   (quote
-    (("^W:/DieBonder/PC/PickPlace/PPCalibMod/" . "$/Pick Place/PPCalibMod/WORKING/Sources/"))) t)
- '(ss-tmp-dir "D:/Temp/EmacsSourceSafe/" t)
- '(ss-username "flka" t)
  '(standard-indent 4)
  '(svn-status-default-commit-arguments (quote ("--username" "sensorflo")))
  '(svn-status-default-export-directory "~/src")

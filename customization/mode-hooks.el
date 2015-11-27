@@ -94,7 +94,6 @@
 (add-hook 'python-mode-hook 'my-python-mode-hook)
 (defun my-python-mode-hook ()
   (hs-minor-mode t)
-  (outline-minor-mode t)
   (if (featurep 'subword)
       (subword-mode t))
   (my-python-mode-bindings))
@@ -143,7 +142,6 @@
   (require 'filladapt)
   (c-setup-filladapt)
   (hs-minor-mode t)
-  (outline-minor-mode t)
   (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet))))
   (setq comment-start-skip "\\(//[/!]*\\|/\\*[*!]*\\)\\s-*") ;should be part of doxymacs?
   (when (null comment-end-skip)
@@ -343,7 +341,6 @@
 
 (defun my-idl-mode-hook ()
   (interactive)
-  (outline-minor-mode t)
   (set (make-local-variable 'outline-regexp)
        (concat
         "\\(" idl-outline-level1-regex "\\)\\|"
@@ -389,7 +386,6 @@
 
 (defun my-gen-lisp-hook ()
   (hs-minor-mode t)
-  (outline-minor-mode t)
   (setq tab-width 8)
 
   (local-set-key [(meta m)(meta m)] 'kmacro-start-stop-macro-ext)
@@ -431,11 +427,6 @@
   (require 'tempos-stream)
   (doxymacs-mode 1)
   (doxymacs-font-lock))
-
-(add-hook 'dt2-mode-hook 'my-dt2-mode-hook)
-(defun my-dt2-mode-hook ()
-  (outline-minor-mode t))
-
 
 ;;; conf mode
 ;; ----------------------------------------------
@@ -484,7 +475,6 @@
 ;; ----------------------------------------------
 (add-hook 'autoexp-mode-hook 'my-autoexp-mode-hook)
 (defun my-autoexp-mode-hook ()
-  (outline-minor-mode t)
   (setq indent-tabs-mode t))
 
 (add-hook 'before-save-hook 'my-autoexp-before-save-hook t)
@@ -523,7 +513,6 @@
 (add-hook 'tex-mode-hook 'my-latex-hook)
 
 (defun my-latex-hook ()
-  (outline-minor-mode t)
   (my-latex-bindings))
 
 (defun my-latex-bindings ()
@@ -661,8 +650,6 @@
 (add-hook 'adoc-mode-hook 'my-adoc-mode-hook)
 
 (defun my-adoc-mode-hook ()
-  ;; note that adoc-mode derives from text-mode, thus more is handled there
-  (outline-minor-mode t)
   (set (make-local-variable 'compile-command)
        (concat "asciidoc "
                (if (buffer-file-name)
@@ -701,7 +688,6 @@
 (add-hook 'doxym-mode-hook 'my-doxym-mode-hook)
 
 (defun my-doxym-mode-hook ()
-  (outline-minor-mode t)
   (my-doxym-bindings)
   (buffer-face-mode t)
   (set (make-local-variable 'comment-multi-line) t))
@@ -765,20 +751,11 @@
   (local-set-key [(control ?\,)(g)(e)] 'tempo-template-html-element)
   (local-set-key [(control ?\,)(g)(t)] 'tempo-template-html-tag))
 
-;;; pod
-;; -----------------------------------------------------------------------------
-(add-hook 'pod-mode-hook 'my-pod-hook)
-
-(defun my-pod-hook ()
-  (outline-minor-mode t))
-
 ;;; markdown
 ;; -----------------------------------------------------------------------------
 (add-hook 'markdown-mode-hook 'my-markdown-mode-hook)
 
 (defun my-markdown-mode-hook ()
-  (outline-minor-mode t)
-
   (set (make-local-variable 'word-wrap) t)
   (toggle-truncate-lines -1)
   (require 'screen-lines) ; or is screenline.el better?
@@ -828,7 +805,6 @@
 
 (defun my-mediawiki-hook ()
   (visual-line-mode 1)
-  (outline-minor-mode t)
   (set (make-local-variable 'word-wrap) t)
   (toggle-truncate-lines -1)
   (my-mediawiki-bindings))
@@ -1077,7 +1053,6 @@
 ;; ----------------------------------------------------------------------------
 (defun my-pm-hook ()
   (setq tab-width 4)
-  (outline-minor-mode t)
   (local-set-key "\t" 'indent-line-or-region))
 (add-hook 'pm-mode-hook 'my-pm-hook)
 
@@ -1133,7 +1108,6 @@
 
 ;;; logfile
 (defun my-logfile-mode-hook()
-  (outline-minor-mode t)
   (view-mode 1)
   (local-set-key [f10] 'logfile-filter))
 (add-hook 'logfile-mode-hook 'my-logfile-mode-hook)
@@ -1252,6 +1226,7 @@
   (mode-message-start "my-edit-mode-hook")
   (show-paren-mode t)
   (ws-trim-mode)
+  (outline-minor-mode t)
   (if (> (buffer-size) 100000)
       (message "Large buffer, not enabling: fci-mode, whitespace-mode")
     ;; see chapter 'other options' in fill-column-indicator's commentary

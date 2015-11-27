@@ -568,18 +568,6 @@ read only flag is automatically unset."
    "^[0-9]+) .*? line: \\([0-9]+\\)[ \t]*\\(.+\\)"
    2 1))
 
-(add-to-list
- 'compilation-error-regexp-alist-alist
- '(xentis-codegen
-   "^[ \t]*in file \\(.+?\\) on line \\([0-9]+\\)"
-   1 2))
-
-(add-to-list
- 'compilation-error-regexp-alist-alist
- '(xentis-log
-   "^.......... ..:..:...[^ ]* <[^>]+> \\[\\(?:ERROR\\|\\(WARN\\)\\|\\(.+\\)\\)?\\] \\(.*?\\):\\([0-9]+\\)"
-   3 4 nil (1 . 2)))
-
 ;; The original compilation-mode-font-lock-keywords does highlight to much stuff
 ;; for my taste. That results in wrong/misleading highlights in my makefiles.
 (setq compilation-mode-font-lock-keywords

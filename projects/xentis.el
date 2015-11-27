@@ -13,6 +13,7 @@
 (require 'tempo-snippets)  ; http://nschum.de/src/emacs/tempo-snippets/
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
 (require 'find-file-ext)   ; https://github.com/sensorflo/find-file-ext/
+(require 'compile)
 
 ;;; misc settings
 
@@ -30,6 +31,9 @@
 
 ;;;###autoload
 (add-hook 'c-mode-common-hook 'xentis-c-mode-common-hook)
+
+;;;###autoload
+(add-hook 'compilation-mode-hook 'xentis-compilation-mode-hook)
 
 ;;;###autoload
 (defun xentis-hook()
@@ -98,9 +102,27 @@
     (xentis-font-lock-add-keywords)
     (mode-message-end "xentis-c-mode-common-hook")))
 
+;;;###autoload
+(defun xentis-compilation-mode-hook()
+  (when (eq (project-root-type) 'project-xentis)
+    (set (make-local-variable 'compilation-error-regexp-alist)
+         '(gnu-sensorflo gcc-include-sensorflo xentis-log cppunit xentis-codegen))))
+
 ;; buffer-file-name might be nil
 ;; - in minibuffer-inactive?
 ;; - dired
+
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(xentis-codegen
+   "^[ \t]*in file \\(.+?\\) on line \\([0-9]+\\)"
+   1 2))
+
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(xentis-log
+   "^.......... ..:..:...[^ ]* <[^>]+> \\[\\(?:ERROR\\|\\(WARN\\)\\|\\(.+\\)\\)?\\] \\(.*?\\):\\([0-9]+\\)"
+   3 4 nil (1 . 2)))
 
 (defun fucker()
   (or

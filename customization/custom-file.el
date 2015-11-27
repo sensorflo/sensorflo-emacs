@@ -281,9 +281,6 @@
  '(mediawiki-eob-is-end-delimiter t)
  '(menu-accelerator-enabled nil t)
  '(message-log-max 1000)
- '(newsticker-url-list
-   (quote
-    (("Die Ohrfeigen-Frage" "http://blog.tagesanzeiger.ch/mamablog/index.php/4287/mama-rastet-aus/feed/" nil nil nil))))
  '(next-error-highlight t)
  '(next-error-highlight-no-select t)
  '(next-error-recenter (quote (4)))
@@ -299,7 +296,6 @@
  '(parse-sexp-ignore-comments t)
  '(progress-feedback-use-echo-area nil)
  '(ps-header-lines 0)
- '(ps-paper-type (quote a3))
  '(ps-print-footer-frame nil)
  '(ps-print-header nil)
  '(ps-print-header-frame nil)
@@ -353,7 +349,6 @@
     ("-v" "--username" "sensorflo" "--non-interactive" "--no-auth-cache")))
  '(svn-status-hide-unknown t)
  '(svn-status-hide-unmodified t)
- '(tab-stop-list (quote (0 8 16 24 32 40 48 56 64 72 80 88 96 104 112)))
  '(tab-width 2)
  '(table-time-before-reformat 0.5)
  '(table-time-before-update 0.05)

@@ -534,17 +534,14 @@ read only flag is automatically unset."
  'compilation-error-regexp-alist-alist
  `(gnu-sensorflo
    ,(concat
-    "^\\(?:"                                           ; - intro
-      "[^ \t:]+:[ \t]+\\|"
-      "[ \t]*[a-zA-Z0-9_]+="
-    "\\)?"
-    "\\(.*?[^0-9\n]\\):"                               ; 1 file name
+    "^\\(?:[^:=\n]*[:=][ \t]+\\)?"                     ; - intro
+    "\\([^:=\n]*?\\):"                                 ; 1 file name
     "\\([0-9]+\\):"                                    ; 2 line no
     "\\(?:\\([0-9]+\\):\\)?"                           ; 3 column no
     "\\(?:"                                            ; - message
-      " *error\\|"                                     ;   - error
-      "\\( *W:\\| *[a-zA-Z]*[wW]arn\\)\\|"             ;   4 warn
-      "\\( *required from\\| *note\\)\\|"              ;   5 info
+      "[ \t]*error\\|"                                 ;   - error
+      "\\([ \t]*W:\\| *[a-zA-Z]*[wW]arn\\)\\|"         ;   4 warn
+      "\\([ \t]*required from\\|[ \t]*note\\)\\|"      ;   5 info
       "[^0-9\n]"                                       ;   - ??
     "\\)")
    1 2 3 (4 . 5)))

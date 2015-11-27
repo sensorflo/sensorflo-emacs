@@ -650,6 +650,9 @@
 (add-hook 'adoc-mode-hook 'my-adoc-mode-hook)
 
 (defun my-adoc-mode-hook ()
+  ;; see also Emacs manual chapters `Continuation Lines', `Line Truncation',
+  ;; `Visual Line Mode'.
+  (visual-line-mode 1)                  ; aka `word wrap'
   (set (make-local-variable 'compile-command)
        (concat "asciidoc "
                (if (buffer-file-name)

@@ -13,6 +13,7 @@
 (require 'tempo-snippets)  ; http://nschum.de/src/emacs/tempo-snippets/
 (require 'font-lock-ext)   ; https://github.com/sensorflo/font-lock-ext/
 (require 'find-file-ext)   ; https://github.com/sensorflo/find-file-ext/
+(require 'cc-mode-ext)     ; https://github.com/sensorflo/sensorflo-emacs/
 (require 'compile)
 
 ;;; misc settings
@@ -74,8 +75,8 @@
 
     (when (and (not (is-a-minibufer-mode)) (is-edit-mode))
       (when (not (xentis-coding-system-p))
-        (message (concat "%s: encoding system is %S which is not one of Xentiss's "
-                         "encoding systems, see xentis-coding-system-p")
+        (message (concat "%s: encoding system is %S which is not one of Xentis' "
+                         "coding systems, see xentis-coding-system-p")
                  (buffer-name) buffer-file-coding-system)
         (shell-command (concat "notify-send -t 1000 "
                                "'" (buffer-name) " has invalid encoding system!'"))))
@@ -134,7 +135,7 @@
   (locate-dominating-file (fucker) "eamis") "eamis")
 
 (defun eamis-current-project-name ()
-  (let ((bfnd (or default-directory (error))))
+  (let ((bfnd (or default-directory (error "default-directory is nil"))))
     (when (or
          (string-match "/eamis/source/bo/\\([^/]+\\)/" bfnd)
          (string-match "/eamis/include/\\([^/]+\\)/" bfnd)
@@ -417,7 +418,7 @@ Additionaly match data is set to mark the culprit by match group 1."
                   (remove-if-not
                    #'file-exists-p
                    (mapcar
-                        '(lambda(dir) (file-relative-name (concat (eamis-root-dir) dir mp)))
+                        (lambda(dir) (file-relative-name (concat (eamis-root-dir) dir mp)))
                         '("/source/bo/" "/include/" "/test/unit/" "/test/module/")))
                   " ")
            ". ")) " \\\n"

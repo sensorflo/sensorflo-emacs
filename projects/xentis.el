@@ -52,14 +52,13 @@
     (set (make-local-variable 'fill-column) 100)
     (set (make-local-variable 'tab-width) 4)
     (set (make-local-variable 'indent-tabs-mode) t)
-    (set (make-local-variable 'c-doc-comment-char) ?\!)
     (make-local-variable 'grep-find-command)
     (grep-apply-setting 'grep-find-command (xentis-grep-find-command))
     (set (make-local-variable 'compile-command) "sshx pdxenlin52 buildxentis")
     (set (make-local-variable 'grep-find-ext-command-function) 'xentis-grep-find-command)
     (set (make-local-variable 'grep-find-ext-regexp-function) 'xentis-grep-find-regexp)
     (set (make-local-variable 'compilation-skip-threshold) 2)
-    ;; is also used by non-c[++] (minor) modes, e.g. find other file
+
     (set (make-local-variable 'cc-search-directories) nil)
     (dolist (x '("include" "include/investment_compliance"
                  "include/investment_compliance/db_abstraction" "source/bo/investment_compliance"
@@ -89,6 +88,7 @@
     (mode-message-start "xentis-c-mode-common-hook")
     (set (make-local-variable 'tempos-c++-open-brace-style) 'behind-conditional)
 
+    (set (make-local-variable 'c-doc-comment-char) ?\!)
     (set (make-local-variable 'c-basic-offset) 4)
     (c-set-offset 'access-label '-)
     (c-set-offset 'innamespace 0)

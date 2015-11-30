@@ -177,9 +177,7 @@ Meant to profile startup time."
   (add-to-list 'interpreter-mode-alist x))
 
 ;; magic-mode-alist
-(dolist (x '(("\\s-*/\\*[*!][ \t]*$" . doxym-mode)
-             ;; This matches my personal AsciiDoc files
-             ("\\(?::encoding:.*\n\\)?//.*AsciiDoc" . adoc-mode)))
+(dolist (x '(("\\s-*/\\*[*!][ \t]*$" . doxym-mode)))
   (add-to-list 'magic-mode-alist x))
 
 ;; auto-mode-alist
@@ -246,8 +244,7 @@ Meant to profile startup time."
          ("\\.yy?\\'" . bison-mode)
          ("\\.ef\\'" . ef-mode)
          ("\\.ll\\'" . llvm-mode)
-         ("\\.rs\\'" . rust-mode)
-         ("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode))))
+         ("\\.rs\\'" . rust-mode))))
   (setq auto-mode-alist (nconc my-auto-mode-alist auto-mode-alist)))
 
 ;; 1) note the "", that is if an empty extension was given, i.e. the abbrev "ao."

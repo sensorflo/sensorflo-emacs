@@ -685,6 +685,9 @@
 
 (add-to-list 'auto-coding-regexp-alist '("\\`\\s-*:encoding:\\s-*UTF-8\\b" . utf-8))
 
+(add-to-list 'magic-mode-alist '("\\(?::encoding:.*\n\\)?//.*AsciiDoc" . adoc-mode))
+
+(add-to-list 'auto-mode-alist '("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode))
 
 ;;; doxym
 ;; --------------------------------------------------------------------------------

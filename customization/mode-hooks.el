@@ -757,6 +757,8 @@
   (local-set-key [(control ?\,)(g)(e)] 'tempo-template-html-element)
   (local-set-key [(control ?\,)(g)(t)] 'tempo-template-html-tag))
 
+(add-to-list 'magic-mode-alist '("\\s-*/\\*[*!][ \t]*$" . doxym-mode))
+
 ;;; markdown
 ;; -----------------------------------------------------------------------------
 (add-hook 'markdown-mode-hook 'my-markdown-mode-hook)

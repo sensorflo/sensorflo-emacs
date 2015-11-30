@@ -176,10 +176,6 @@ Meant to profile startup time."
 (dolist (x '(("perl" . cperl-mode)))
   (add-to-list 'interpreter-mode-alist x))
 
-;; magic-mode-alist
-(dolist (x '(("\\s-*/\\*[*!][ \t]*$" . doxym-mode)))
-  (add-to-list 'magic-mode-alist x))
-
 ;; auto-mode-alist
 ;; Things are setup such that the first (top down) match is taken. Also the
 ;; following terms take precedence over the terms already in auto-mode-alist

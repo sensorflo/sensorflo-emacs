@@ -234,12 +234,12 @@
    (t 5)))
 
 (defun my-c-mode-common-bindings ()
+  (message "my-c-mode-common-bindings")
   ;; overide existing bindings with similar functionality
-  (local-set-key [remap newline] 'c-context-line-break)
   (local-set-key [remap narrow-to-defun] 'c-narrow-to-function-incl-comment)
   (local-set-key [remap yank] 'yank-and-indent)
   (local-set-key [remap c-mark-function] 'c-mark-function-incl-comment)
-  (local-set-key [remap mark-pagee] 'c-mark-block)
+  (local-set-key [remap mark-page] 'c-mark-block)
   (local-set-key [remap c-beginning-of-defun] 'c-beginning-of-defun-ext)
   (local-set-key [remap c-end-of-defun] 'c-end-of-defun-ext)
 

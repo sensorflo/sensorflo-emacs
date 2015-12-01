@@ -259,6 +259,7 @@ Meant to profile startup time."
 ;;; autostart
 ;; ----------
 (message2 "init file: autostart")
+(server-start)
 
 ;; put here at the end of the startup instead within custom-file so starting up
 ;; emacs with --debug-init has an effect. Else, modifying debug-on-error within

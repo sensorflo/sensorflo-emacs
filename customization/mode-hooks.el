@@ -1232,7 +1232,9 @@
     ;; returns `indent-tabs-mode' in the normal case or
     ;; `whitespace-indent-tabs-mode' in the case the user wants to overwrite it
     ;; with a whitespace specific value
-    (when whitespace-mode
+    (when (and
+           (featurep 'whitespace)
+           whitespace-mode)
       (whitespace-mode 0)
       (whitespace-mode 1)))
   (mode-message-end "my-after-change-major-mode-hook"))

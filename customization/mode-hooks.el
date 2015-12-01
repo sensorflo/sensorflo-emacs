@@ -89,6 +89,8 @@
   (local-set-key [(control ?\,)(d)(m)] 'tempo-template-perl-def-sub) ;m for method
   )
 
+(add-to-list 'interpreter-mode-alist '("perl" . cperl-mode))
+
 ;;; python
 ;; ----------------------------------------------
 (add-hook 'python-mode-hook 'my-python-mode-hook)

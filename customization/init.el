@@ -172,10 +172,6 @@ Meant to profile startup time."
   (speedbar-enable-update))
 (setq-default filladapt-mode t)
 
-;; interpreter-mode-alist
-(dolist (x '(("perl" . cperl-mode)))
-  (add-to-list 'interpreter-mode-alist x))
-
 ;; auto-mode-alist
 ;; Things are setup such that the first (top down) match is taken. Also the
 ;; following terms take precedence over the terms already in auto-mode-alist

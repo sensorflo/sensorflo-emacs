@@ -257,7 +257,14 @@ Meant to profile startup time."
 ;;; autostart
 ;; ----------
 (message2 "init file: autostart")
-(server-start)
+(let ((running-p (server-running-p)))
+  (cond
+   ((not running-p)
+    (server-start))
+   ((eq running-p t)
+    (message "Emacs server is alrady running. Not starting it."))
+   (t
+    (message "Cannot determine wheter Emacs server is running. Not starting it."))))
 
 ;; put here at the end of the startup instead within custom-file so starting up
 ;; emacs with --debug-init has an effect. Else, modifying debug-on-error within

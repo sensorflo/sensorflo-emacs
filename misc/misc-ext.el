@@ -961,21 +961,23 @@ sequence."
                (replacement (concat "\\C-" (char-to-string (downcase (+ ctrl-char (- ?A ?\1)))))))
           (replace-match replacement t t))))))
 
+(defvar mode-message-p nil)
+
 (defun mode-message-start (element)
-  ;; (message (concat "<" element
-  ;;                  " major-mode=" (symbol-name major-mode)
-  ;;                  " buffer-name=" (if (buffer-name) (buffer-name) "nil")
-  ;;                  " buffer-file-name=" (if buffer-file-name buffer-file-name "nil")
-  ;;                  ">"))
-  )
+  (when mode-message-p
+    (message (concat "<" element
+                     " major-mode=" (symbol-name major-mode)
+                     " buffer-name=" (if (buffer-name) (buffer-name) "nil")
+                     " buffer-file-name=" (if buffer-file-name buffer-file-name "nil")
+                     ">"))))
 
 (defun mode-message-end (element)
-  ;; (message (concat "</" element
-  ;;                  " major-mode=" (symbol-name major-mode)
-  ;;                  " buffer-name=" (if (buffer-name) (buffer-name) "nil")
-  ;;                  " buffer-file-name=" (if buffer-file-name buffer-file-name "nil")
-  ;;                  ">"))
-  )
+  (when mode-message-p
+    (message (concat "</" element
+                     " major-mode=" (symbol-name major-mode)
+                     " buffer-name=" (if (buffer-name) (buffer-name) "nil")
+                     " buffer-file-name=" (if buffer-file-name buffer-file-name "nil")
+                     ">"))))
 
 (defun is-edit-mode ()
   (and

@@ -811,17 +811,21 @@ Turning on zimbu mode runs the normal hook `zimbu-mode-hook'.
 ;;;***
 
 ;;;### (autoloads nil "../projects/xentis" "../projects/xentis.el"
-;;;;;;  (22102 56367 261745 53000))
+;;;;;;  (22110 55763 712214 177000))
 ;;; Generated autoloads from ../projects/xentis.el
 
-(defvar xentis-file-name-regex "/src/xentis[^/]*/" "\
+(defvar xentis-file-name-regex "/src/[^/]*xentis[^/]*/" "\
 Files matching this regexp belong to xentis project")
 
-(add-to-list 'file-coding-system-alist (list xentis-file-name-regex 'iso-latin-1-unix))
+(add-to-list 'file-coding-system-alist (cons xentis-file-name-regex 'iso-latin-1-unix))
 
 (add-hook 'change-major-mode-after-body-hook 'xentis-hook)
 
 (add-hook 'c-mode-common-hook 'xentis-c-mode-common-hook)
+
+(add-hook 'compilation-mode-hook 'xentis-compilation-mode-hook)
+
+(add-hook 'hack-local-variables-hook 'xentis-hack-local-variables-hook)
 
 (autoload 'xentis-hook "../projects/xentis" "\
 
@@ -829,6 +833,16 @@ Files matching this regexp belong to xentis project")
 \(fn)" nil nil)
 
 (autoload 'xentis-c-mode-common-hook "../projects/xentis" "\
+
+
+\(fn)" nil nil)
+
+(autoload 'xentis-compilation-mode-hook "../projects/xentis" "\
+
+
+\(fn)" nil nil)
+
+(autoload 'xentis-hack-local-variables-hook "../projects/xentis" "\
 
 
 \(fn)" nil nil)

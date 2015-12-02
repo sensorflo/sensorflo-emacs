@@ -1215,8 +1215,6 @@
   (when (and
          (not (is-a-minibufer-mode))
          (not (large-buffer-p)))
-    (when (is-edit-mode)
-      (my-edit-mode-hook))
     (my-common-mode-bindings))
   (mode-message-end "my-change-major-mode-after-body-hook"))
 
@@ -1224,35 +1222,39 @@
 
 (defun my-after-change-major-mode-hook ()
   (mode-message-start "my-after-change-major-mode-hook")
-  (unless (string-match "minibuffer" (symbol-name major-mode))
-    ;; Make sure whitespace picks up the actual value of indent-tabs-mode /
-    ;; tab-width. A better solution would probably be to modify whitespace.el
-    ;; such that it accesses `whitespace-indent-tabs-mode' /
-    ;; `whitespace-tab-width' via a function. Internaly that function either
-    ;; returns `indent-tabs-mode' in the normal case or
-    ;; `whitespace-indent-tabs-mode' in the case the user wants to overwrite it
-    ;; with a whitespace specific value
-    (when (and
-           (featurep 'whitespace)
-           whitespace-mode)
-      (whitespace-mode 0)
-      (whitespace-mode 1)))
   (mode-message-end "my-after-change-major-mode-hook"))
 
 (add-hook 'after-change-major-mode-hook 'my-after-change-major-mode-hook)
 
+(defun my-hack-local-variables-hook ()
+  (when (and
+         (not (is-a-minibufer-mode))
+         (not (large-buffer-p))
+         (not (eq major-mode 'fundamental-mode))
+         (is-edit-mode))
+    (my-edit-mode-hook)))
+
+(add-hook 'hack-local-variables-hook 'my-hack-local-variables-hook)
+
 ;; Meant for all modes where the user freely can edit text -- even if it's
-;; (currently) read only
+;; (currently) read only. my-edit-mode-hook currently is called from
+;; hack-local-variables-hook. So it can refer to variables set by earlier
+;; hooks. Not that certain minor modes, e.g. whitespace-mode, internaly also
+;; read variables.
 (defun my-edit-mode-hook ()
   (mode-message-start "my-edit-mode-hook")
   (ws-trim-mode)
   (outline-minor-mode t)
   (if (> (buffer-size) 100000)
       (message "Large buffer, not enabling: fci-mode, whitespace-mode")
+
     ;; see chapter 'other options' in fill-column-indicator's commentary
     ;; section.
     (when truncate-lines
       (fci-mode t))
+
+    ;; Note that whitespace picks up the current value of indent-tabs-mode /
+    ;; tab-width. I.e. they must now have their final value.
     (whitespace-mode t))
   (mode-message-end "my-edit-mode-hook"))
 

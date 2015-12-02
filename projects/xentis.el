@@ -39,10 +39,12 @@
 (add-hook 'compilation-mode-hook 'xentis-compilation-mode-hook)
 
 ;;;###autoload
+(add-hook 'hack-local-variables-hook 'xentis-hack-local-variables-hook)
+
+;;;###autoload
 (defun xentis-hook()
   (when (and
          (not (is-a-minibufer-mode))
-         (not (large-buffer-p))
          (eq (project-root-type) 'project-xentis))
     (mode-message-start "xentis-hook")
 
@@ -74,15 +76,6 @@
                  "include/xtl" "source/bo/xtl/src" "include/risk" "source/bo/risk"
                  "include/xml" "source/libs/xml"))
       (add-to-list 'cc-search-directories (concat (eamis-root-dir) "/" x)))
-
-    (when (and (not (is-a-minibufer-mode)) (is-edit-mode))
-      (when (not (xentis-coding-system-p))
-        (message (concat "%s: encoding system is %S which is not one of Xentis' "
-                         "coding systems, see xentis-coding-system-p")
-                 (buffer-name) buffer-file-coding-system)
-        (shell-command (concat "notify-send -t 1000 "
-                               "'" (buffer-name) " has invalid encoding system!'"))))
-
     (mode-message-end "xentis-hook")))
 
 ;;;###autoload
@@ -111,6 +104,20 @@
   (when (eq (project-root-type) 'project-xentis)
     (set (make-local-variable 'compilation-error-regexp-alist)
          '(gnu-sensorflo gcc-include-sensorflo xentis-log cppunit xentis-codegen))))
+
+;;;###autoload
+(defun xentis-hack-local-variables-hook()
+  (when (and
+         (not (is-a-minibufer-mode))
+         (eq (project-root-type) 'project-xentis)
+         (is-edit-mode)
+         xentis-verify-coding-system
+         (not (xentis-coding-system-p)))
+    (message (concat "%s: encoding system is %S which is not one of Xentis' "
+                     "coding systems, see xentis-coding-system-p")
+             (buffer-name) buffer-file-coding-system)
+    (shell-command (concat "notify-send -t 1000 "
+                           "'" (buffer-name) " has invalid encoding system!'"))))
 
 ;; buffer-file-name might be nil
 ;; - in minibuffer-inactive?

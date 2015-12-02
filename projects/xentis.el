@@ -22,6 +22,8 @@
 (defvar xentis-file-name-regex "/src/[^/]*xentis[^/]*/"
   "Files matching this regexp belong to xentis project")
 
+(defvar xentis-verify-coding-system t)
+
 ;; TODO: Actually I don't want to _define_ the coding system to be used, I
 ;; want to prefer it over other possible alternatives.
 ;;;###autoload
@@ -146,6 +148,7 @@
 ;;;###autoload
 (defun xentis-before-save-hook ()
   (when (and
+         xentis-verify-coding-system
          (eq (project-root-type) 'project-xentis)
          (not (xentis-coding-system-p)))
     (if (y-or-n-p (format "%s is encoded in %S. Change coding to Xentis' requirement being iso-latin-1-unix?"

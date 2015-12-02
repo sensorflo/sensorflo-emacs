@@ -330,7 +330,8 @@
  '(rst-reference-face (quote markup-reference-face))
  '(safe-local-variable-values
    (quote
-    ((flyspell-mode-hack)
+    ((xentis-verify-coding-system)
+     (flyspell-mode-hack)
      (ispell-local-dictionary . de_CH-neu))))
  '(save-interprogram-paste-before-kill t)
  '(scroll-bar-mode (quote right))

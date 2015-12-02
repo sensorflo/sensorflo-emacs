@@ -47,17 +47,18 @@
     ;; some of these variables might only make sense in within an is-edit-mode
     ;; buffer, but it's more simple to do all in one place and it doesn't
     ;; hurt.
-    (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|boc\\|boh\\|msg\\)")
+
     (set (make-local-variable 'require-final-newline) nil)
     (set (make-local-variable 'fill-column) 100)
     (set (make-local-variable 'tab-width) 4)
     (set (make-local-variable 'indent-tabs-mode) t)
+
+    (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|boc\\|boh\\|msg\\)")
     (make-local-variable 'grep-find-command)
     (grep-apply-setting 'grep-find-command (xentis-grep-find-command))
     (set (make-local-variable 'compile-command) "sshx pdxenlin52 buildxentis")
     (set (make-local-variable 'grep-find-ext-command-function) 'xentis-grep-find-command)
     (set (make-local-variable 'grep-find-ext-regexp-function) 'xentis-grep-find-regexp)
-    (set (make-local-variable 'compilation-skip-threshold) 2)
 
     (set (make-local-variable 'cc-search-directories) nil)
     (dolist (x '("include" "include/investment_compliance"

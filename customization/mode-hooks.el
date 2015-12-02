@@ -1245,7 +1245,6 @@
 ;; (currently) read only
 (defun my-edit-mode-hook ()
   (mode-message-start "my-edit-mode-hook")
-  (show-paren-mode t)
   (ws-trim-mode)
   (outline-minor-mode t)
   (if (> (buffer-size) 100000)

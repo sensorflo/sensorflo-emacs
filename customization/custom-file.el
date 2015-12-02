@@ -342,6 +342,7 @@
  '(sh-basic-offset 2)
  '(sh-indentation 2)
  '(show-paren-delay 0.1)
+ '(show-paren-mode t)
  '(show-paren-priority 1000)
  '(show-paren-style (quote parenthesis))
  '(size-indication-mode nil)

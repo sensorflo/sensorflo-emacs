@@ -29,23 +29,7 @@
 ;;
 ;;
 ;;; Code:
-(defconst git-irb-font-lock-keywords
-  (list
-   ;; commit lines which need attention
-   (list "^\\s-*\\w+\\s-+[a-f0-9]+\\s-+\\(.*!!+.*\\)$" (list 1 'font-lock-warning-face t))
-   (list "^\\s-*\\w+\\s-+[a-f0-9]+\\s-+\\(commit fix\\b.*\\)$" (list 1 'font-lock-warning-face t))
-   (list "^\\s-*\\w+\\s-+[a-f0-9]+\\s-+\\(.*<< auto moved\\b.*\\)$" (list 1 'font-lock-semi-unimportant t))
-   ;; auto moved commit's command should be either squash or fixup
-   (list "^\\s-*\\(p\\|pick\\|r\\|reword\\|e\\|edit\\)\\s-+\\w+\\s-+\\(.*<< auto moved\\b.*\\)$"
-         (list 1 'font-lock-warning-face t))
-
-   ;; highghlight commands other than the standard pick
-   (list "^\\s-*\\(r\\|reword\\|e\\|edit\\|s\\|squash\\|f\\|fixup\\|x\\|exec\\)\\b"
-         (list 1 'font-lock-keyword-face t))
-
-   ;; commit-id is not really important
-   (list "^\\s-*\\w+\\s-+\\([a-f0-9]+\\)\\b"
-         (list 1 'font-lock-semi-unimportant t))))
+(require 'git-rebase)
 
 (defun git-irb-move-commit-at-point-to-referenced-commit ()
   (interactive)
@@ -87,33 +71,11 @@
 ;;   up 'edit commit msg' buffer shall fetch that changed commit msg
 
 ;;;###autoload
-(define-derived-mode git-irb-mode text-mode "git-irb"
+(define-derived-mode git-irb-mode git-rebase-mode "git-irb"
   "A major-mode for editing git's interative rebase files.
 
 See (finder-commentary \"git-irb-mode\")."
-  (interactive)
-  (kill-all-local-variables)
-
-  ;; syntax table
-  (modify-syntax-entry ?\" ".")
-  (modify-syntax-entry ?\' ".")
-  (modify-syntax-entry ?\# "<")
-  (modify-syntax-entry ?\n ">")
-  (modify-syntax-entry ?\r ">")
-
-  ;; comments
-  (set (make-local-variable 'comment-column) 0)
-  (set (make-local-variable 'comment-start) "#")
-  (set (make-local-variable 'comment-end) "")
-  (set (make-local-variable 'comment-start-skip) "\\(#[ \t]*\\)")
-  (set (make-local-variable 'comment-end-skip) "[ \t]*\\(?:\n\\|\\'\\)")
-
-  ;; font lock
-  (set (make-local-variable 'font-lock-defaults)
-       '(git-irb-font-lock-keywords))
-
-  ;; misc
-  (setq mode-name "git-irb"))
+  )
 
 (provide 'git-irb-mode)
 

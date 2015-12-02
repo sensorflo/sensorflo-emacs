@@ -445,6 +445,15 @@
 
 (add-hook 'gitconfig-mode-hook 'my-gitconfig-mode-hook)
 
+;;; git-irb mode
+;; ----------------------------------------------
+(defun my-git-irb-mode-hook()
+  (local-set-key [(n)] 'git-rebase-move-line-down)
+  (local-set-key [(p)] 'git-rebase-move-line-up)
+  (local-set-key [(m)] 'git-irb-move-commit-at-point-to-referenced-commit))
+
+(add-hook 'git-irb-mode-hook 'my-git-irb-mode-hook)
+
 ;;; visual basic .NET
 ;; ----------------------------------------------
 (add-hook 'vbnet-mode-hook 'my-vbnet-mode-hook)

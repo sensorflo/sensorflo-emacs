@@ -27,7 +27,7 @@
 ;; TODO: Actually I don't want to _define_ the coding system to be used, I
 ;; want to prefer it over other possible alternatives.
 ;;;###autoload
-(add-to-list 'file-coding-system-alist (list xentis-file-name-regex 'iso-latin-1-unix))
+(add-to-list 'file-coding-system-alist (cons xentis-file-name-regex 'iso-latin-1-unix))
 
 ;;;###autoload
 (add-hook 'change-major-mode-after-body-hook 'xentis-hook)

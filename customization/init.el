@@ -135,6 +135,8 @@ Meant to profile startup time."
 
 (message2 "misc-ext")
 (load-library "misc-ext")
+(message2 "faces-ext")
+(load-library "faces-ext")
 (message2 "simple-ext")
 (load-library "simple-ext")
 (message2 "project")

@@ -424,6 +424,8 @@
  '(YaTeX-sectioning-3 ((t (:inherit markup-title-2-face))))
  '(YaTeX-sectioning-4 ((t (:inherit markup-title-3-face))))
  '(YaTeX-sectioning-5 ((t (:inherit markup-title-4-face))))
+ '(compilation-column-number ((t (:inherit bold))))
+ '(compilation-info ((t (:inherit info))))
  '(error ((default (:weight bold)) (((class color) (min-colors 88) (background light)) (:background "yellow" :foreground "Red1")) (((class color) (min-colors 88) (background dark)) (:foreground "Pink")) (((class color) (min-colors 16) (background light)) (:foreground "Red1")) (((class color) (min-colors 16) (background dark)) (:foreground "Pink")) (((class color) (min-colors 8)) (:foreground "red")) (t (:inverse-video t))) nil "Background also set so whitespace errors are also visible")
  '(fixed-pitch ((((type x)) (:height 130 :family "freemono"))))
  '(font-latex-sectioning-0-face ((t (:inherit markup-title-0-face))))

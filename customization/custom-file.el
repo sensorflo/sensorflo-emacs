@@ -478,7 +478,7 @@
  '(markup-meta-face ((t (:stipple nil :foreground "gray65" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Ubuntu Mono"))))
  '(markup-meta-hide-face ((t (:inherit markup-meta-face :foreground "gray70"))))
  '(markup-passthrough-face ((t (:inherit (fixed-pitch markup-gen-face) :background "#d0ccca"))))
- '(markup-replacement-face ((t (:inherit markup-gen-face :background "#d0ccca" :foreground "purple3"))))
+ '(markup-replacement-face ((t (:inherit markup-gen-face :background "#e8e9ea" :foreground "purple3"))))
  '(markup-title-1-face ((t (:inherit markup-gen-face :underline "gray" :height 2.4))))
  '(markup-value-face ((t (:inherit markup-meta-face :foreground "violet"))))
  '(markup-verbatim-face ((((background light)) (:background "#ccccaa")) (((background dark)) (:background "saddlebrown"))))

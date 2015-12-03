@@ -698,8 +698,6 @@
 
 (add-to-list 'magic-mode-alist '("\\(?::encoding:.*\n\\)?//.*AsciiDoc" . adoc-mode))
 
-(add-to-list 'auto-mode-alist '("\\.\\(txt\\|asciidoc\\)\\'" . adoc-mode))
-
 ;;; doxym
 ;; --------------------------------------------------------------------------------
 (add-hook 'doxym-mode-hook 'my-doxym-mode-hook)

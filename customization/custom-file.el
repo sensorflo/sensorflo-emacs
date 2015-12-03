@@ -284,6 +284,7 @@
  '(make-backup-files nil)
  '(mediawiki-eob-is-end-delimiter t)
  '(menu-accelerator-enabled nil t)
+ '(menu-bar-mode nil)
  '(message-log-max 1000)
  '(next-error-highlight t)
  '(next-error-highlight-no-select t)

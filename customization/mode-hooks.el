@@ -665,7 +665,7 @@
   ;; `Visual Line Mode'.
   (visual-line-mode 1)                  ; aka `word wrap'
   (set (make-local-variable 'compile-command)
-       (concat "asciidoc "
+       (concat "asciidoc -a toc "
                (if (buffer-file-name)
                    (file-name-nondirectory (buffer-file-name))
                  (buffer-name))))

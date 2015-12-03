@@ -502,6 +502,11 @@
 ;; ----------------------------------------------
 (add-hook 'graphviz-dot-mode-hook 'my-graphviz-dot-mode-hook)
 (defun my-graphviz-dot-mode-hook ()
+  ;; unfortunatly graphviz-dot-mode does not honor conventions, in particular
+  ;; it does not call change-major-mode-after-body-hook, thus it is done
+  ;; explicit here.
+  (my-change-major-mode-after-body-hook)
+
   (set (make-local-variable 'compile-command)
        (let* ((srcfilename (if (buffer-file-name)
                                  (file-name-nondirectory (buffer-file-name))
@@ -509,7 +514,7 @@
               (outfilename
                (concat (file-name-sans-extension (file-name-nondirectory srcfilename))
                        ".png")))
-         (concat "dot -Tpng " srcfilename " >" outfilename " && display " outfilename))))
+         (concat "dot -Tpng " srcfilename " >" outfilename))))
 
 
 ;;; text modes

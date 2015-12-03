@@ -86,3 +86,6 @@
 	path = misc/gstack-mode
 	url = https://github.com/sensorflo/gstack-mode.git
 	update = rebase
+[submodule "progmodes/graphviz-dot-mode"]
+	path = progmodes/graphviz-dot-mode
+	url = https://github.com/sensorflo/graphviz-dot-mode.git

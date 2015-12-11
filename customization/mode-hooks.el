@@ -880,6 +880,11 @@
   ;; (local-set-key [(control ?\,)(b)(q)] 'tempo-template-mediawiki-quote)
   )
 
+(add-to-list 'auto-coding-regexp-alist '("\\`.*\\bmediawiki\\b" . 'utf-8))
+
+(add-to-list 'magic-mode-alist '("\\`.*\\bmediawiki\\b" . mediawiki-mode))
+
+
 ;;; enriched
 ;; -----------------------------------------------------------------------------
 (defun my-enriched-mode-hook()

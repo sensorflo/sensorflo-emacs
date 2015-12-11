@@ -211,7 +211,6 @@ Meant to profile startup time."
          ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
          ("\\.lo[g0-9]\\'" . logfile-mode)
          ("personality.*\\.txt\\'" . pm-mode)
-         ("\\.wiki\\'" . mediawiki-mode)
          ("\\.env\\'" . conf-mode)
          ("\\(\\`\\|/\\)\\.dmrc\\'" . conf-mode)
          (".ssh/config\\'"  . ssh-config-mode)

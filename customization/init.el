@@ -95,7 +95,7 @@ Meant to profile startup time."
 (load-library "loaddefs-custom")
 ;; intendet for system wide libraries
 (message2 "autoload loaddefs-site-lisp")
-(load-library "loaddefs-site-lisp")
+(load-library (concat user-emacs-directory "site-lisp/loaddefs-site-lisp"))
 ;; intendet for libraries in .emacs.d/site-lisp
 (message2 "autoload loaddefs-local-site-lisp")
 (load-library "loaddefs-local-site-lisp")

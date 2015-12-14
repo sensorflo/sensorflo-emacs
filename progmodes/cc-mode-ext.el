@@ -23,9 +23,10 @@
 ;;
 ;;
 
-;;; Variables:
-(require 'cc-mode)
 
+(require 'cc-mode)         ; https://github.com/sensorflo/sensorflo-emacs/
+
+;;; Variables:
 (defvar c-class-name-alist nil
   "Maps filename no classname.
 Typically used for occasions where the filename does not exactly
@@ -102,6 +103,10 @@ the directory part and without suffix. Thus for
 (defun c-backward-single-comment-ext ()
   (interactive)
   (c-backward-single-comment)
+  (when (looking-at "[ \t]*//")
+    (while (looking-at "[ \t]*//")
+      (forward-line -1))
+    (forward-line))
   (c-skip-ws-forward)
   (beginning-of-line))
 

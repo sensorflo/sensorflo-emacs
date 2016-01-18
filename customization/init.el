@@ -73,11 +73,6 @@ Meant to profile startup time."
                 (match-string 0 emacs-version))
               "/src/"))
 
-
-;;; required libraries
-;; ==================================================
-(message "init file: required libraries")
-
 ;; Setup quick and correct (according to my personal preferences) loading of
 ;; libraries. Obviously this should be done before loading any library. It
 ;; woudn't be an error if a library was loaded before.
@@ -86,6 +81,11 @@ Meant to profile startup time."
 (setq auto-compile-display-buffer nil)
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
+
+
+;;; required libraries
+;; ==================================================
+(message "init file: required libraries")
 
 ;; autoload
 (load-library "debian-el-loaddefs")

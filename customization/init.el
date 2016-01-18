@@ -117,14 +117,10 @@ Meant to profile startup time."
   (require 'cygwin-mount)
   (require 'w32-symlinks)
   (require 'w32-browser))
-(load-library "find-file")
 
 ;; nxhtml is not part of sensorflo-emacs git repo
 (when (file-readable-p "nxhtml/autostart.el")
   (load-library "nxhtml/autostart.el"))
-
-(require 'server)
-(require 'filladapt)
 
 ;; My customization of different modes references faces markup-faces. It's
 ;; error prone to try that each respective mode-hook contains a (require
@@ -139,6 +135,8 @@ Meant to profile startup time."
 (load-library "simple-ext")
 (message2 "project")
 (load-library "project")
+(message2 "find-file")
+(load-library "find-file")
 (message2 "mybindings")
 (load-library "mybindings")
 (message2 "mode-hooks")
@@ -170,7 +168,8 @@ Meant to profile startup time."
 (when (require 'speedbar nil t)
   ;; not customizeable, but maybe put it in a hook?
   (speedbar-enable-update))
-(setq-default filladapt-mode t)
+(when (require 'filladapt nil t)
+  (setq-default filladapt-mode t))
 
 ;; auto-mode-alist
 ;; Things are setup such that the first (top down) match is taken. Also the
@@ -254,6 +253,7 @@ Meant to profile startup time."
 ;;; autostart
 ;; ----------
 (message2 "init file: autostart")
+(require 'server)
 (let ((running-p (server-running-p)))
   (cond
    ((not running-p)

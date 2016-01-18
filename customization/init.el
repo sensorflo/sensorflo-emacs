@@ -118,14 +118,12 @@ Meant to profile startup time."
   (require 'w32-symlinks)
   (require 'w32-browser))
 (load-library "find-file")
-(require 'window-numbering)
 
 ;; nxhtml is not part of sensorflo-emacs git repo
 (when (file-readable-p "nxhtml/autostart.el")
   (load-library "nxhtml/autostart.el"))
 
 (require 'server)
-(require 'cppkoans-mode)
 (require 'filladapt)
 
 ;; My customization of different modes references faces markup-faces. It's

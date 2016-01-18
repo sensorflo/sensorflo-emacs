@@ -87,19 +87,6 @@ Meant to profile startup time."
 ;; ==================================================
 (message "init file: required libraries")
 
-;; autoload
-(load-library "debian-el-loaddefs")
-;(load-library "emacs-goodies-loaddefs")
-;; intendet for own libraries
-(message2 "autoload loaddefs-custom")
-(load-library "loaddefs-custom")
-;; intendet for system wide libraries
-(message2 "autoload loaddefs-site-lisp")
-(load-library (concat user-emacs-directory "site-lisp/loaddefs-site-lisp"))
-;; intendet for libraries in .emacs.d/site-lisp
-(message2 "autoload loaddefs-local-site-lisp")
-(load-library "loaddefs-local-site-lisp")
-
 ;; custom-file
 ;; some modes initialize stuff using their custom variables while loading, thus
 ;; load custom file before loading modes
@@ -248,10 +235,30 @@ Meant to profile startup time."
 (dolist (x '(".bmp" ".jpg" ".jpeg"))
   (add-to-list 'completion-ignored-extensions x))
 
+
+;;; autoload
+;; =======================================================
+;; Must come after loading basic libraries such as simple-ext, since
+;; the autoloads itself or the code within the hooks they install (and
+;; which are run during further processing of the init.el) depend on
+;; them.
+
+;; autoload
+(load-library "debian-el-loaddefs")
+;(load-library "emacs-goodies-loaddefs")
+;; intendet for own libraries
+(message2 "autoload loaddefs-custom")
+(load-library "loaddefs-custom")
+;; intendet for system wide libraries
+(message2 "autoload loaddefs-site-lisp")
+(load-library (concat user-emacs-directory "site-lisp/loaddefs-site-lisp"))
+;; intendet for libraries in .emacs.d/site-lisp
+(message2 "autoload loaddefs-local-site-lisp")
+(load-library "loaddefs-local-site-lisp")
 
 
 ;;; autostart
-;; ----------
+;; =======================================================
 (message2 "init file: autostart")
 (require 'server)
 (let ((running-p (server-running-p)))

@@ -1230,6 +1230,7 @@
 
 (defun my-change-major-mode-after-body-hook ()
   (mode-message-start "my-change-major-mode-after-body-hook")
+  (require 'large-file-mode)
   (when (and
          (not (is-a-minibufer-mode))
          (not (large-buffer-p)))

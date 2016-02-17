@@ -208,7 +208,7 @@
 (setq c++-cpp-outline-level3-regex "xxxblabliblabluxxx3" )
 (setq c++-cpp-outline-level4-regex "xxxblabliblabluxxx4" )
 
-;; TODO: separate into C++ / doxy / dragon regexes
+;; TODO: separate into C++ / doxy regexes
 (setq c++-h-outline-level1-regex "\\(struct\\|class\\)\\s-*\\sw+\\s-*[^;]*$" )
 (setq c++-h-outline-level2-regex "\\s-*\\(private\\|public\\|protected\\)\\s-*:" )
 (setq c++-h-outline-level31-regex "\\s-*\\(//+\\|/\\**!?\\)\\s-*\\([\\\\@]name\\|misc\\)" ) ; groups
@@ -263,7 +263,6 @@
 
   (my-c-mode-common-bindings-tempo))
 
-;; remember that dragon.el, nova.el etc will add further bindings
 (defun my-c-mode-common-bindings-tempo ()
   (require 'tempos-c++)
 

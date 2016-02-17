@@ -55,12 +55,10 @@ Returns nil if it is unknown."
     (cond
      ((null actual-fn) nil)
      ((string-match xentis-file-name-regex actual-fn) 'project-xentis)
-     ((string-match "/\\(inos\\|inco\\|lua\\)\\(/\\|$\\)" actual-fn) 'project-indel) ; before dragon, because it is contained within dragon
+     ((string-match "/\\(inos\\|inco\\|lua\\)\\(/\\|$\\)" actual-fn) 'project-indel)
      ((string-match "/diebonder/pc\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
      ((string-match "/Common\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
      ((string-match "/diebonder/rtos\\(/\\|$\\)" actual-fn) 'project-diebonder-rtos)
-     ((string-match "/prog\\w*/\\w+\\(/\\|$\\)" actual-fn) 'project-nova)
-     ((string-match "/bib\\(/\\|$\\)" actual-fn) 'project-nova)
      ((directory-files (file-name-directory actual-fn) nil ".*\\.el$") 'project-el)
      (t nil))))
 
@@ -75,8 +73,6 @@ Nil if there is none."
       (car (directory-files (project-root-dir file-name) nil ".*\\.dsp$")))
      ((eq type 'project-diebonder-rtos)
       (car (directory-files (project-root-dir file-name) nil ".*\\.mpd$")))
-     ((eq type 'project-nova)
-      (concat "B:/prog/m/makefile"))
      (t nil))))
 
 (defun project-all-dirs (file-name &optional relative-p)
@@ -109,8 +105,6 @@ Nil if there is none."
             (replace-regexp-in-string "\\(/UnitTest2?\\)?/[^/]*$" "/" file-name))
            ((eq type 'project-diebonder-rtos)
             (replace-regexp-in-string "\\(/sources\\|/unittest2?\\)?/[^/]*$" "/" file-name))
-           ((eq type 'project-nova)
-            (replace-regexp-in-string "\\(/source\\|/include\\|/testing\\)?/[^/]*$" "/" file-name))
            (t
             (replace-regexp-in-string "/[^/]*$" "/" file-name))))
     (if relative-p
@@ -132,9 +126,7 @@ Nil if there is none."
       (setq add-rel-paths '("Sources"))
       (let ((case-fold-search t))
         (if (string-match "/rtos/pickplace/ppsequencer" root-path)
-            (setq add-rel-paths (append "Sources/SeqV2" add-rel-paths)))))
-     ((eq type 'project-nova)
-      (setq add-rel-paths '("source" "include"))))
+            (setq add-rel-paths (append "Sources/SeqV2" add-rel-paths))))))
 
     (setq abs-paths (mapcar (lambda (x) (concat root-path x)) add-rel-paths))
 
@@ -158,9 +150,7 @@ Nil if there is none."
      ((eq type 'project-diebonder-pc)
       (setq add-rel-path "unittest/"))
      ((eq type 'project-diebonder-rtos)
-      (setq add-rel-path "unittest/"))
-     ((eq type 'project-nova)
-      (setq add-rel-path "testing/")))
+      (setq add-rel-path "unittest/")))
 
     (setq abs-path (concat (project-root-dir file-name) add-rel-path))
 
@@ -174,7 +164,7 @@ Nil if there is none."
   file name is a member of."
   (let ((type (project-root-type file-name)))
     (cond
-     ((member type '(project-diebonder-pc project-diebonder-rtos project-nova))
+     ((member type '(project-diebonder-pc project-diebonder-rtos))
       ".*\\.\\(cpp\\|h\\|idl\\)$")
      ((equal type 'project-el)
       ".*\\.el$")
@@ -221,11 +211,7 @@ Nil if there is none."
      ((eq type 'project-diebonder-rtos)
       (setq found (or
                    (re-search-forward "\\bSources\\b" nil t)
-                   (re-search-forward "\\(Mod\\(ProxyBase\\)??\\|Seq\\(uencer\\)?\\)\\.h\\b" nil t))))
-     ((eq type 'project-nova)
-      (setq found (or
-                   (re-search-forward "\\binclude\\b" nil t)
-                   (re-search-forward "\\(handling\\|head\\)\\(rtos\\)?\\b" nil t)))))
+                   (re-search-forward "\\(Mod\\(ProxyBase\\)??\\|Seq\\(uencer\\)?\\)\\.h\\b" nil t)))))
     (if found
         (call-interactively 'dired-find-alternate-file)
       (goto-char saved-point)
@@ -287,40 +273,6 @@ Nil if there is none."
        (setenv "PATH" saved-path-env)
        (setq shell-file-name saved-shell-file-name)))
 
-    ;; Nova projects:
-    ;; ----------------------------------------------------------------------
-    ;; -- rtos only
-    ((and (eq (project-root-type) 'project-nova) (not nova-pc-p))
-     (let* ((target "depend all")
-            (bib_dir "/home/flka/bib/release/zorro")
-            (m_dir "/home/flka/prog/m")
-            (envlist
-             (concat
-              "M_DIR="m_dir " "
-              "M_BASE_DIR="m_dir"/base "
-              "M_DRIVERS_DIR="m_dir"/drivers_dev "
-              "M_BIB_DIR="bib_dir " "
-              "OMA6RTOS_CONFIG=" (concat bib_dir "/bin_indel_ppc750/config") " "
-              "OMA6RTOS_INC=" (concat bib_dir "/include/oma6rtos") " "
-              "OMA6RTOS_LIB=" (concat bib_dir "/bin_indel_ppc750") " "
-              "TARGET=RTOS "
-              "HOST=LINUX " )))
-       (compile (concat
-                 "ssh flka@" nova-build-server " '(\n"
-                 "cd " (replace-regexp-in-string "/emp8118035/" "/flka/" (project-root-dir (buffer-file-name))) "\n"
-                 "make " target " -f makefilertos " envlist " 2>&1 | \\\n"
-                 "sed s@/flka/@/emp8118035/@"
-                 ")'"))))
-
-    ;; -- pc & rtos
-    ((and (eq (project-root-type) 'project-nova) nova-pc-p)
-     (when current-prefix-arg
-       (custom-set-value-prompt 'nova-compile-target))
-     (compile
-;      (concat "ssh " nova-build-server " /bin/bash -c \"'cd ~/prog/nova && mmake " nova-compile-target  "'\"")
-      (concat "cd ~/prog/nova && set -o pipefail && mmake " nova-compile-target " 2>&1 | sed 's@/home/emp8118035/prog/nova/@@' ")
-      ))
-
     ;; unkown project type
     ;; ----------------------------------------------------------------------
     (t (call-interactively 'compile))))
@@ -350,8 +302,6 @@ Nil if there is none."
      ((nil-or-empty-p modifier)
       (setq modifier
             (cond
-             ((member type '(project-diebonder-pc project-diebonder-rtos project-nova))
-              "hci")
              ((equal type 'project-el)
               "e")
              (t "e"))))

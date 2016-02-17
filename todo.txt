@@ -117,9 +117,6 @@ keywords: tempo, skeletton, autopair, balanced, electric,
 - move to trash instead really delete; do not ask for confirmation; delete cassociated buffer without confirmation
 - `browse' mode to quickly moveto/select items. Similar to windows explorer.
 
-== dragon
-- etrace macros containing current class::method should be tested if the string is correct. Maybe also silently in the background and annotate culprits.
-
 == Misc
 - grep/perl eol normalization so on each system newline is really always \n
 - create backup of a file explicitely (also in dired).

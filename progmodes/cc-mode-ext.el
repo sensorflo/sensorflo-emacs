@@ -462,7 +462,6 @@ the directory part and without suffix. Thus for
         (c-forward-defun-name)
         (c-forward-defun-name))))
 
-;; todo: contains Dragon specific stuff, extract that into dragon.el.
 (defun insert-class-name-dwim ()
   (interactive)
   (save-excursion

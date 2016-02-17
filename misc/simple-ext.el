@@ -230,9 +230,6 @@ Behaviour of point is unspecified."
   (cond
    ((and (equal last-command 'beginning-of-line-dwim) (looking-at "^"))
       (back-to-indentation))
-   ;; todo: this is dragon.el specific, find a way to define that functionality within dragon.el
-   ((and (equal last-command 'beginning-of-line-dwim) (looking-back "^[ \t]+"))
-    (re-search-forward "[ \t]*\\(EHRESULT[ \t]+\\)?ehr[ \t]*\\+?=[ \t]*"))
    (t
     (move-beginning-of-line nil))))
 

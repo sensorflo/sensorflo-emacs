@@ -58,8 +58,6 @@
 (defalias 'mc 'mark-comment)
 (defalias 'cbfn 'copy-buffer-file-name-as-kill)
 (defalias 'mb 'make-backup)
-(defalias 'nmc 'nova-make-class)
-(defalias 'nqtc 'nova-qtconfig)
 (defalias 'sj 'senator-jump)
 (defalias 'rb 're-builder)
 (defalias 'reb 're-builder)

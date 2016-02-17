@@ -296,7 +296,6 @@
  '(next-error-highlight-no-select t)
  '(next-error-recenter (quote (4)))
  '(next-screen-context-lines 20)
- '(nova-compile-target "default")
  '(only-global-abbrevs nil)
  '(outline-minor-mode-prefix "\C-c\C-o")
  '(package-archives

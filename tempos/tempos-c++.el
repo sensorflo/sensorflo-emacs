@@ -123,13 +123,20 @@ qt: /*! ... */"
    (tempos-c++-close-brace) )
  "else")
 
+(tempo-define-template "c-for-range-based"
+ '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
+    "for" (tempos-c++-between-keyword-parenthesis) "( const auto& " p " : " p " )"
+   (tempos-c++-open-brace)
+   r-or-blank-line>
+   (tempos-c++-close-brace) )
+ "for")
+
 (tempo-define-template "c-for"
  '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
     "for" (tempos-c++-between-keyword-parenthesis) "( " p "; " p "; " p " )"
    (tempos-c++-open-brace)
    r-or-blank-line>
-   (tempos-c++-close-brace) )
- "for")
+   (tempos-c++-close-brace)))
 
 (tempo-define-snippet "c-for-std"
  '( (progn (tempo-entry "\\bf\\(o\\(r\\sw*\\)?\\)?") "") lws
@@ -156,7 +163,7 @@ qt: /*! ... */"
       r-or-blank-line>
       (tempos-c++-close-brace)))
 
-(tempo-ext-define-group "c-for" ("" "-std-2" "-iter"))
+(tempo-ext-define-group "c-for" ("-range-based" "" "-std-2" "-iter"))
 
 ;; switch
 (tempo-define-template "c-switch"

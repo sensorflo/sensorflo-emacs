@@ -280,9 +280,6 @@
 (defun my-c-mode-common-bindings-tempo ()
   (require 'tempos-c++)
 
-  ;; electric
-  (local-set-key [(?{)] 'c-electric-left-brace)
-
   ;; flow control
   (let ((map (make-sparse-keymap)))
     (local-set-key [(control ?\,)(c)] map)

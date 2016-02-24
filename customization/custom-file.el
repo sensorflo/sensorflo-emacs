@@ -61,7 +61,6 @@
  '(cc-search-directories
    (quote
     ("." "/usr/include" "/usr/local/include/*" "../source" "../include" "../src" "../inc")))
- '(column-number-mode t)
  '(comint-prompt-read-only t)
  '(comint-scroll-show-maximum-output nil)
  '(comment-column 1)

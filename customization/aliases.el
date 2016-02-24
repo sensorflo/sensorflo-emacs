@@ -135,6 +135,7 @@
 (defalias 'fsm 'flyspell-mode)
 (defalias 'fm 'flyspell-mode)
 (defalias 'lnm 'line-number-mode)
+(defalias 'cnm 'column-number-mode)
 
 ;;; marker pen: mp...
 (defalias 'mp0 'markerpen0)

@@ -45,7 +45,7 @@ that working with the file becomes very cumbersome."
   (hl-line-mode -1)
   (font-lock-mode -1)
   (linum-mode -1)
-  (line-number-mode -1)
+  (line-number-mode -1) ; see also line-number-display-limit-width, line-number-display-limit
   (column-number-mode -1)
   (outline-minor-mode -1)
   (fci-mode -1)

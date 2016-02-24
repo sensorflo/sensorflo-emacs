@@ -66,8 +66,6 @@
  '(comment-column 1)
  '(compilation-ask-about-save nil)
  '(compilation-auto-jump-to-first-error t)
- `(completion-ignored-extensions
-   ,(add-to-list 'completion-ignored-extensions ".html" ".htm"))
  '(compilation-message-face (quote default))
  '(compilation-scroll-output (quote first-error))
  '(compilation-skip-threshold 1)

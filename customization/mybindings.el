@@ -95,6 +95,8 @@
 (global-set-key [(control x)(control j)] 'dired-jump)
 (global-set-key [(control ?\;)] 'ace-jump-mode)
 (global-set-key [C-M-up] 'move-text-up)
+(global-set-key [(meta p)] 'tempo-backward-mark)
+(global-set-key [(meta n)] 'tempo-forward-mark)
 (global-set-key [C-M-down] 'move-text-down)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 

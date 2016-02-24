@@ -33,7 +33,8 @@
 
 (defun git-irb-move-commit-at-point-to-referenced-commit ()
   (interactive)
-  (let* ((src-start (line-beginning-position))
+  (let* ((inhibit-read-only t)
+         (src-start (line-beginning-position))
          (src-end (1+ (line-end-position)))
          (src-column (column))
          (move-to-after-dst-commit t)
@@ -76,6 +77,8 @@
 
 See (finder-commentary \"git-irb-mode\")."
   )
+
+;; note that auto-mode-alist is modified by git-rebase.el.
 
 (provide 'git-irb-mode)
 

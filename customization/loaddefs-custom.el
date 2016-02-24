@@ -727,7 +727,7 @@ Key bindings:
 ;;;***
 
 ;;;### (autoloads nil "../progmodes/git-irb-mode" "../progmodes/git-irb-mode.el"
-;;;;;;  (21143 32520 845501 109000))
+;;;;;;  (22218 60327 850770 764000))
 ;;; Generated autoloads from ../progmodes/git-irb-mode.el
 
 (autoload 'git-irb-mode "../progmodes/git-irb-mode" "\

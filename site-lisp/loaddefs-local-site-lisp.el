@@ -1412,7 +1412,7 @@ provide such a commit message.
 ;;;***
 
 ;;;### (autoloads nil "misc/magit/lisp/git-rebase" "../misc/magit/lisp/git-rebase.el"
-;;;;;;  (22081 4590 776517 377000))
+;;;;;;  (22218 60319 650835 250000))
 ;;; Generated autoloads from ../misc/magit/lisp/git-rebase.el
 
 (autoload 'git-rebase-mode "misc/magit/lisp/git-rebase" "\
@@ -1427,7 +1427,7 @@ running 'man git-rebase' at the command line) for details.
 
 (defconst git-rebase-filename-regexp "/git-rebase-todo\\'")
 
-(add-to-list 'auto-mode-alist (cons git-rebase-filename-regexp 'git-rebase-mode))
+(add-to-list 'auto-mode-alist (cons git-rebase-filename-regexp 'git-irb-mode))
 
 ;;;***
 

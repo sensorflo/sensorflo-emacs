@@ -145,9 +145,23 @@
   (c-setup-filladapt)
   (hs-minor-mode t)
   (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet))))
-  (setq comment-start-skip "\\(//[/!]*\\|/\\*[*!]*\\)\\s-*") ;should be part of doxymacs?
-  (when (null comment-end-skip)
-    (setq comment-end-skip "\\s-*\\*+/"))
+
+  (let ((line-start-core "\\(?://+[<!]?\\)")
+        (block-start-core "\\(?:/\\*[*!]*\\)")
+        (block-end-core "\\(?:\\*+/\\)"))
+    (set (make-local-variable 'line-comment-start-skip)
+         (concat "\\(" line-start-core "\\)\\s-*"))
+
+    (set (make-local-variable 'block-comment-start-skip)
+         (concat "\\(" block-start-core "\\)\\s-*"))
+    (set (make-local-variable 'block-comment-end-skip)
+         (concat "\\s-*" block-end-core))
+
+    (set (make-local-variable 'comment-start-skip)
+         (concat "\\(" block-start-core "\\|" line-start-core "\\)\\s-*"))
+    (set (make-local-variable 'comment-end-skip)
+         (concat "\\s-*\\(" block-end-core "\\|\n\\)")))
+
   (abbrev-mode 0)
   (require 'doxymacs)
   (doxymacs-mode 1)

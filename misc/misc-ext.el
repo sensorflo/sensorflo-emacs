@@ -605,52 +605,70 @@ read only flag is automatically unset."
 ;;; comment
 ;; ----------------------------------------------------------------------
 
+(defvar line-comment-start-skip nil
+  "As `comment-start-skip', but exclusively for single line comments.")
+
+(defvar block-comment-start-skip nil
+  "As `comment-start-skip', but exclusively for block comments.")
+
+(defvar block-comment-end-skip nil
+  "As `comment-end-skip', but exclusively for block comments.")
+
 ;; Bugs
 ;; - when point is within comment-start-skip, then the previous comment is selected
 ;; - when multple comment syntaxes exist (eg. as in C++ \\..\n and /*..*/), then
 ;;   it is NOT ensured that the end-delimiter matching the start-delimiter is
 ;;   found - ANY found end delimiter will end the comment
-;; - multiple technical comments in a row, which most probably constitue one
-;;   logical comment (e.g. in shell scripts, multiple #...) are NOT considered
-;;   as one comment
 (defun mark-comment-dwim ()
-  "Marks 'the' comment in a dwim fashion.
+  "Marks current or nearest comment in a dwim fashion.
 To select a previous/following comment, move point out of comment"
   (interactive)
 
+  (when (not (and line-comment-start-skip block-comment-end-skip block-comment-end-skip))
+    (error "define all of line-comment-start-skip block-comment-end-skip block-comment-end-skip"))
+
   (let (point-mark-exchanged)
 
-    ;; canonicalize: point <= mark
+    ;; canonicalize order: point bevor mark
     (when (and mark-active (> (point) (mark)))
       (exchange-point-and-mark)
       (setq point-mark-exchanged t))
 
     (cond
-     ;; whole comment incl delimiter -> comment's text
+     ;; whole comment incl delimiter is marked -> mark comment's text exclusiv
+     ;; leading/trailing whites
      ((and
        mark-active
        (looking-at comment-start-skip)
-       (save-excursion (goto-char (mark)) (looking-back comment-end-skip)))
+       (save-excursion
+         (let ((is-line-commet (looking-at line-comment-start-skip)))
+           (goto-char (mark))
+           (if is-line-commet
+               (or (looking-at "\n") (looking-back "\n"))
+             (looking-back block-comment-end-skip)))))
       (re-search-forward comment-start-skip)
       (exchange-point-and-mark)
       (re-search-backward-greedy comment-end-skip)
       (exchange-point-and-mark))
 
-     ;; comment's text -> whole comment incl delimiter
-     ((and
-       mark-active
-       (looking-back comment-start-skip)
-       (save-excursion (goto-char (mark)) (looking-at comment-end-skip)))
-      (re-search-backward-greedy comment-start-skip)
-      (exchange-point-and-mark)
-      (re-search-forward comment-end-skip)
-      (exchange-point-and-mark))
-
-     ;; marks whole previous comment
+     ;; mark inactive: mark whole current or nearest (BACKWARD)
+     ;; comment. Multiple single line comments in a row count as one comment
      (t
+      (setq mark-active nil)
       (unless (looking-at comment-start-skip)
         (re-search-backward comment-start-skip))
-      (push-mark (save-excursion (re-search-forward comment-end-skip)))))
+      (when (looking-at line-comment-start-skip)
+        (while (re-search-backward
+                (concat line-comment-start-skip ".*\n\\s-*\\=") nil t))
+        (beginning-of-line))
+      (push-mark
+       (save-excursion
+         (if (looking-at (concat "\\s-*" line-comment-start-skip))
+             (progn
+               (while (looking-at (concat "\\s-*" line-comment-start-skip))
+                 (forward-line 1))
+               (point))
+           (re-search-forward block-comment-end-skip))))))
 
     (when point-mark-exchanged
       (exchange-point-and-mark))

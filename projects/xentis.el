@@ -60,11 +60,11 @@
     (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|boc\\|boh\\|msg\\)")
     (make-local-variable 'grep-find-command)
     (grep-apply-setting 'grep-find-command (xentis-grep-find-command))
-    (set (make-local-variable 'compile-command) "sshx pdxenlin52 buildxentis")
+    (set (make-local-variable 'compile-command) "sshx pdxenlin49 buildxentis")
     (set (make-local-variable 'grep-find-ext-command-function) 'xentis-grep-find-command)
     (set (make-local-variable 'grep-find-ext-regexp-function) 'xentis-grep-find-regexp)
 
-    (set (make-local-variable 'cc-search-directories) nil)
+    (make-local-variable 'cc-search-directories)
     (dolist (x '("include" "include/investment_compliance"
                  "include/investment_compliance/db_abstraction" "source/bo/investment_compliance"
                  "test/unit/investment_compliance" "test/unit/investment_compliance/db_abstraction"
@@ -74,8 +74,11 @@
                  "include/converter" "include/converter/interpreter" "source/bo/composite"
                  "include/composite" "source/bo/business_rules" "include/business_rules"
                  "include/xtl" "source/bo/xtl/src" "include/risk" "source/bo/risk"
-                 "include/xml" "source/libs/xml"))
+                 "include/xml" "source/libs/xml" "include/job" "source/bo/job"
+                 "source/bo/common/exceptions" "include/common/exceptions"))
       (add-to-list 'cc-search-directories (concat (eamis-root-dir) "/" x)))
+    (dolist (x '("../include" "../src"))
+      (add-to-list 'cc-search-directories x))
     (mode-message-end "xentis-hook")))
 
 ;;;###autoload
@@ -142,7 +145,7 @@
    (error "buffer is not associated with anything on file system")))
 
 (defun eamis-root-dir ()
-  (locate-dominating-file (fucker) "eamis") "eamis")
+  (concat (locate-dominating-file (fucker) "eamis") "eamis"))
 
 (defun eamis-current-project-name ()
   (let ((bfnd (or default-directory (error "default-directory is nil"))))
@@ -391,7 +394,7 @@ Additionaly match data is set to mark the culprit by match group 1."
   ;;   ISO-8859-1 by using displayable characters rather than control characters
   ;;   in the 80 to 9F (hex) range...
   (member buffer-file-coding-system
-          '(iso-latin-1-unix us-ascii-unix)))
+          '(iso-latin-1-unix us-ascii-unix no-conversion)))
 
 (defun xentis-create-tags-table()
   (interactive)
@@ -700,6 +703,8 @@ void foo(int /*i*/) {
         ;; trailing ; after class inline method definition
         (my-dired-do-query-replace-regexp "^[ \t]*;[ \t]*\n" "")
 
+        (my-dired-do-query-replace-regexp "\\(#include.*?\\)\\s-*//.*" "\\1")
+
         ;; The trailing whites after /** and leading whites before */ is exactly one
         ;; space
         ;; (xentis-dired-do-query-replace-regexp "\\(/\\*[*@]+\\)\\(?:\\(?:[ \t]*\n\\)+[ \t]*\\|[ \t]\\{2,\\}\\)" "\\1 ")
@@ -709,7 +714,7 @@ void foo(int /*i*/) {
         ;; (xentis-dired-do-query-replace-regexp "/\\*+[ \t\n]\\{2,\\}\\*+/" "/** */")
 
         ;; todo:
-        ;; search for //-- and //== banners ("^[ 	]*//[ \t]*[-=/]\{3,\}") and modify manually
+        ;; search for //-- and //== banners ("^[ 	]*//[ 	]*[-=/]\{3,\}") and modify manually
         ;; search for overly long lines: "^.\{110,\}"
 
         ;; new commit

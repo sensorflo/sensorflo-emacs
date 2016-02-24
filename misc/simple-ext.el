@@ -584,7 +584,7 @@ This undoing is not itself undoable (aka redoable)."
       (setq buffer-undo-list handle))))
 
 (defun re-search-backward-greedy (regexp &optional bound noerror count)
-  "As `re-search-backward-greedy' but makes a match as long as possible.
+  "As `re-search-backward' but makes a match as long as possible.
 I.e. a match extends to the left as far as possible."
   (when (re-search-backward regexp bound noerror count)
     (while (and (or (null bound) (>= (point) bound))

@@ -269,7 +269,6 @@
  '(indent-tabs-mode nil)
  '(indicate-buffer-boundaries (quote left))
  '(indicate-empty-lines t)
- `(inhibit-startup-echo-area-message ,(user-login-name))
  '(inhibit-startup-screen t)
  '(initial-buffer-choice t)
  '(initial-major-mode (quote text-mode))

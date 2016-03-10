@@ -88,7 +88,6 @@
     (set (make-local-variable 'tempos-c++-open-brace-style) 'behind-conditional)
 
     (set (make-local-variable 'c-doc-comment-char) ?\!)
-    (set (make-local-variable 'c-basic-offset) 4)
     (c-set-offset 'access-label '-)
     (c-set-offset 'innamespace 0)
     (c-set-offset 'inclass '+)

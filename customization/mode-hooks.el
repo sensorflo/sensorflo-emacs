@@ -136,6 +136,8 @@
 
 (add-hook 'c-mode-common-hook 'default-c-mode-common-hook)
 
+(defvaralias 'c-basic-offset 'tab-width)
+
 ;; defaults for all projects
 (defun default-c-mode-common-hook ()
   (message "default-c-mode-common-hook")
@@ -194,7 +196,6 @@
 
   (subword-mode t)
 
-  (setq c-basic-offset 2)
   (outline-c-mode-common)
   (my-c-mode-common-bindings))
 

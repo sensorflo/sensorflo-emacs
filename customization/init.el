@@ -8,6 +8,7 @@
 ;;
 ;; Summary of how to customize Emacs:
 ;; - Emacs' customization
+;;   - personal site local configuration: ~/.emacs.d/my-site-local.el
 ;;   - Init file (~/.emacs.d/init.el). Run only once at Emacs' startup.
 ;;   - Customization variables (in file denoted by `custom-file'). Loaded within
 ;;     my init file.
@@ -41,11 +42,26 @@ Meant to profile startup time."
       (message (concat (number-to-string duration) "\n\n" msg)))))
 
 
+;;; personal site local configuration
+;; ==================================================
+(message2 "personal site local configuration")
+(let ((my-site-local-fn (concat user-emacs-directory "my-site-local.el")))
+  (when (file-readable-p my-site-local-fn)
+    (load-file my-site-local-fn)))
+
+
 ;;; stettings part 1 - before loading libraries
 ;; ==================================================
 (message2 "init file: settings part 1")
 
 ;; load-path
+;; Since add-to-list adds to the front, the order of add-to-list is in
+;; increasing priority, i.e. the path with the lowest priority is add-to-list
+;; first.
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp")
+(add-to-list 'load-path (or emacs-goodies-el-path "/usr/share/emacs/site-lisp/emacs-goodies-el"))
+(add-to-list 'load-path (or debian-el-path "/usr/share/emacs/site-lisp/debian-el"))
 (dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
   (let ((default-directory (concat user-emacs-directory x)))
                 (add-to-list 'load-path default-directory)
@@ -60,10 +76,6 @@ Meant to profile startup time."
              (lambda (x) (concat "site-lisp/cedet-1.0pre7/" x))
              '("cogre" "common" "contrib" "ede" "eieio" "semantic" "speedbar" "srecode" "tests")))))
   (add-to-list 'load-path (concat user-emacs-directory x)))
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/debian-el")
 
 ;; find-function-C-source-directory
 (setq find-function-C-source-directory
@@ -244,7 +256,7 @@ Meant to profile startup time."
 ;; them.
 
 ;; autoload
-(load-library "debian-el-loaddefs")
+;;(load-library "debian-el-loaddefs")
 ;(load-library "emacs-goodies-loaddefs")
 ;; intendet for own libraries
 (message2 "autoload loaddefs-custom")

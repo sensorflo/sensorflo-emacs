@@ -60,7 +60,10 @@
     (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|boc\\|boh\\|msg\\)")
     (make-local-variable 'grep-find-command)
     (grep-apply-setting 'grep-find-command (xentis-grep-find-command))
-    (set (make-local-variable 'compile-command) "sshx pdxenlin49 buildxentis")
+    (set (make-local-variable 'compile-command)
+         (if (string-match "^pdxenlin49" (shell-command-to-string "hostname"))
+             "buildxentis"
+           "sshx pdxenlin49 buildxentis"))
     (set (make-local-variable 'grep-find-ext-command-function) 'xentis-grep-find-command)
     (set (make-local-variable 'grep-find-ext-regexp-function) 'xentis-grep-find-regexp)
 

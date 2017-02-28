@@ -568,6 +568,12 @@ read only flag is automatically unset."
    "^[0-9]+) .*? line: \\([0-9]+\\)[ \t]*\\(.+\\)"
    2 1))
 
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(cmake-sensorflo
+   "^CMake Error at \\(.+?\\):\\([0-9]+\\)"
+   1 2))
+
 ;; The original compilation-mode-font-lock-keywords does highlight to much stuff
 ;; for my taste. That results in wrong/misleading highlights in my makefiles.
 (setq compilation-mode-font-lock-keywords

@@ -1194,7 +1194,8 @@
 ;;; compilation
 ;; ----------------------------------------------------------------------------
 (defun my-compilation-mode-hook ()
-  (toggle-truncate-lines -1))
+  (toggle-truncate-lines -1)
+  (hl-line-mode 1))
 
 (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
 

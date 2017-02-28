@@ -3192,6 +3192,21 @@ If there is no .svn directory, examine if there is CVS and run
 
 ;;;***
 
+;;;### (autoloads nil "qml-mode" "qml-mode.el" (22707 54727 791647
+;;;;;;  714000))
+;;; Generated autoloads from qml-mode.el
+
+(autoload 'qml-mode "qml-mode" "\
+Major mode for editing QML.
+
+\\{qml-mode-map}
+
+\(fn)" t nil)
+
+(add-to-list 'auto-mode-alist '("\\.qml$" . qml-mode))
+
+;;;***
+
 ;;;### (autoloads nil "rect-mark" "rect-mark.el" (20741 14138 0 0))
 ;;; Generated autoloads from rect-mark.el
  (define-key ctl-x-map "r\C-@" 'rm-set-mark)

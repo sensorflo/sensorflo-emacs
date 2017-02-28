@@ -55,6 +55,7 @@ Returns nil if it is unknown."
     (cond
      ((null actual-fn) nil)
      ((string-match xentis-file-name-regex actual-fn) 'project-xentis)
+     ((string-match focus-file-name-regex actual-fn) 'project-focus)
      ((string-match "/\\(inos\\|inco\\|lua\\)\\(/\\|$\\)" actual-fn) 'project-indel)
      ((string-match "/diebonder/pc\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)
      ((string-match "/Common\\(/\\|$\\)" actual-fn) 'project-diebonder-pc)

@@ -60,8 +60,8 @@ Meant to profile startup time."
 ;; first.
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/dvc/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp")
-(add-to-list 'load-path (or emacs-goodies-el-path "/usr/share/emacs/site-lisp/emacs-goodies-el"))
-(add-to-list 'load-path (or debian-el-path "/usr/share/emacs/site-lisp/debian-el"))
+(add-to-list 'load-path (or (and (boundp 'emacs-goodies-el-path) emacs-goodies-el-path) "/usr/share/emacs/site-lisp/emacs-goodies-el"))
+(add-to-list 'load-path (or (and (boundp 'debian-el-path) debian-el-path) "/usr/share/emacs/site-lisp/debian-el"))
 (dolist (x '("misc" "customization" "tempos" "projects" "textmodes" "progmodes" "modified-site-lisp"))
   (let ((default-directory (concat user-emacs-directory x)))
                 (add-to-list 'load-path default-directory)

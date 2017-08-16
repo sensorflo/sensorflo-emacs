@@ -211,6 +211,7 @@ Meant to profile startup time."
          ("\\(\\`\\|/\\)\\.dmrc\\'" . conf-mode)
          (".ssh/config\\'"  . ssh-config-mode)
          ("sshd?_config\\'" . ssh-config-mode)
+         ("\\(/\\|\\`\\)CMakeCache.txt\\'" . cmake-cache-mode)
          ("\\.typ\\'" . gtypist-mode)
          ;; is perl-mode by default
          ("\\.\\([pP]\\([Llm]\\|erl\\|od\\)\\|al\\)\\'" . cperl-mode)

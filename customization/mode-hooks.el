@@ -1197,7 +1197,9 @@
 ;;; compilation
 ;; ----------------------------------------------------------------------------
 (defun my-compilation-mode-hook ()
-  (toggle-truncate-lines -1)
+  (ansi-color-buffer)
+  (let ((buffer-read-only nil))
+    (toggle-truncate-lines -1))
   (hl-line-mode 1))
 
 (add-hook 'compilation-mode-hook 'my-compilation-mode-hook)

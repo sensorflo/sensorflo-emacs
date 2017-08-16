@@ -814,7 +814,7 @@ Turning on zimbu mode runs the normal hook `zimbu-mode-hook'.
 ;;;;;;  (22703 61610 542777 115000))
 ;;; Generated autoloads from ../projects/focus.el
 
-(defvar focus-file-name-regex "/src/[^/]*focus[^/]*/" "\
+(defvar focus-file-name-regex "^\\(.*?/[^/]*futura_focus[^/]*\\)\\(?:/\\|$\\)" "\
 Files matching this regexp belong to focus project")
 
 (add-to-list 'file-coding-system-alist (cons focus-file-name-regex 'utf-8-dos))

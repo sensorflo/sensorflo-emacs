@@ -19,15 +19,17 @@
 ;;; misc settings
 
 ;;;###autoload
-(defvar focus-file-name-regex "/src/[^/]*focus[^/]*/"
-  "Files matching this regexp belong to focus project")
+(defvar focus-file-name-regex "^\\(.*?/[^/]*futura_focus[^/]*\\)\\(?:/\\|$\\)"
+  "Files matching this regexp belong to focus project.
+
+Match group 1 contains name of project root directory.")
 
 (defvar focus-verify-coding-system t)
 
 ;; TODO: Actually I don't want to _define_ the coding system to be used, I
 ;; want to prefer it over other possible alternatives.
 ;;;###autoload
-(add-to-list 'file-coding-system-alist (cons focus-file-name-regex 'utf-8-dos))
+(add-to-list 'file-coding-system-alist (cons focus-file-name-regex 'utf-8-unix))
 
 ;;;###autoload
 (add-hook 'change-major-mode-after-body-hook 'focus-hook)
@@ -61,14 +63,22 @@
     (make-local-variable 'grep-find-command)
     (grep-apply-setting 'grep-find-command (focus-grep-find-command))
     (set (make-local-variable 'compile-command)
-         "cd /home/vzug/src/futura_focus/Qt_GUI/build-ninja && ninja UIViewFocusAdvancedTest")
+         (concat "cd " (focus-root-dir) "build && ./build"))
     (set (make-local-variable 'grep-find-ext-command-function) 'focus-grep-find-command)
     (set (make-local-variable 'grep-find-ext-regexp-function) 'focus-grep-find-regexp)
 
     (make-local-variable 'cc-search-directories)
     (add-to-list 'cc-search-directories (concat (focus-root-dir) "/Qt_GUI"))
-    (dolist (x '("../include" "../src"))
+
+    (dolist (x (list
+                "."
+                (concat (focus-root-dir) "/*")
+                (concat (focus-nearest-cmake-dir) "src")
+                (concat (focus-nearest-cmake-dir) "src/*")
+                (concat (focus-nearest-cmake-dir) "include/*")
+                (concat (focus-nearest-cmake-dir) "include/*/*")))
       (add-to-list 'cc-search-directories x))
+
     (mode-message-end "focus-hook")))
 
 ;;;###autoload
@@ -78,20 +88,80 @@
     (set (make-local-variable 'tempos-c++-open-brace-style) 'behind-conditional)
 
     (set (make-local-variable 'c-doc-comment-char) ?\*)
+    ;;(c-add-style "user" (list '(c-block-comment-prefix . "* ")))
+    (set (make-local-variable 'c-block-comment-prefix) "* ")
+    (c-set-offset 'c 1)
     (c-set-offset 'access-label '-)
     (c-set-offset 'innamespace 0)
-    (c-set-offset 'inclass '+)
-    (c-set-offset 'member-init-intro '++)
+    (c-set-offset 'inclass '++)
+    (c-set-offset 'inextern-lang 0)
+    (c-set-offset 'member-init-intro '+)
+    (c-set-offset 'statement-cont '+)
+    (c-set-offset 'brace-list-open 0) ; brace of enum class
     (c-set-offset 'topmost-intro-cont '++) ; note that elements in ctor initializer list after an element initialized with {...} have that
+    (c-set-offset 'topmost-intro-cont 0) ; also the actual definition after template<...>
 
-    (focus-font-lock-add-keywords)
     (mode-message-end "focus-c-mode-common-hook")))
+
+;; (add-to-list
+;;  'compilation-error-regexp-alist-alist
+;;  `(focus-logfile
+;;    ,(concat
+;;      "^\\(?:[^:=\n]*[:=][ \t]+\\)?"                     ; - intro
+;;      "\\([^:=\n]*?\\):"                                 ; 1 file name
+;;      "\\([0-9]+\\):"                                    ; 2 line no
+;;      "\\(?:\\([0-9]+\\):\\)?"                           ; 3 column no
+;;      "\\(?:"                                            ; - message
+;;      "[ \t]*error\\|"                                 ;   - error
+;;      "\\([ \t]*W:\\| *[a-zA-Z]*[wW]arn\\)\\|"         ;   4 warn
+;;      "\\([ \t]*required from\\|[ \t]*note\\)\\|"      ;   5 info
+;;      "[^0-9\n]"                                       ;   - ??
+;;      "\\)")
+;;    1 2 3 (4 . 5)))
 
 ;;;###autoload
 (defun focus-compilation-mode-hook()
   (when (eq (project-root-type) 'project-focus)
     (set (make-local-variable 'compilation-error-regexp-alist)
-         '(gnu-sensorflo gcc-include-sensorflo cmake-sensorflo cppunit))))
+         '(gnu-sensorflo gcc-include-sensorflo cmake-sensorflo cppunit )) ;; add focus-logfile
+    ;; Since unfortunatly we have so many warnings
+    (set (make-local-variable 'compilation-skip-threshold) 2)
+    (font-lock-add-keywords nil (list
+      ;; Actually regexes for log. Here because of ctest output
+      (list (concat
+             "^\\(ERROR\\b\\)\\(?:\\(?:[ \t]*\\[.*?\\][ \t]*\\)?[ \t]*"
+             ":[ \t]*\\([^:]*?\\)[ \t]*"
+             ":[ \t]*\\([0-9]+\\)\\)?")
+            '(1 compilation-error-face)
+            '(2 font-lock-semi-unimportant nil t) ; file
+            '(3 compilation-line-face nil t)) ; line
+      (list (concat
+             "^\\(WARNING\\b\\)\\(?:\\(?:[ \t]*\\[.*?\\][ \t]*\\)?[ \t]*"
+             ":[ \t]*\\([^:]*?\\)[ \t]*"
+             ":[ \t]*\\([0-9]+\\)\\)?")
+            '(1 compilation-warning-face)
+            '(2 font-lock-semi-unimportant nil t) ; file
+            '(3 compilation-line-face nil t)) ; line
+      (list (concat
+             "^\\(TRACE\\b\\)\\(?:\\(?:[ \t]*\\[.*?\\][ \t]*\\)?[ \t]*"
+             ":[ \t]*\\([^:]*?\\)[ \t]*"
+             ":[ \t]*\\([0-9]+\\)\\)?")
+            '(1 compilation-info-face)
+            '(2 font-lock-semi-unimportant nil t) ; file
+            '(3 compilation-line-face nil t))
+      (list "^\\(log4cxx\\b\\)"
+            '(1 compilation-info-face))
+      ;; QTest
+      (list "^\\(PASS\\)   : "
+            '(1 'success))
+      (list "^\\(FAIL!\\)  : "
+            '(1 compilation-error-face))
+      ;; ctest
+      (list "^\\(Errors while running CTest\\)"
+            '(1 compilation-error-face))
+      (list "^\\(100% tests passed\\)"
+            '(1 'success))
+      ))))
 
 ;;;###autoload
 (defun focus-hack-local-variables-hook()
@@ -114,7 +184,12 @@
    (error "buffer is not associated with anything on file system")))
 
 (defun focus-root-dir ()
-  (locate-dominating-file (fucker) "futura_focus"))
+  (let ((fucker (fucker)))
+    (string-match focus-file-name-regex fucker)
+    (match-string 0 fucker)))
+
+(defun focus-nearest-cmake-dir ()
+  (locate-dominating-file (fucker) "CMakeLists.txt"))
 
 ;;;###autoload
 (defun focus-before-save-hook ()
@@ -122,9 +197,9 @@
          focus-verify-coding-system
          (eq (project-root-type) 'project-focus)
          (not (focus-coding-system-p)))
-    (if (y-or-n-p (format "%s is encoded in %S. Change coding to Focus' requirement being iso-latin-1-unix?"
+    (if (y-or-n-p (format "%s is encoded in %S. Change coding to Focus' requirement being utf-8-unix?"
                           (buffer-name) buffer-file-coding-system))
-        (setq buffer-file-coding-system 'iso-latin-1-unix)
+        (setq buffer-file-coding-system 'utf-8-unix)
       (if (y-or-n-p "abort saving? ")
           (error "user aborted abort aving")))))
 
@@ -142,14 +217,15 @@
   ;;   ISO-8859-1 by using displayable characters rather than control characters
   ;;   in the 80 to 9F (hex) range...
   (member buffer-file-coding-system
-          '(utf-8-dos us-ascii-dos no-conversion)))
+          '(utf-8-unix us-ascii-Unix no-conversion)))
 
 (defun focus-grep-find-command(&optional regexp)
   (concat
    "find " (focus-root-dir) " \\\n"
    "-regextype posix-egrep \\\n"
+   "\\( -type d \\( -name .git -o -name 'build-*' \\) -prune \\) -o \\\n"
    "-type f \\\n"
-   "-iregex '.*\\.(c|h|hpp|cpp|qml|txt)' \\\n"
+   "-iregex '.*\\.(c|h|hpp|cpp|qml|txt|xml|json)' \\\n"
    "-print0 | xargs -0 grep --color=always -nIP \\\n"
    "-ie '" regexp "'"))
 

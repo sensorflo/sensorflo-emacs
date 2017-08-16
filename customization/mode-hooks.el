@@ -527,6 +527,11 @@
                        ".png")))
          (concat "dot -Tpng " srcfilename " >" outfilename))))
 
+;;; js / javascript
+;; ----------------------------------------------
+(defvaralias 'js-indent-level 'tab-width)
+
+
 
 ;;; text modes
 ;;; ===================================================================

@@ -326,6 +326,14 @@ and '.h' matches files ending in 'ch' where c is any character."
   (interactive "P")
   (dired-map-over-marks-check (function dired-update-file-autoloads) arg 'update-file-autoloads t))
 
+(defun dired-do-format-buffer-or-region (&optional arg)
+  (interactive)
+  (save-window-excursion
+    (mapc (lambda (fn)
+            (find-file fn)
+            (call-interactively 'format-buffer-or-region))
+          (dired-get-marked-files))))
+
 (defun dired-c-convert-ifndef-to-pragma-once ()
   ;; Return nil for success, offending file name else.
   (let ((file (dired-get-filename)) failure)
@@ -859,6 +867,13 @@ and (buffer-size) respectively is used."
                   (mapconcat (lambda (x) x) sub-regexps "\\)\\|\\(?:")
                   "\\)\\)")))
     (re-search-forward regexp)))
+
+(defun format-buffer-or-region()
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (clang-format-buffer)
+      (c-indent-region (point-min) (point-max)))))
 
 
 ;;; outline

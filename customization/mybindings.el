@@ -99,6 +99,7 @@
 (global-set-key [(meta n)] 'tempo-forward-mark)
 (global-set-key [C-M-down] 'move-text-down)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key [backtab] 'format-buffer-or-region)
 
 (global-set-key "\C-xw" (make-sparse-keymap))
 (global-set-key "\C-xws" 'highlight-toggle-sexp-or-region)

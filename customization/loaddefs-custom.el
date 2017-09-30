@@ -673,6 +673,17 @@ Turning on autoexp mode runs the normal hook `autoexp-mode-hook'.
 
 ;;;***
 
+;;;### (autoloads nil "../progmodes/cmake-cache-mode" "../progmodes/cmake-cache-mode.el"
+;;;;;;  (22977 22916 297332 296000))
+;;; Generated autoloads from ../progmodes/cmake-cache-mode.el
+
+(autoload 'cmake-cache-mode "../progmodes/cmake-cache-mode" "\
+Major mode for editing cmake cache files
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "../progmodes/cppkoans-mode/cppkoans-mode"
 ;;;;;;  "../progmodes/cppkoans-mode/cppkoans-mode.el" (21607 47483
 ;;;;;;  800670 183000))

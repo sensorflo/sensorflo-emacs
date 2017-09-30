@@ -289,5 +289,8 @@ Meant to profile startup time."
 ;; --debug-init.
 (setq debug-on-error nil)
 
+(require 'powerline)
+(powerline-default-theme)
+
 (message2 "init file done")
 ;;; init.el ends here

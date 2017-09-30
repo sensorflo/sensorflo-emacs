@@ -11,3 +11,4 @@ customization/site-config.el
 \#*#
 /eproject.lst
 /my-site-local.el
+/ido.last

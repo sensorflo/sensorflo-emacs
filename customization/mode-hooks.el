@@ -148,6 +148,8 @@
   (hs-minor-mode t)
   (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet))))
 
+  (irony-mode)
+
   (let ((line-start-core "\\(?://+[<!]?\\)")
         (block-start-core "\\(?:/\\*[*!]*\\)")
         (block-end-core "\\(?:\\*+/\\)"))
@@ -370,6 +372,14 @@
 
 (add-hook 'idl-mode-hook 'my-idl-mode-hook)
 
+(defun my-c-mode-before-save-hook ()
+  (when (or (eq major-mode 'c++-mode) (eq major-mode 'c-mode))
+    (require 'clang-format)
+    ;; todo: only if there is a .clang-format file in the project root
+    (clang-format-buffer)))
+(add-hook 'before-save-hook 'my-c-mode-before-save-hook t)
+
+
 ;;; cppkoans-mode
 ; ------------------------------------------------------------------
 (defun my-cppkoans-mode-hook ()
@@ -530,6 +540,29 @@
 ;;; js / javascript
 ;; ----------------------------------------------
 (defvaralias 'js-indent-level 'tab-width)
+
+
+;;; irony / flycheck / company
+;; ----------------------------------------------
+;; Recall that the compilation database must be in a directory of
+;; irony-cdb-search-directory-list
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+(require 'company)
+(eval-after-load 'company
+  '(add-to-list 'company-backends 'company-irony))
+
+(require 'flycheck-pos-tip)
+(require 'flycheck-status-emoji)
+(require 'flycheck-color-mode-line)
+(with-eval-after-load 'flycheck
+  (flycheck-pos-tip-mode)
+  (flycheck-status-emoji-mode)
+  (add-hook 'flycheck-mode-hook 'flycheck-irony-setup)
+  ;; (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
+  )
+;; added to flycheck-irony.el: (flycheck-define-generic-checker 'irony...
+;; :next-checkers #'((t . c/c++-cppcheck))
 
 
 
@@ -1302,6 +1335,8 @@
 (defun my-prog-mode-hook ()
   (mode-message-start "my-prog-mode-hook")
   (gud-tooltip-mode t)
+  (flycheck-mode)
+  (company-mode)
   (mode-message-end "my-prog-mode-hook"))
 
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)

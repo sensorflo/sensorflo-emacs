@@ -142,6 +142,42 @@ Meant to profile startup time."
 (load-library "mode-hooks")
 
 
+;; installed ubuntu packages, see also autoloads below: emacs-goodies,
+;; irony-mode, debian-el, emacs25-common-non-dfsg (for info pages)
+
+;; help to install irony on ubuntu:
+;; https://gist.github.com/soonhokong/7c2bf6e8b72dbc71c93b. What i did after M-x
+;; irony-install-server:
+;; cmake -DLIBCLANG_INCLUDE_DIR=/usr/lib/llvm-3.8/include -DLIBCLANG_LIBRARY=/usr/lib/llvm-3.8/lib/libclang.so.1 -DCMAKE_INSTALL_PREFIX\=/home/sensorflo/.emacs.d/irony/ /home/sensorflo/.emacs.d/elpa/irony-20170920.1417/server && cmake --build . --use-stderr --config Release --target install
+;; make flycheck use
+;;   cppcheck
+;;     I am not sure whether it works, so far the errors always say the checker is irony
+;;     flycheck-verify-setup
+;;     flycheck-checker is nil as it ought to be
+;;     flycheck-checkers contains c/c++-cppcheck
+;;     flycheck-cppcheck-checks is "all"
+;;     explicitely selecting c/c++-cppcheck via flycheck-select-checker works
+;;   clang-tidy
+;;   clang static analyzer
+;;
+;; Emacs as IDE:
+;;   http://tuhdo.github.io/c-ide.html#sec-2
+;;   projectile
+;;   helm
+;;   locate file
+;;   flyspell only in comments, and ignoring identifiers
+;;   cycle around file groups (header/src, class,test)
+;;   goto definition
+;;   show declaration & comment
+;;   auto complete
+;;     identifiers
+;;     include paths
+;;     argumens for function, template, macro, ...
+;;   snippets / templates
+;;   refactor
+;;     http://tuhdo.github.io/c-ide.html#sec-2 chapter code refactoring
+;;     https://github.com/tuhdo/semantic-refactor
+
 
 ;;; settings part 2
 ;; =======================================================
@@ -291,6 +327,10 @@ Meant to profile startup time."
 
 (require 'powerline)
 (powerline-default-theme)
+
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
 
 (message2 "init file done")
 ;;; init.el ends here

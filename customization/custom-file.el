@@ -135,7 +135,7 @@
  '(ffe-show-abbrev-upon-find t)
  '(file-cache-completion-ignore-case t)
  '(file-cache-ignore-case t)
- '(fill-column 78)
+ '(fill-column 80)
  '(find-ls-option (quote ("-exec ls -lhgGd {} \\;" . "-lhgGd")) t)
  '(flyspell-always-use-popup t)
  '(flyspell-auto-correct-binding "")

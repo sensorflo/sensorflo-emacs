@@ -1271,10 +1271,11 @@
   (mode-message-start "my-edit-mode-hook")
   (ws-trim-mode)
   (outline-minor-mode t)
-  (line-number-mode t) ; note there's also the custom variable line-number-mode which I mean to _not_ configue
-  (column-number-mode t) ; dito
   (if (> (buffer-size) 100000)
-      (message "Large buffer, not enabling: fci-mode, whitespace-mode")
+      (message "Large buffer, _not_ enabling some minor modes")
+
+    (line-number-mode t) ; note there's also the custom variable line-number-mode which I mean to _not_ configue
+    (column-number-mode t) ; dito
 
     ;; see chapter 'other options' in fill-column-indicator's commentary
     ;; section.

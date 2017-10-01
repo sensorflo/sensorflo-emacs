@@ -406,7 +406,9 @@
 \\)+\\)")
  '(whitespace-empty-at-eob-regexp "^\\([ 	
 ]+\\)\\'")
- '(whitespace-style (quote (face trailing empty indentation space-after-tab)))
+ '(whitespace-style
+   (quote
+    (face trailing lines-tail empty indentation space-after-tab)))
  '(wisent-parse-max-recover 5)
  '(wisent-parse-max-stack-size 2000)
  '(woman-cache-filename "~/.emacs.d/.woman-cache.el")
@@ -522,7 +524,7 @@
  '(whitespace-empty ((t (:inherit trailing-whitespace))))
  '(whitespace-hspace ((t (:inherit font-lock-semi-unimportant))))
  '(whitespace-indentation ((t (:inherit trailing-whitespace))))
- '(whitespace-line ((t (:inherit trailing-whitespace))))
+ '(whitespace-line ((t (:background "gray80"))))
  '(whitespace-newline ((t (:inherit font-lock-semi-unimportant))))
  '(whitespace-space ((t (:inherit font-lock-semi-unimportant))))
  '(whitespace-space-after-tab ((t (:inherit trailing-whitespace))))

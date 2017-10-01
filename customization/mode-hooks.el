@@ -1277,15 +1277,21 @@
     (line-number-mode t) ; note there's also the custom variable line-number-mode which I mean to _not_ configue
     (column-number-mode t) ; dito
 
-    ;; see chapter 'other options' in fill-column-indicator's commentary
-    ;; section.
-    (when truncate-lines
-      (fci-mode t))
+    ;; For me fci-mode, causes sometimes troubles with other things, such as
+    ;; yasnippet or company. Their automatically inserted text / popup is
+    ;; akwardly offseted to the left.  Instead of fci-mode, I now configure
+    ;; whitespace-mode, see below, to highlight overlong lines.
+    ;; I like to leave the following tiny codesnippet in order not to forget how
+    ;; I find it usefull to use turn on fci-mode. See also chapter 'other
+    ;; options' in fill-column-indicator's commentary section.
+    ;; (when truncate-lines
+    ;;   (fci-mode t))
 
     ;; Note that whitespace picks up the current value of indent-tabs-mode /
     ;; tab-width. I.e. they must now have their final value.
     (whitespace-mode t))
   (mode-message-end "my-edit-mode-hook"))
+(defvaralias 'whitespace-line-column 'fill-column)
 
 (defun my-text-mode-hook ()
   (mode-message-start "my-text-mode-hook")

@@ -572,6 +572,18 @@ read only flag is automatically unset."
 
 (add-to-list
  'compilation-error-regexp-alist-alist
+ '(sanitizer-backtrace-variant1
+   "^ +#[0-9]+ *0x[a-f0-9]+ * in .*? \\(/[^:\n]*\\):\\([0-9]+\\)"
+   1 2))
+
+(add-to-list
+ 'compilation-error-regexp-alist-alist
+ '(sanitizer-backtrace-variant2
+   "^ +#[0-9]+ .*? \\(/[^:\n]*\\):\\([0-9]+\\) (.*?\\+0x[a-f0-9]+)"
+   1 2))
+
+(add-to-list
+ 'compilation-error-regexp-alist-alist
  '(cppunit
    "^[0-9]+) .*? line: \\([0-9]+\\)[ \t]*\\(.+\\)"
    2 1))

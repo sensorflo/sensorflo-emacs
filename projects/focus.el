@@ -24,12 +24,23 @@
 
 Match group 1 contains name of project root directory.")
 
+(defvar focus-c-file-name-regex "^\\(.*?/[^/]*futura_focus[^/]*\\).*\.\\(c\\|h\\)$"
+  "")
+
 (defvar focus-verify-coding-system t)
 
 ;; TODO: Actually I don't want to _define_ the coding system to be used, I
 ;; want to prefer it over other possible alternatives.
 ;;;###autoload
-(add-to-list 'file-coding-system-alist (cons focus-file-name-regex 'utf-8-unix))
+(add-to-list
+ 'file-coding-system-alist
+ (cons focus-file-name-regex 'utf-8-unix))
+(add-to-list
+ 'file-coding-system-alist
+ (cons focus-c-file-name-regex 'utf-8-dos))
+(add-to-list
+ 'file-coding-system-alist
+ (cons ".*asw.shared.comps/.*" 'utf-8-dos))
 
 ;;;###autoload
 (add-hook 'change-major-mode-after-body-hook 'focus-hook)
@@ -50,6 +61,8 @@ Match group 1 contains name of project root directory.")
          (eq (project-root-type) 'project-focus))
     (mode-message-start "focus-hook")
 
+    ;; (setenv "PATH" (concat "/usr/lib/ccache:" (getenv "PATH")))
+
     ;; some of these variables might only make sense in within an is-edit-mode
     ;; buffer, but it's more simple to do all in one place and it doesn't
     ;; hurt.
@@ -59,7 +72,7 @@ Match group 1 contains name of project root directory.")
     (set (make-local-variable 'tab-width) 2)
     (set (make-local-variable 'indent-tabs-mode) nil)
 
-    (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|h\\|hpp\\|qml\\)")
+    (set (make-local-variable 'ediff-default-filtering-regexp) "\\.\\(cpp\\|cc\\|h\\|hpp\\|qml\\)")
     (make-local-variable 'grep-find-command)
     (grep-apply-setting 'grep-find-command (focus-grep-find-command))
     (set (make-local-variable 'compile-command)
@@ -76,7 +89,14 @@ Match group 1 contains name of project root directory.")
                 (concat (focus-nearest-cmake-dir) "src")
                 (concat (focus-nearest-cmake-dir) "src/*")
                 (concat (focus-nearest-cmake-dir) "include/*")
-                (concat (focus-nearest-cmake-dir) "include/*/*")))
+                (concat (focus-nearest-cmake-dir) "include/*/*")
+                (concat (focus-nearest-cmake-dir) "test/unit/tests")
+                (concat (focus-nearest-cmake-dir) "test/unit/testdoubles")
+                (concat (focus-nearest-cmake-dir) "test/unit/testdoubles/*")
+                (concat (focus-nearest-cmake-dir) "publictestdoubles/src")
+                (concat (focus-nearest-cmake-dir) "publictestdoubles/src/*")
+                (concat (focus-nearest-cmake-dir) "publictestdoubles/include/*")
+                (concat (focus-nearest-cmake-dir) "publictestdoubles/include/*/*")))
       (add-to-list 'cc-search-directories x))
 
     (mode-message-end "focus-hook")))
@@ -85,7 +105,7 @@ Match group 1 contains name of project root directory.")
 (defun focus-c-mode-common-hook()
   (when (eq (project-root-type) 'project-focus)
     (mode-message-start "focus-c-mode-common-hook")
-    (set (make-local-variable 'tempos-c++-open-brace-style) 'behind-conditional)
+    (set (make-local-variable 'tempos-c++-open-brace-style) 'new-line)
 
     (set (make-local-variable 'c-doc-comment-char) ?\*)
     ;;(c-add-style "user" (list '(c-block-comment-prefix . "* ")))
@@ -123,11 +143,25 @@ Match group 1 contains name of project root directory.")
 (defun focus-compilation-mode-hook()
   (when (eq (project-root-type) 'project-focus)
     (set (make-local-variable 'compilation-error-regexp-alist)
-         '(gnu-sensorflo gcc-include-sensorflo cmake-sensorflo cppunit )) ;; add focus-logfile
-    ;; Since unfortunatly we have so many warnings
-    (set (make-local-variable 'compilation-skip-threshold) 2)
+         '(gnu-sensorflo gcc-include-sensorflo cmake-sensorflo cppunit sanitizer-backtrace-variant1 sanitizer-backtrace-variant2)) ;; add focus-logfile
     (font-lock-add-keywords nil (list
-      ;; Actually regexes for log. Here because of ctest output
+      ;; log
+      (list (concat
+             "^\\(....-..-.. ..:..:..,...\\) *"   ; 1 date & time
+             "\\(\\[0x............\\]\\) *"       ; 2 threadid
+             "\\(?:\\(ERROR\\)\\|\\(\\w+\\)\\) *" ; log level: 3 ERROR / 4 others
+             "\\([^ ]*?\\) *"                     ; 5 hiarchical logger name
+             "(\\([^:]*?\\):\\([^)]*?\\)) *- *"   ; 6 file / 7 line
+             "\\(.*\\)"                           ; 8 message
+             )
+            '(1 font-lock-semi-unimportant)
+            '(2 font-lock-unimportant)
+            '(3 compilation-error-face nil t)
+            '(5 font-lock-semi-unimportant)
+            '(6 font-lock-semi-unimportant)
+            '(7 font-lock-semi-unimportant))
+
+      ;; log - the deprecated format
       (list (concat
              "^\\(ERROR\\b\\)\\(?:\\(?:[ \t]*\\[.*?\\][ \t]*\\)?[ \t]*"
              ":[ \t]*\\([^:]*?\\)[ \t]*"
@@ -143,7 +177,7 @@ Match group 1 contains name of project root directory.")
             '(2 font-lock-semi-unimportant nil t) ; file
             '(3 compilation-line-face nil t)) ; line
       (list (concat
-             "^\\(TRACE\\b\\)\\(?:\\(?:[ \t]*\\[.*?\\][ \t]*\\)?[ \t]*"
+             "^\\(TRACE\\|DEBUG\\)\\b\\(?:\\(?:[ \t]*\\[.*?\\][ \t]*\\)?[ \t]*"
              ":[ \t]*\\([^:]*?\\)[ \t]*"
              ":[ \t]*\\([0-9]+\\)\\)?")
             '(1 compilation-info-face)
@@ -151,16 +185,56 @@ Match group 1 contains name of project root directory.")
             '(3 compilation-line-face nil t))
       (list "^\\(log4cxx\\b\\)"
             '(1 compilation-info-face))
+
+      ;; clang++
+      (list (concat
+             "^\\(.*?\\)\\([^:/\n]*\\):"  ; 1 dirname 2 basename
+             "\\([0-9]+\\):\\([0-9]+\\):" ; 3 lineno 4 columnno
+             "\\([^:\n]*\\): "            ; 5 severity
+             "*\\(.*?\\)"                 ; 6 message
+             "\\( *\\[.*?\\]\\)")         ; 7 issue id
+            '(1 font-lock-semi-unimportant t t)
+            '(6 'error)
+            '(7 font-lock-unimportant))
+      (list (concat
+             "^\\(.*?\\)\\([^:/\n]*\\): " ; 1 dirname 2 basename
+             "[Ii]n ’")
+            '(1 font-lock-semi-unimportant t t)
+            '(2 compilation-info-face t t))
+
+
+      ;; ? sanitizer backtrace
+      (list "^ +\\(#[0-9]+ *0x[a-f0-9]+\\) * in "
+            '(1 font-lock-semi-unimportant))
+      ;; thread sanitizer backtrace
+      (list (concat
+             "^ +\\(#[0-9]+\\) "        ; 1 frame
+             "\\(?:.*? \\)?\\(?:\\(\\(?:[a-zA-Z_0-9]+::\\)*?\\)\\([a-zA-Z_0-9]+::\\)?\\)\\([a-zA-Z_]+\\)\\(?:<.*?>\\)?\\(?:(.*?)\\)? " ; 2 namespace 3 class, 4 fun
+             "\\(?:"
+               "\\(/[^:\n]*/\\)\\([^:\n]*\\):\\([0-9]+\\) \\|" ; 5 dirname, 6 filename, 7 lineno
+               "\\(<null>\\) " ; 8 null-filename
+             "\\)?"
+             "\\((.*?\\+0x[a-f0-9]+)\\)" ; 9 module+address
+             )
+            '(2 font-lock-semi-unimportant t t)
+            '(4 font-lock-function-name-face t t)
+            '(5 font-lock-semi-unimportant t t)
+            '(8 compilation-error-face t t)
+            '(9 font-lock-semi-unimportant t t))
+
+      ;; ctest
+      (list "^ +\\(Start [0-9]+: .*\\)"
+            '(1 markup-title-2-face))
+      (list "^\\(Errors while running CTest\\)"
+            '(1 compilation-error-face))
+      (list "^\\(100% tests passed\\)"
+            '(1 'success))
+
       ;; QTest
       (list "^\\(PASS\\)   : "
             '(1 'success))
       (list "^\\(FAIL!\\)  : "
             '(1 compilation-error-face))
-      ;; ctest
-      (list "^\\(Errors while running CTest\\)"
-            '(1 compilation-error-face))
-      (list "^\\(100% tests passed\\)"
-            '(1 'success))
       ))))
 
 ;;;###autoload
@@ -225,7 +299,7 @@ Match group 1 contains name of project root directory.")
    "-regextype posix-egrep \\\n"
    "\\( -type d \\( -name .git -o -name 'build-*' \\) -prune \\) -o \\\n"
    "-type f \\\n"
-   "-iregex '.*\\.(c|h|hpp|cpp|qml|txt|xml|json)' \\\n"
+   "-iregex '.*\\.(c|h|hpp|cc|cpp|qml|txt|xml|json|cmake)' \\\n"
    "-print0 | xargs -0 grep --color=always -nIP \\\n"
    "-ie '" regexp "'"))
 

@@ -73,6 +73,7 @@
 (defalias 'tww 'toggle-word-wrap)
 (defalias 'tbc 'toggle-background-color)
 (defalias 'wet 'whitespace-ext-toggle)
+(defalias 'tws 'toggle-window-split)
 
 ;;; list: l...
 (defalias 'lp 'list-processes)

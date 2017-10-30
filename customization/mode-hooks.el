@@ -170,7 +170,26 @@
   (doxymacs-font-lock)
 
   (font-lock-add-keywords nil
+
     (list
+     (list
+      "\\_<\\(return\\|break\\|continue\\|goto\\)\\_>"
+      '(1 font-lock-jump-keyword))
+     (list
+      (concat
+       "\\_<\\(?:auto\\|const\\|volatile\\|unsigned\\|"
+       "void\\|bool\\|"
+       "char\\|char_16t\\|char_32_t\\|wchar_t\\|"
+       "short\\|int\\|long\\|"
+       "float\\|double\\)\\_>")
+      '(0 font-lock-type-face))
+     (list
+      "\\_<[a-zA-Z_]+::"
+      '(0 font-lock-semi-unimportant))
+     (list
+      "\\_<this\\_>"
+      '(0 font-lock-constant-face))
+
      ;; C++11
      "\\_<static_assert\\_>" "\\_<alignas\\_>" "\\_<alignof\\_>" "\\_<decltype\\_>" "\\_<constexpr\\_>"
      "\\_<noexcept\\_>" "\\_<thread_local\\_>"

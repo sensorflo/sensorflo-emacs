@@ -734,9 +734,21 @@
   (local-set-key [(control ?\,)(h)(?3)] 'tempo-template-adoc-title-3)
   (local-set-key [(control ?\,)(h)(?4)] 'tempo-template-adoc-title-4))
 
-(add-to-list 'auto-coding-regexp-alist '("\\`\\s-*:encoding:\\s-*UTF-8\\b" . utf-8))
+;; See also sgml-xml-auto-coding-function, which currently is smarter
+(defun adoc-auto-coding-function (size)
+  (when (re-search-forward "^:encoding:[ \t]+\\([^ \t\n]+\\)" (+ (point) size) t)
+    (let* ((coding-system-str (match-string 1))
+           (coding-system-obj (intern (downcase coding-system-str))))
+      (if (coding-system-p coding-system-obj)
+          coding-system-obj
+        (message "Warning: unknown coding system \"%s\". Ignoring it." coding-system-str)))))
 
-(add-to-list 'magic-mode-alist '("\\(?::encoding:.*\n\\)?//.*AsciiDoc" . adoc-mode))
+(add-to-list 'auto-coding-functions 'adoc-auto-coding-function)
+
+(add-to-list
+ 'magic-mode-alist
+ (cons (lambda () (re-search-forward "^//.*AsciiDoc" 1000 t)) 'adoc-mode))
+
 
 ;;; doxym
 ;; --------------------------------------------------------------------------------

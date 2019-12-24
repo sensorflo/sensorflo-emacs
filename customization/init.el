@@ -154,10 +154,6 @@ Meant to profile startup time."
   (require 'w32-symlinks)
   (require 'w32-browser))
 
-;; nxhtml is not part of sensorflo-emacs git repo
-(when (file-readable-p "nxhtml/autostart.el")
-  (load-library "nxhtml/autostart.el"))
-
 (load-library "misc-ext")
 (load-library "simple-ext")
 (load-library "project")

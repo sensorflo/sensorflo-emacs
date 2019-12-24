@@ -144,6 +144,11 @@ Meant to profile startup time."
 
 (require 'powerkey)
 
+;; packages before other libraries, such that the libraries can require
+;; libraries from the packages.
+(setq package-enable-at-startup nil)
+(package-initialize)
+
 (when (equal system-type 'windows-nt)
   (require 'cygwin-mount)
   (require 'w32-symlinks)

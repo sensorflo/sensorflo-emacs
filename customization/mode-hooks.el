@@ -15,7 +15,13 @@
 ;;
 ;;; Code
 
+;; My customization of different modes references faces from the following
+;; libraries. It's error prone to try that each respective mode-hook contains
+;; e.g. a (require 'markup-faces). So it's done once here.
+(require 'faces-ext)
 (require 'font-lock-ext) ; https://github.com/sensorflo/font-lock-ext/
+(require 'markup-faces) ; https://github.com/sensorflo/markup-faces
+
 
 
 ;;; programming modes

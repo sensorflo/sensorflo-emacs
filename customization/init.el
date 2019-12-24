@@ -26,6 +26,43 @@
 ;;   - after-change-major-mode-hook
 ;;     - edit-mode-hook
 ;;     - project hooks
+;;
+;;
+;; installed ubuntu packages, see also autoloads below: emacs-goodies,
+;; irony-mode, debian-el, emacs25-common-non-dfsg (for info pages)
+
+;; help to install irony on ubuntu:
+;; https://gist.github.com/soonhokong/7c2bf6e8b72dbc71c93b. What i did after M-x
+;; irony-install-server:
+;; cmake -DLIBCLANG_INCLUDE_DIR=/usr/lib/llvm-3.8/include -DLIBCLANG_LIBRARY=/usr/lib/llvm-3.8/lib/libclang.so.1 -DCMAKE_INSTALL_PREFIX\=/home/sensorflo/.emacs.d/irony/ /home/sensorflo/.emacs.d/elpa/irony-20170920.1417/server && cmake --build . --use-stderr --config Release --target install
+;; make flycheck use
+;;   cppcheck
+;;     I am not sure whether it works, so far the errors always say the checker is irony
+;;     flycheck-verify-setup
+;;     flycheck-checker is nil as it ought to be
+;;     flycheck-checkers contains c/c++-cppcheck
+;;     flycheck-cppcheck-checks is "all"
+;;     explicitely selecting c/c++-cppcheck via flycheck-select-checker works
+;;   clang-tidy
+;;   clang static analyzer
+;;
+;; Emacs as IDE:
+;;   http://tuhdo.github.io/c-ide.html#sec-2
+;;   projectile
+;;   helm
+;;   locate file
+;;   flyspell only in comments, and ignoring identifiers
+;;   cycle around file groups (header/src, class,test)
+;;   goto definition
+;;   show declaration & comment
+;;   auto complete
+;;     identifiers
+;;     include paths
+;;     argumens for function, template, macro, ...
+;;   snippets / templates
+;;   refactor
+;;     http://tuhdo.github.io/c-ide.html#sec-2 chapter code refactoring
+;;     https://github.com/tuhdo/semantic-refactor
 
 ;;; Code:
 
@@ -94,21 +131,16 @@ Meant to profile startup time."
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
 
-
-;;; required libraries
-;; ==================================================
-(message "init file: required libraries")
-
 ;; custom-file
 ;; some modes initialize stuff using their custom variables while loading, thus
 ;; load custom file before loading modes
-(message2 "custom-file")
 (setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
 (load custom-file)
 
-;; aliases
-(message2 "aliasses")
-(load-library "aliases")
+
+;;; required libraries / packages
+;; ==================================================
+(message "init file: required libraries / packages")
 
 (require 'powerkey)
 
@@ -126,62 +158,20 @@ Meant to profile startup time."
 ;; 'markup-faces). So it's done once here.
 (require 'markup-faces)
 
-(message2 "misc-ext")
 (load-library "misc-ext")
-(message2 "faces-ext")
 (load-library "faces-ext")
-(message2 "simple-ext")
 (load-library "simple-ext")
-(message2 "project")
 (load-library "project")
-(message2 "find-file")
 (load-library "find-file")
-(message2 "mybindings")
-(load-library "mybindings")
-(message2 "mode-hooks")
-(load-library "mode-hooks")
-
-
-;; installed ubuntu packages, see also autoloads below: emacs-goodies,
-;; irony-mode, debian-el, emacs25-common-non-dfsg (for info pages)
-
-;; help to install irony on ubuntu:
-;; https://gist.github.com/soonhokong/7c2bf6e8b72dbc71c93b. What i did after M-x
-;; irony-install-server:
-;; cmake -DLIBCLANG_INCLUDE_DIR=/usr/lib/llvm-3.8/include -DLIBCLANG_LIBRARY=/usr/lib/llvm-3.8/lib/libclang.so.1 -DCMAKE_INSTALL_PREFIX\=/home/sensorflo/.emacs.d/irony/ /home/sensorflo/.emacs.d/elpa/irony-20170920.1417/server && cmake --build . --use-stderr --config Release --target install
-;; make flycheck use
-;;   cppcheck
-;;     I am not sure whether it works, so far the errors always say the checker is irony
-;;     flycheck-verify-setup
-;;     flycheck-checker is nil as it ought to be
-;;     flycheck-checkers contains c/c++-cppcheck
-;;     flycheck-cppcheck-checks is "all"
-;;     explicitely selecting c/c++-cppcheck via flycheck-select-checker works
-;;   clang-tidy
-;;   clang static analyzer
-;;
-;; Emacs as IDE:
-;;   http://tuhdo.github.io/c-ide.html#sec-2
-;;   projectile
-;;   helm
-;;   locate file
-;;   flyspell only in comments, and ignoring identifiers
-;;   cycle around file groups (header/src, class,test)
-;;   goto definition
-;;   show declaration & comment
-;;   auto complete
-;;     identifiers
-;;     include paths
-;;     argumens for function, template, macro, ...
-;;   snippets / templates
-;;   refactor
-;;     http://tuhdo.github.io/c-ide.html#sec-2 chapter code refactoring
-;;     https://github.com/tuhdo/semantic-refactor
 
 
 ;;; settings part 2
 ;; =======================================================
 (message2 "init file: settings part 2")
+
+(load-library "aliases")
+(load-library "mybindings")
+(load-library "mode-hooks")
 
 ;; notable variables defined with custom, i.e. they don't need to be set
 ;; elsewhere:

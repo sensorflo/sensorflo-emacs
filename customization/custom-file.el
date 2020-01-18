@@ -177,6 +177,8 @@
    (quote
     (gud-mode c-mode c++-mode fortran-mode python-mode cperl-mode)))
  '(gutter-buffers-tab-visible-p nil)
+ '(helm--remap-mouse-mode t)
+ '(helm-projectile-fuzzy-match nil)
  '(help-max-help-buffers 0)
  '(hi-lock-file-patterns-policy (quote never))
  '(highlight-nonselected-windows t)
@@ -309,6 +311,12 @@
  '(powerline-display-buffer-size nil)
  '(powerline-gui-use-vcs-glyph t)
  '(progress-feedback-use-echo-area nil)
+ '(projectile-completion-system (quote helm))
+ '(projectile-enable-caching t)
+ '(projectile-global-mode t)
+ '(projectile-globally-ignored-file-suffixes
+   (quote
+    (".drg" ".rpt" ".RPT" ".gif" ".png" ".jpg" ".ico" ".bmp")))
  '(ps-header-lines 0)
  '(ps-print-footer-frame nil)
  '(ps-print-header nil)
@@ -428,7 +436,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((type x)) (:height 120 :foundry "microsof" :family "Consolas"))))
+ '(default ((t (:inherit nil :stipple nil :background "#eff0f1" :foreground "#31363b" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "MS" :family "Consolas"))))
  '(YaTeX-font-lock-bold-face ((t (:inherit markup-strong-face))))
  '(YaTeX-font-lock-declaration-face ((t (:inherit markup-delimiter-face))))
  '(YaTeX-font-lock-italic-face ((t (:inherit markup-emphasis-face))))

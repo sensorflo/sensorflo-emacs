@@ -115,6 +115,10 @@
 (define-key ctl-x-r-map "w" 'copy-rectangle-as-kill)
 (define-key ctl-x-r-map "T" 'string-insert-rectangle) ; C-x r t is string-rectangle
 
+;; note that projectile-global-mode must be on for the binding to be 'active'
+(helm-projectile-on) ;; only sets bindings, see its function help
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+
 
 ;;; repeatable
 (repeatable-command-advice forward-page)

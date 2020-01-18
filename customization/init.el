@@ -27,43 +27,6 @@
 ;;     - edit-mode-hook
 ;;     - project hooks
 ;;
-;;
-;; installed ubuntu packages, see also autoloads below: emacs-goodies,
-;; irony-mode, debian-el, emacs25-common-non-dfsg (for info pages)
-
-;; help to install irony on ubuntu:
-;; https://gist.github.com/soonhokong/7c2bf6e8b72dbc71c93b. What i did after M-x
-;; irony-install-server:
-;; cmake -DLIBCLANG_INCLUDE_DIR=/usr/lib/llvm-3.8/include -DLIBCLANG_LIBRARY=/usr/lib/llvm-3.8/lib/libclang.so.1 -DCMAKE_INSTALL_PREFIX\=/home/sensorflo/.emacs.d/irony/ /home/sensorflo/.emacs.d/elpa/irony-20170920.1417/server && cmake --build . --use-stderr --config Release --target install
-;; make flycheck use
-;;   cppcheck
-;;     I am not sure whether it works, so far the errors always say the checker is irony
-;;     flycheck-verify-setup
-;;     flycheck-checker is nil as it ought to be
-;;     flycheck-checkers contains c/c++-cppcheck
-;;     flycheck-cppcheck-checks is "all"
-;;     explicitely selecting c/c++-cppcheck via flycheck-select-checker works
-;;   clang-tidy
-;;   clang static analyzer
-;;
-;; Emacs as IDE:
-;;   http://tuhdo.github.io/c-ide.html#sec-2
-;;   projectile
-;;   helm
-;;   locate file
-;;   flyspell only in comments, and ignoring identifiers
-;;   cycle around file groups (header/src, class,test)
-;;   goto definition
-;;   show declaration & comment
-;;   auto complete
-;;     identifiers
-;;     include paths
-;;     argumens for function, template, macro, ...
-;;   snippets / templates
-;;   refactor
-;;     http://tuhdo.github.io/c-ide.html#sec-2 chapter code refactoring
-;;     https://github.com/tuhdo/semantic-refactor
-
 ;;; Code:
 
 (defconst message2-enabled nil)
@@ -79,15 +42,7 @@ Meant to profile startup time."
       (message (concat (number-to-string duration) "\n\n" msg)))))
 
 
-;;; personal site local configuration
-;; ==================================================
-(message2 "personal site local configuration")
-(let ((my-site-local-fn (concat user-emacs-directory "my-site-local.el")))
-  (when (file-readable-p my-site-local-fn)
-    (load-file my-site-local-fn)))
-
-
-;;; stettings part 1 - before loading libraries
+;;; stettings part 1 - settings influencing loading of libraries
 ;; ==================================================
 (message2 "init file: settings part 1")
 
@@ -131,23 +86,53 @@ Meant to profile startup time."
 (auto-compile-on-load-mode 1)
 (auto-compile-on-save-mode 1)
 
-;; custom-file
-;; some modes initialize stuff using their custom variables while loading, thus
-;; load custom file before loading modes
+;; libraries / debian packagages I expect to be available.
+;; todo: also care about: c sources, elips sources, info pages
+;; todo: irony-mode, emacs25-common-non-dfsg (for info pages)
+(dolist (lib-pkg `(,(cons "debian-el" "debian-el")
+                   ,(cons "emacs-goodies-loaddefs" "emacs-goodies")))
+  (when (not (locate-library (car lib-pkg)))
+    (warn (concat "You should install debian package " (cdr lib-pkg)))))
+
+
+;;; autoload & package-initialize
+;; =======================================================
+(message "init file: autoload & package-initialize")
+
+(setq package-enable-at-startup nil)
+(package-initialize) ; AFAIU mostly loads loaddefs
+
+(load "debian-el-loaddefs" t)
+(load "emacs-goodies-loaddefs" t)
+(load-library "loaddefs-custom") ; intendet for own libraries
+(load-library (concat user-emacs-directory "site-lisp/loaddefs-site-lisp")) ; intendet for system wide libraries
+(load-library "loaddefs-local-site-lisp") ; intendet for libraries in .emacs.d/site-lisp
+
+
+;;; settings part 2 - custom file
+;; ==================================================
+(message "init file: settings part 2")
+
+;; Load loaddefs before loading custom file, because a few libraries wrongly
+;; autoload defcustoms. If I load my custom file before such an loaddef file, my
+;; customization gets overwritten. For example helm-projectile-fuzzy-match. See
+;; also
+;; https://emacs.stackexchange.com/questions/32859/autoloading-defcustoms-good-practice-or-not
+;;
+;; Some libraries initialize stuff using their custom variables while loading,
+;; thus load custom file before loading libraries.
+
 (setq custom-file (concat user-emacs-directory "customization/custom-file.el"))
 (load custom-file)
 
 
-;;; required libraries / packages
+;;; required libraries
 ;; ==================================================
-(message "init file: required libraries / packages")
+(message "init file: required libraries")
 
-(require 'powerkey)
+;; Prefer autoload over explicitly loading / requiring libraries.
 
-;; packages before other libraries, such that the libraries can require
-;; libraries from the packages.
-(setq package-enable-at-startup nil)
-(package-initialize)
+(require 'powerkey) ; says it should be loaded before any other library
 
 (when (equal system-type 'windows-nt)
   (require 'cygwin-mount)
@@ -160,9 +145,9 @@ Meant to profile startup time."
 (load-library "find-file")
 
 
-;;; settings part 2
+;;; settings part 3 - custom settings not in custom file
 ;; =======================================================
-(message2 "init file: settings part 2")
+(message2 "init file: settings part 3")
 
 (load-library "aliases")
 (load-library "mybindings")
@@ -224,6 +209,7 @@ Meant to profile startup time."
          ("\\.h\\'" . c++-mode) ; .h is c-mode by default
          ("\\.tl[hi]\\'". c++-mode)
          ("\\.\\(boc\\|boh\\)\\'". c++-mode)
+         ("\\.sct\\'". c-mode)
          ;; .text is text-mode by default
          ("\\.\\(text\\|mdwn\\|mdown\\|md\\|mdt\\)\\'" . markdown-mode)
          ("\\.lo[g0-9]\\'" . logfile-mode)
@@ -270,25 +256,12 @@ Meant to profile startup time."
   (add-to-list 'completion-ignored-extensions x))
 
 
-;;; autoload
-;; =======================================================
-;; Must come after loading basic libraries such as simple-ext, since
-;; the autoloads itself or the code within the hooks they install (and
-;; which are run during further processing of the init.el) depend on
-;; them.
-
-;; autoload
-;;(load-library "debian-el-loaddefs")
-;(load-library "emacs-goodies-loaddefs")
-;; intendet for own libraries
-(message2 "autoload loaddefs-custom")
-(load-library "loaddefs-custom")
-;; intendet for system wide libraries
-(message2 "autoload loaddefs-site-lisp")
-(load-library (concat user-emacs-directory "site-lisp/loaddefs-site-lisp"))
-;; intendet for libraries in .emacs.d/site-lisp
-(message2 "autoload loaddefs-local-site-lisp")
-(load-library "loaddefs-local-site-lisp")
+;;; personal site local configuration
+;; ==================================================
+(message2 "personal site local configuration")
+(let ((my-site-local-fn (concat user-emacs-directory "my-site-local.el")))
+  (when (file-readable-p my-site-local-fn)
+    (load-file my-site-local-fn)))
 
 
 ;;; autostart
@@ -312,10 +285,6 @@ Meant to profile startup time."
 
 (require 'powerline)
 (powerline-default-theme)
-
-(projectile-global-mode)
-(setq projectile-completion-system 'helm)
-(helm-projectile-on)
 
 (message2 "init file done")
 ;;; init.el ends here

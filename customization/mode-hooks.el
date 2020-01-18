@@ -1,18 +1,76 @@
 ;;; mode-hooks.el --- sensorflo's mode hooks
 ;;
-;;; Commentary
+;;; Commentary:
 ;;
-;; See init.el for a summary of how to customize Emacs.
+;; Overview of modes / frameworks that could be interesting for me:
+;;
+;; # project framework/ IDE: https://tuhdo.github.io/c-ide.html, https://nilsdeppe.com/posts/emacs-c++-ide2, http://martinsosic.com/development/emacs/2017/12/09/emacs-cpp-ide.html
+;;     cmake-ide: https://github.com/atilaneves/cmake-ide
+;;     cpputils-cmake: https://github.com/redguardtoo/cpputils-cmake
+;;     projectile
+;;       helm-projectile: https://github.com/bbatsov/helm-projectile, http://tuhdo.github.io/helm-projectile.html
+;;     project: my own old one
+;;     Emac's directory variables:
+;;
+;; # goto definition / included/imported file
+;;     dumb-jump: https://github.com/jacktasia/dumb-jump
+;;     rtags, see there
+;;     emacs-helm-gtags: gtags seems to be inferior to rtags, at least regarding C++
+;;
+;; # list references to a given symbol
+;;     rtags, see there
+;;
+;; # cycle around file group (e.g. header, source, test)
+;;
+;; # refactoring
+;;
+;; # auto format
+;;
+;; # semantic information (class hierarchy, call/callee graph, ...)
+;;
+;; # on the fly check / compile / ...
+;;
+;; # auto-completion in-buffer
+;;     company: in-buffer for autocompletion. Several backands Elisp, Clang, Cmake, ispell, etc.
+;;
+;; # explicit completion in separate buffer
+;;     helm: on demand in separate buffer. http://tuhdo.github.io/helm-intro.html
+;;       helm-projectile: see projectile
+;;     ivy:
+;;     irony-mode: see there
+;;
+;; # modern c++ syntax highlight
+;;     https://github.com/ludwigpacifici/modern-cpp-font-lock
+;;
+;; # beautifier / formatter
+;;     clang-format
+;;     Emacs' builtin for C++
+;;
+;; # C++ backends
+;;   # irony-mode: A C/C++ minor mode powered by libclang
+;;       irony-server: Exposes libclang, used by the other irony parts
+;;       completion: Several backends: completion-at-point-functions, company-irony
+;;       syntax checker: flychecker backend: flycheck-irony
+;;       documentation viewer for symbols: eldoc backend: irony-eldoc
+;;
+;;   # rtags: more heaviyweight / slow than irony. But offers goto references, also understands header files,
 ;;
 ;;
-;; autoload support
-;; ----------------
-;;
-;; - Since add-hook creates hook if the passed hook is void, the passed hook
-;;   symbol must not yet exist, i.e. be loaded.
-;; - Maybe chop mode-hooks.el into multiple files, one per hook. Then autload
-;;   those small files at the time they are really needed.
-;;
+;; help to install irony on ubuntu:
+;; https://gist.github.com/soonhokong/7c2bf6e8b72dbc71c93b. What i did after M-x irony-install-server:
+;; cmake -DLIBCLANG_INCLUDE_DIR=/usr/lib/llvm-3.8/include -DLIBCLANG_LIBRARY=/usr/lib/llvm-3.8/lib/libclang.so.1 -DCMAKE_INSTALL_PREFIX\=/home/sensorflo/.emacs.d/irony/ /home/sensorflo/.emacs.d/elpa/irony-20170920.1417/server && cmake --build . --use-stderr --config Release --target install
+;; make flycheck use
+;;   cppcheck
+;;     I am not sure whether it works, so far the errors always say the checker is irony
+;;     flycheck-verify-setup
+;;     flycheck-checker is nil as it ought to be
+;;     flycheck-checkers contains c/c++-cppcheck
+;;     flycheck-cppcheck-checks is "all"
+;;     explicitely selecting c/c++-cppcheck via flycheck-select-checker works
+;;   clang-tidy
+;;   clang static analyzer
+
+
 ;;; Code
 
 ;; My customization of different modes references faces from the following
@@ -154,7 +212,7 @@
   (hs-minor-mode t)
   (setq filladapt-token-table (append filladapt-token-table (list (list " *[@\\]\\w+\\b" 'bullet))))
 
-  (irony-mode)
+  ;; (irony-mode)
 
   (let ((line-start-core "\\(?://+[<!]?\\)")
         (block-start-core "\\(?:/\\*[*!]*\\)")
@@ -552,21 +610,20 @@
 ;; ----------------------------------------------
 ;; Recall that the compilation database must be in a directory of
 ;; irony-cdb-search-directory-list
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options) ; https://github.com/Sarcasm/irony-mode#compilation-database
 
-(require 'company)
 (eval-after-load 'company
   '(add-to-list 'company-backends 'company-irony))
 
-(require 'flycheck-pos-tip)
-(require 'flycheck-status-emoji)
-(require 'flycheck-color-mode-line)
-(with-eval-after-load 'flycheck
-  (flycheck-pos-tip-mode)
-  (flycheck-status-emoji-mode)
-  (add-hook 'flycheck-mode-hook 'flycheck-irony-setup)
-  ;; (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
-  )
+;; (require 'flycheck-pos-tip)
+;; (require 'flycheck-status-emoji)
+;; (require 'flycheck-color-mode-line)
+;; (with-eval-after-load 'flycheck
+;;   (flycheck-pos-tip-mode)
+;;   (flycheck-status-emoji-mode)
+;;   (add-hook 'flycheck-mode-hook 'flycheck-irony-setup)
+;;   ;; (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
+;;   )
 ;; added to flycheck-irony.el: (flycheck-define-generic-checker 'irony...
 ;; :next-checkers #'((t . c/c++-cppcheck))
 

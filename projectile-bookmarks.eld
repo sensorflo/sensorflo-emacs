@@ -1,0 +1,1 @@
+("~/Documents/knowledge/" "~/Documents/" "~/.emacs.d/" "~/" "~/src/bormsoftware/" "~/.emacs.d/textmodes/adoc-mode/" "~/src/cppcheck/" "~/src/")

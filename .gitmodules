@@ -38,10 +38,6 @@
 	path = misc/find-file-ext
 	url = https://sensorflo@github.com/sensorflo/find-file-ext.git
 	update = rebase
-[submodule "misc/icicles"]
-	path = misc/icicles
-	url = https://sensorflo@github.com/sensorflo/icicles.git
-	update = rebase
 [submodule "misc/tempo"]
 	path = misc/tempo
 	url = https://sensorflo@github.com/sensorflo/tempo.git
@@ -78,14 +74,7 @@
 	path = misc/magit
 	url = https://sensorflo@github.com/sensorflo/magit.git
 	update = rebase
-[submodule "textmodes/mediawiki"]
-	path = textmodes/mediawiki
-	url = https://sensorflo@github.com/sensorflo/mediawiki-el.git
-	update = rebase
 [submodule "misc/gstack-mode"]
 	path = misc/gstack-mode
 	url = https://sensorflo@github.com/sensorflo/gstack-mode.git
 	update = rebase
-[submodule "progmodes/graphviz-dot-mode"]
-	path = progmodes/graphviz-dot-mode
-	url = https://sensorflo@github.com/sensorflo/graphviz-dot-mode.git

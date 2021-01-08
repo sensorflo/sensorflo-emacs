@@ -12,7 +12,7 @@
 	update = rebase
 [submodule "textmodes/doxym-mode"]
 	path = textmodes/doxym-mode
-	url = https://github.com/sensorflo/doxym-mode.git
+	url = https://sensorflo@github.com/sensorflo/doxym-mode.git
 	update = rebase
 [submodule "misc/mks"]
 	path = misc/mks
@@ -20,7 +20,7 @@
 	update = rebase
 [submodule "misc/tempo-ext"]
 	path = misc/tempo-ext
-	url = https://github.com/sensorflo/tempo-ext.git
+	url = https://sensorflo@github.com/sensorflo/tempo-ext.git
 	update = rebase
 [submodule "progmodes/doxymacs"]
 	path = progmodes/doxymacs
@@ -32,11 +32,11 @@
 	update = rebase
 [submodule "misc/logfile-mode"]
 	path = misc/logfile-mode
-	url = https://github.com/sensorflo/logfile-mode.git
+	url = https://sensorflo@github.com/sensorflo/logfile-mode.git
 	update = rebase
 [submodule "misc/find-file-ext"]
 	path = misc/find-file-ext
-	url = https://github.com/sensorflo/find-file-ext.git
+	url = https://sensorflo@github.com/sensorflo/find-file-ext.git
 	update = rebase
 [submodule "misc/icicles"]
 	path = misc/icicles
@@ -48,23 +48,23 @@
 	update = rebase
 [submodule "progmodes/autoexp-mode"]
 	path = progmodes/autoexp-mode
-	url = https://github.com/sensorflo/autoexp-mode.git
+	url = https://sensorflo@github.com/sensorflo/autoexp-mode.git
 	update = rebase
 [submodule "progmodes/sln-mode"]
 	path = progmodes/sln-mode
-	url = https://github.com/sensorflo/sln-mode.git
+	url = https://sensorflo@github.com/sensorflo/sln-mode.git
 	update = rebase
 [submodule "misc/multiple-cursors"]
 	path = misc/multiple-cursors
-	url = https://github.com/magnars/multiple-cursors.el.git
+	url = https://sensorflo@github.com/magnars/multiple-cursors.el.git
 	update = rebase
 [submodule "textmodes/xmlunicode"]
 	path = textmodes/xmlunicode
-	url = https://github.com/sensorflo/xmlunicode.git
+	url = https://sensorflo@github.com/sensorflo/xmlunicode.git
 	update = rebase
 [submodule "progmodes/git-modes"]
 	path = progmodes/git-modes
-	url = https://github.com/sensorflo/git-modes.git
+	url = https://sensorflo@github.com/sensorflo/git-modes.git
 	update = rebase
 [submodule "progmodes/info-mode"]
 	path = progmodes/info-mode
@@ -72,20 +72,20 @@
 	update = rebase
 [submodule "progmodes/cppkoans-mode"]
 	path = progmodes/cppkoans-mode
-	url = https://github.com/sensorflo/cppkoans-mode.git
+	url = https://sensorflo@github.com/sensorflo/cppkoans-mode.git
 	update = rebase
 [submodule "misc/magit"]
 	path = misc/magit
-	url = https://github.com/sensorflo/magit.git
+	url = https://sensorflo@github.com/sensorflo/magit.git
 	update = rebase
 [submodule "textmodes/mediawiki"]
 	path = textmodes/mediawiki
-	url = https://github.com/sensorflo/mediawiki-el.git
+	url = https://sensorflo@github.com/sensorflo/mediawiki-el.git
 	update = rebase
 [submodule "misc/gstack-mode"]
 	path = misc/gstack-mode
-	url = https://github.com/sensorflo/gstack-mode.git
+	url = https://sensorflo@github.com/sensorflo/gstack-mode.git
 	update = rebase
 [submodule "progmodes/graphviz-dot-mode"]
 	path = progmodes/graphviz-dot-mode
-	url = https://github.com/sensorflo/graphviz-dot-mode.git
+	url = https://sensorflo@github.com/sensorflo/graphviz-dot-mode.git
